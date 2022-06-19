@@ -1,0 +1,12 @@
+:-(mvTrc(seemsBenign(_h3481,_h3482,0)),','(mvTrc(masquerading(_h3481,_h3482,_h3533)),assert_trace(because(0,rule_desc('Asset - Seems like a benign file - Masquerading',0.5),seemsBenign(_h3481,_h3482),[masquerading(_h3481,_h3482)])))).
+
+:-(mvTrc(seemsBenign(_h3481,_h3482,1)),','(isBenignFile(_h3481,_h3482),assert_trace(because(1,rule_desc('Asset - Seems like a benign file - Fact',0.5),seemsBenign(_h3481,_h3482),[isBenignFile(_h3481,_h3482)])))).
+
+:-(mvTrc(masquerading(_h3481,_h3482,2)),','(mvTrc(isMaliciousFile(_h3481,_h3482,_h3530)),','(doubleFileExtension(_h3481,_h3482),assert_trace(because(2,rule_desc('T1036.007 - Masquerading - Double File Extension',0.5),masquerading(_h3481,_h3482),[doubleFileExtension(_h3481,_h3482),isMaliciousFile(_h3481,_h3482)]))))).
+
+:-(mvTrc(masquerading(_h3481,_h3482,3)),','(mvTrc(isMaliciousFile(_h3481,_h3482,_h3530)),','(rightToLeftOverride(_h3481,_h3482),assert_trace(because(3,rule_desc('T1036.002 - Masquerading - Right-to-Left Override',0.5),masquerading(_h3481,_h3482),[rightToLeftOverride(_h3481,_h3482),isMaliciousFile(_h3481,_h3482)]))))).
+
+:-(mvTrc(isMaliciousFile(_h3481,_h3482,4)),','(malicious(_h3487),','(mvTrc(localAccess(_h3487,_h3493,_h3494,_h3542)),','(isReverseShell(_h3481,_h3493,_h3482),assert_trace(because(4,rule_desc('Malicious file - Reverse shell',0.40000000000000002),isMaliciousFile(_h3481,_h3482),[isReverseShell(_h3481,_h3493,_h3482),localAccess(_h3487,_h3493,_h3494),malicious(_h3487)])))))).
+
+:-(mvTrc(localAccess(_h3481,_h3482,root,5)),','(located(_h3481,_h3482),assert_trace(because(5,rule_desc('An user who is located in a host has root access to that host',0.20000000000000001),localAccess(_h3481,_h3482,root),[located(_h3481,_h3482)])))).
+

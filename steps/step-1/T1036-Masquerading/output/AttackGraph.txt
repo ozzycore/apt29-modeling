@@ -1,0 +1,23 @@
+1,"seemsBenign(victimHost,'/home/victimAccount/3aka3.doc')","OR",0
+2,"RULE 0 (Asset - Seems like a benign file - Masquerading)","AND",0
+3,"masquerading(victimHost,'/home/victimAccount/3aka3.doc')","OR",0
+4,"RULE 2 (T1036.007 - Masquerading - Double File Extension)","AND",0
+5,"doubleFileExtension(victimHost,'/home/victimAccount/3aka3.doc')","LEAF",1
+4,5,-1
+6,"isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc')","OR",0
+7,"RULE 4 (Malicious file - Reverse shell)","AND",0
+8,"isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc')","LEAF",1
+7,8,-1
+9,"localAccess(attacker,pupyC2Server,root)","OR",0
+10,"RULE 5 (An user who is located in a host has root access to that host)","AND",0
+11,"located(attacker,pupyC2Server)","LEAF",1
+10,11,-1
+9,10,-1
+7,9,-1
+12,"malicious(attacker)","LEAF",1
+7,12,-1
+6,7,-1
+4,6,-1
+3,4,-1
+2,3,-1
+1,2,-1
