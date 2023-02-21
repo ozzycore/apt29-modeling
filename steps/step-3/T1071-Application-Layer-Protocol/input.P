@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canAbuseElevationCtl(attacker, victimHost, '/usr/bin/sudo')).
+attackGoal(connOnApplicationProtocol(pupyC2Server, reversePupy, http, 1234)).
 
 /************/
 /* Attacker */
@@ -19,7 +19,8 @@ aclNW(H,H,_,_).
 malicious(attacker).
 located(attacker, pupyC2Server).
 isReverseShell(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc').
-isNetScript(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc', reversePupy, http, 1234).
+dataBind(victimHost, '/home/victimAccount/3aka3.doc', pupyPayload).
+isNetScript(victimHost, pupyC2Server, reversePupy, http, 1234, pupyPayload).
 isRcFourEncryptedNetScript(victimHost, '/home/victimAccount/3aka3.doc').
 doubleFileExtension(victimHost, '/home/victimAccount/3aka3.doc').
 networkServiceInfo(pupyC2Server, root, pupyd, http, 1234).
@@ -99,6 +100,11 @@ isUnixLoginScript(victimHost, '/home/victimAccount/.bash_login').
 fileAttr(victimHost, '/usr/bin/sudo', -,r,w,s,r,-,-,r,-,x).
 fileOwner(victimHost, root, '/usr/bin/sudo').
 fileGroupOwner(victimHost, '/usr/bin/sudo', root).
+
+
+isNetScript(victimHost, pupyC2Server, powerC2, http, 443, powerPayload).
+standardPort(http, 1234).
+iswebProtocol(http).
 
 /************/
 /*   Temp   */
