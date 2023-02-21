@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(connOnApplicationProtocol(pupyC2Server, reversePupy, http, 1234)).
+attackGoal(connOnEncryptedChannel(pupyC2Server, reversePupy, rc4)).
 
 /************/
 /* Attacker */
@@ -21,7 +21,8 @@ located(attacker, pupyC2Server).
 isReverseShell(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc').
 dataBind(victimHost, '/home/victimAccount/3aka3.doc', pupyPayload).
 isNetScript(victimHost, pupyC2Server, reversePupy, http, 1234, pupyPayload).
-isRcFourEncryptedNetScript(victimHost, '/home/victimAccount/3aka3.doc').
+isEncryptedNetScript(reversePupy, rc4).
+isSymmetricEncryption(rc4).
 doubleFileExtension(victimHost, '/home/victimAccount/3aka3.doc').
 networkServiceInfo(pupyC2Server, root, pupyd, http, 1234).
 tempNotStandardPort(http, 1234).

@@ -1,0 +1,31 @@
+1,"connOnEncryptedChannel(pupyC2Server,reversePupy,rc4)","OR",0
+2,"RULE 0 (Asset - Able to connect on encrypted channel)","AND",0
+3,"encryptedChannel(pupyC2Server,reversePupy,rc4)","OR",0
+4,"RULE 3 (T1573 - Encrypted Channel)","AND",0
+5,"symmetricCryptography(pupyC2Server,reversePupy,rc4)","OR",0
+6,"RULE 5 (T1573.001 - Encrypted Channel - Symmetric Cryptography)","AND",0
+7,"isSymmetricEncryption(rc4)","LEAF",1
+8,"isEncryptedNetScript(reversePupy,rc4)","LEAF",1
+9,"dataFlow(victimHost,pupyC2Server,reversePupy,_)","OR",0
+10,"RULE 60 (BB - Data flow initiated by script)","AND",0
+11,"canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+12,"RULE 61 (BB - Script access an exposed service)","AND",0
+13,"networkServiceInfo(pupyC2Server,root,pupyd,http,1234)","LEAF",1
+14,"accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+15,"RULE 68 (BB - execCode implies file access)","AND",0
+16,"canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+17,"RULE 70 (BB - A legitimate account can access file)","AND",0
+18,"localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+19,"RULE 71 (BB - owner file access)","AND",0
+20,"ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+21,"RULE 80 (BB - owner file access)","AND",0
+22,"fileAttr(victimHost,'/home/victimAccount/3aka3.doc',-,r,w,x,-,-,-,-,-,-)","LEAF",1
+23,"fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')","LEAF",1
+24,"execCode(victimUser,victimHost,victimAccount)","OR",0
+25,"RULE 69 (BB - A User can execute code using his account on a specific host)","AND",0
+26,"hasAccount(victimUser,victimHost,victimAccount)","LEAF",1
+27,"scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+28,"RULE 62 (BB - Direct script network access - Existing Script)","AND",0
+29,"isNetScript(victimHost,pupyC2Server,reversePupy,http,1234,pupyPayload)","LEAF",1
+30,"dataBind(victimHost,'/home/victimAccount/3aka3.doc',pupyPayload)","LEAF",1
+31,"aclNW(victimHost,pupyC2Server,http,1234)","LEAF",1

@@ -64,5 +64,11 @@
 
 :-(dynamic(iswebProtocol(_h3150))).
 
+:-(dynamic(isSymmetricEncryption(_h3150))).
+
+:-(dynamic(isAsymmetricEncryption(_h3150))).
+
+:-(dynamic(isEncryptedNetScript(_h3150,_h3151))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 

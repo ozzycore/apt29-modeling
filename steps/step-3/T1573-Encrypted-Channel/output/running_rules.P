@@ -36,7 +36,9 @@ primitive(isObfuscatedFiles(_host, _path)).
 primitive(isUnixLoginScript(_host, _path)).
 primitive(isFtpProtocol(_protocol)).
 primitive(iswebProtocol(_protocol)).
-
+primitive(isSymmetricEncryption(_encryption)).
+primitive(isAsymmetricEncryption(_encryption)).
+primitive(isEncryptedNetScript(_flowName, _encryption)).
 
 
 
@@ -64,7 +66,9 @@ derived(canAbuseElevationSetuidCtl(_user, _host, _path)).
 derived(connOnApplicationProtocol(_destHost, _flowName, _protocol, _port)).
 derived(connOnFtpProtocol(_destHost, _flowName, _protocol, _port)).
 derived(connOnWebProtocol(_destHost, _flowName, _protocol, _port)).
-
+derived(connOnEncryptedChannel(_destHost, _flowName, _encryption)).
+derived(connOnSymmetricEncryptedChannel(_destHost, _flowName, _encryption)).
+derived(connOnAsymmetricEncryptedChannel(_destHost, _flowName, _encryption)).
 
 /****   Technique Implementation    *****/
 
@@ -90,7 +94,9 @@ derived(abuseElevationControlMechanismSetuid(_user, _host, _path)).
 derived(dataFlowOnApplicationLayerProtocol(_destHost, _flowName, _protocol, _port)).
 derived(dataFlowOnFtpProtocol(_destHost, _flowName, _protocol, _port)).
 derived(dataFlowOnWebProtocol(_destHost, _flowName, _protocol, _port)).
-
+derived(encryptedChannel(_destHost, _flowName, _encryption)).
+derived(symmetricCryptography(_destHost, _flowName, _encryption)).
+derived(asymmetricCryptography(_destHost, _flowName, _encryption)).
 
 /****       Building Blocks         *****/
 
@@ -144,6 +150,9 @@ meta(advances(_, _)).
 :- table connOnApplicationProtocol/4.
 :- table connOnFtpProtocol/4.
 :- table connOnWebProtocol/4.
+:- table connOnEncryptedChannel/3.
+:- table connOnSymmetricEncryptedChannel/3.
+:- table connOnAsymmetricEncryptedChannel/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -166,6 +175,9 @@ meta(advances(_, _)).
 :- table dataFlowOnApplicationLayerProtocol/4.
 :- table dataFlowOnFtpProtocol/4.
 :- table dataFlowOnWebProtocol/4.
+:- table encryptedChannel/3.
+:- table symmetricCryptography/3.
+:- table asymmetricCryptography/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -191,6 +203,55 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 3 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (connOnEncryptedChannel(DestHost, FlowName, Encryption) :-
+    encryptedChannel(DestHost, FlowName, Encryption)),
+  rule_desc('Asset - Able to connect on encrypted channel',
+  0.5)).
+
+interaction_rule(
+  (connOnSymmetricEncryptedChannel(DestHost, FlowName, Encryption) :-
+    symmetricCryptography(DestHost, FlowName, Encryption)),
+  rule_desc('Asset - Able to connect on encrypted channel - Symmetric',
+  0.5)).
+
+interaction_rule(
+  (connOnAsymmetricEncryptedChannel(DestHost, FlowName, Encryption) :-
+    asymmetricCryptography(DestHost, FlowName, Encryption)),
+  rule_desc('Asset - Able to connect on encrypted channel - Asymmetric',
+  0.5)).
+
+interaction_rule(
+  (encryptedChannel(DestHost, FlowName, Encryption) :-
+		symmetricCryptography(DestHost, FlowName, Encryption)),
+  rule_desc('T1573 - Encrypted Channel',
+  0.5)).
+
+interaction_rule(
+  (encryptedChannel(DestHost, FlowName, Encryption) :-
+		asymmetricCryptography(DestHost, FlowName, Encryption)),
+  rule_desc('T1573 - Encrypted Channel',
+  0.5)).
+
+interaction_rule(
+  (symmetricCryptography(DestHost, FlowName, Encryption) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		isEncryptedNetScript(FlowName, Encryption),
+		isSymmetricEncryption(Encryption)),
+  rule_desc('T1573.001 - Encrypted Channel - Symmetric Cryptography',
+  0.5)).
+
+interaction_rule(
+  (asymmetricCryptography(DestHost, FlowName, Encryption) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		isEncryptedNetScript(FlowName, Encryption),
+		isAsymmetricEncryption(Encryption)),
+  rule_desc('T1573.002 - Encrypted Channel - Asymmetric Cryptography',
+  0.5)).
+
+
+
 
 interaction_rule(
   (connOnApplicationProtocol(DestHost, FlowName, Protocol, Port) :-
