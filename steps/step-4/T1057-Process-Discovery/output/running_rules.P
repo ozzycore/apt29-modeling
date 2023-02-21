@@ -41,7 +41,7 @@ primitive(isAsymmetricEncryption(_encryption)).
 primitive(isEncryptedNetScript(_flowName, _encryption)).
 primitive(isCmdHistory(_data)).
 primitive(isDeobfuscatorUtil(_software)).
-
+primitive(isProcessDiscoveryUtil(_software)).
 
 
 
@@ -75,6 +75,7 @@ derived(connOnAsymmetricEncryptedChannel(_destHost, _flowName, _encryption)).
 derived(canRemoveArtifacts(_user, _host, _data)).
 derived(canRemoveCmdHistory(_user, _host, _data)).
 derived(canDeobfuscateDecodeFiles(_user, _host, _path)).
+derived(canProcessDiscovery(_user, _host)).
 
 
 /****   Technique Implementation    *****/
@@ -107,6 +108,7 @@ derived(asymmetricCryptography(_destHost, _flowName, _encryption)).
 derived(indicatorRemovalOnHost(_user, _host, _data)).
 derived(indicatorRemovalOnHostCmdHistory(_user, _host, _data)).
 derived(deobfuscatedDecodeFiles(_user, _host, _path)).
+derived(processDiscovery(_user, _host)).
 
 
 /****       Building Blocks         *****/
@@ -167,6 +169,7 @@ meta(advances(_, _)).
 :- table canRemoveArtifacts/3.
 :- table canRemoveCmdHistory/3.
 :- table canDeobfuscateDecodeFiles/3.
+:- table canProcessDiscovery/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -195,6 +198,7 @@ meta(advances(_, _)).
 :- table indicatorRemovalOnHost/3.
 :- table indicatorRemovalOnHostCmdHistory/3.
 :- table deobfuscatedDecodeFiles/3.
+:- table processDiscovery/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -220,6 +224,20 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 4 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canProcessDiscovery(User, Host) :-
+    processDiscovery(User, Host)),
+  rule_desc('Asset - Able to run process discovery on victim host',
+  0.5)).
+
+interaction_rule(
+  (processDiscovery(User, Host) :-
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		canRunInstalledSoftware(User, Host, UtilPath, Software),
+    isProcessDiscoveryUtil(Software)),
+  rule_desc('T1057 - Process Discovery',
+  0.5)).
 
 interaction_rule(
   (canDeobfuscateDecodeFiles(User, Host, Path) :-

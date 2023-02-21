@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canDeobfuscateDecodeFiles(attacker, victimHost, '/private/doc.jpg')).
+attackGoal(canProcessDiscovery(attacker, victimHost)).
 
 /************/
 /* Attacker */
@@ -118,6 +118,12 @@ installed(victimHost, '/bin/certutil', certutil).
 fileAttr(victimHost, '/bin/certutil', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/certutil').
 fileGroupOwner(victimHost, '/bin/certutil', root).
+
+isProcessDiscoveryUtil(ps).
+installed(victimHost, '/bin/ps', ps).
+fileAttr(victimHost, '/bin/ps', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/ps').
+fileGroupOwner(victimHost, '/bin/ps', root).
 
 /************/
 /*   Temp   */

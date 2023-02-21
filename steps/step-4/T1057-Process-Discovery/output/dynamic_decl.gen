@@ -74,5 +74,7 @@
 
 :-(dynamic(isDeobfuscatorUtil(_h3150))).
 
+:-(dynamic(isProcessDiscoveryUtil(_h3150))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 
