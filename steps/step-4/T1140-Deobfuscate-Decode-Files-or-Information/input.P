@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canRemoveArtifacts(attacker, victimHost, cmdHistory)).
+attackGoal(canDeobfuscateDecodeFiles(attacker, victimHost, '/private/doc.jpg')).
 
 /************/
 /* Attacker */
@@ -112,6 +112,12 @@ fileAttr(victimHost, '/home/victimAccount/.bash_history', -,r,w,x,r,w,x,-,-,-).
 fileOwner(victimHost, victimAccount, '/home/victimAccount/.bash_history').
 fileGroupOwner(victimHost, '/home/victimAccount/.bash_history', victimGroup).
 isCmdHistory(cmdHistory).
+
+isDeobfuscatorUtil(certutil).
+installed(victimHost, '/bin/certutil', certutil).
+fileAttr(victimHost, '/bin/certutil', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/certutil').
+fileGroupOwner(victimHost, '/bin/certutil', root).
 
 /************/
 /*   Temp   */
