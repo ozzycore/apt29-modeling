@@ -1,0 +1,148 @@
+:-(mvTrc(canAbuseElevationCtl(_h3481,_h3482,_h3483,0)),','(mvTrc(abuseElevationControlMechanism(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(0,rule_desc('Asset - Able to run file and directory discovery process on host',0.5),canAbuseElevationCtl(_h3481,_h3482,_h3483),[abuseElevationControlMechanism(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(canAbuseElevationSetuidCtl(_h3481,_h3482,_h3483,1)),','(mvTrc(abuseElevationControlMechanismSetuid(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(1,rule_desc('Asset - Able to run file and directory discovery process on host',0.5),canAbuseElevationSetuidCtl(_h3481,_h3482,_h3483),[abuseElevationControlMechanismSetuid(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(abuseElevationControlMechanism(_h3481,_h3482,_h3483,2)),','(mvTrc(abuseElevationControlMechanismSetuid(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(2,rule_desc('T1548 - Abuse Elevation Control Mechanism',0.5),abuseElevationControlMechanism(_h3481,_h3482,_h3483),[abuseElevationControlMechanismSetuid(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(abuseElevationControlMechanismSetuid(_h3481,_h3482,_h3483,3)),','(malicious(_h3481),','(fileOwner(_h3482,root,_h3483),','(fileAttr(_h3482,_h3483,-,_h3503,_h3504,s,_h3506,_h3507,_h3508,_h3509,_h3510,x),','(mvTrc(execCode(_h3481,_h3482,_h3515,_h3578)),assert_trace(because(3,rule_desc('T1548.001 - Abuse Elevation Control Mechanism - Setuid',0.5),abuseElevationControlMechanismSetuid(_h3481,_h3482,_h3483),[execCode(_h3481,_h3482,_h3515),fileAttr(_h3482,_h3483,-,_h3503,_h3504,s,_h3506,_h3507,_h3508,_h3509,_h3510,x),fileOwner(_h3482,root,_h3483),malicious(_h3481)]))))))).
+
+:-(mvTrc(abuseEventTriggeredExec(_h3481,_h3482,4)),','(mvTrc(eventTriggeredExecution(_h3481,_h3482,_h3533)),assert_trace(because(4,rule_desc('Asset - Able to abuse OS event triggered execution',0.5),abuseEventTriggeredExec(_h3481,_h3482),[eventTriggeredExecution(_h3481,_h3482)])))).
+
+:-(mvTrc(abuseEventTriggeredExecUnixShell(_h3481,_h3482,5)),','(mvTrc(eventTriggeredExecutionUnixShell(_h3481,_h3482,_h3533)),assert_trace(because(5,rule_desc('Asset - Able to abuse OS event triggered execution - Unix Shell',0.5),abuseEventTriggeredExecUnixShell(_h3481,_h3482),[eventTriggeredExecutionUnixShell(_h3481,_h3482)])))).
+
+:-(mvTrc(eventTriggeredExecution(_h3481,_h3482,6)),','(mvTrc(eventTriggeredExecutionUnixShell(_h3481,_h3482,_h3533)),assert_trace(because(6,rule_desc('T1546 - Event Triggered Execution',0.5),eventTriggeredExecution(_h3481,_h3482),[eventTriggeredExecutionUnixShell(_h3481,_h3482)])))).
+
+:-(mvTrc(eventTriggeredExecutionUnixShell(_h3481,_h3482,7)),','(malicious(_h3481),','(mvTrc(accessFile(_h3481,_h3482,write,_h3495,_h3542)),','(isUnixLoginScript(_h3482,_h3495),assert_trace(because(7,rule_desc('T1546.004 - Event Triggered Execution - Unix Shell Configuration Modification',0.5),eventTriggeredExecutionUnixShell(_h3481,_h3482),[isUnixLoginScript(_h3482,_h3495),accessFile(_h3481,_h3482,write,_h3495),malicious(_h3481)])))))).
+
+:-(mvTrc(seemsObfuscated(_h3481,_h3482,8)),','(mvTrc(obfuscatedFilesOrInformation(_h3481,_h3482,_h3533)),assert_trace(because(8,rule_desc('Asset - Able to obfuscated files or information from host - Tech',0.5),seemsObfuscated(_h3481,_h3482),[obfuscatedFilesOrInformation(_h3481,_h3482)])))).
+
+:-(mvTrc(seemsObfuscated(_h3481,_h3482,9)),','(isObfuscatedFiles(_h3481,_h3482),assert_trace(because(9,rule_desc('Asset - Able to obfuscated files or information from host - Fact',0.5),seemsObfuscated(_h3481,_h3482),[isObfuscatedFiles(_h3481,_h3482)])))).
+
+:-(mvTrc(obfuscatedFilesOrInformation(_h3481,_h3482,10)),','(mvTrc(isMaliciousFile(_h3481,_h3482,_h3530)),','(binaryPadding(_h3481,_h3482),assert_trace(because(10,rule_desc('T1027.001 - Binary Padding',0.5),obfuscatedFilesOrInformation(_h3481,_h3482),[binaryPadding(_h3481,_h3482),isMaliciousFile(_h3481,_h3482)]))))).
+
+:-(mvTrc(obfuscatedFilesOrInformation(_h3481,_h3482,11)),','(mvTrc(isMaliciousFile(_h3481,_h3482,_h3530)),','(steganography(_h3481,_h3482),assert_trace(because(11,rule_desc('T1027.003 - Steganography',0.5),obfuscatedFilesOrInformation(_h3481,_h3482),[steganography(_h3481,_h3482),isMaliciousFile(_h3481,_h3482)]))))).
+
+:-(mvTrc(isMaliciousFile(_h3481,_h3482,12)),','(mvTrc(canIngressTransfer(_h3487,_h3481,_h3489,_h3532)),','(dataBind(_h3481,_h3482,_h3489),assert_trace(because(12,rule_desc('Fact - Malicious file on host - On Ingress',0.40000000000000002),isMaliciousFile(_h3481,_h3482),[dataBind(_h3481,_h3482,_h3489),canIngressTransfer(_h3487,_h3481,_h3489)]))))).
+
+:-(mvTrc(dataBind(_h3481,_h3482,_h3483,13)),','(mvTrc(ingressToolTransfer(_h3485,_h3481,_h3483,_h3535)),assert_trace(because(13,rule_desc('Asset - Able to ingress transfer tools or other files to path',0.5),dataBind(_h3481,_h3482,_h3483),[ingressToolTransfer(_h3485,_h3481,_h3483)])))).
+
+:-(mvTrc(canIngressTransfer(_h3481,_h3482,_h3483,14)),','(mvTrc(ingressToolTransfer(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(14,rule_desc('Asset - Able to ingress transfer tools or other files on host',0.5),canIngressTransfer(_h3481,_h3482,_h3483),[ingressToolTransfer(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(ingressToolTransfer(_h3481,_h3482,_h3483,15)),','(mvTrc(canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491,_h3562)),','(isIngressTool(_h3491),','(aclNW(_h3482,_h3502,_h3503,_h3504),','(mvTrc(localAccess(_h3481,_h3502,root,_h3611)),','(mvTrc(accessFile(_h3481,_h3482,write,_h3519,_h3645)),','(dataBindDir(_h3482,_h3519,_h3483),assert_trace(because(15,rule_desc('T1105 - Ingress Tool Transfer',0.5),ingressToolTransfer(_h3481,_h3482,_h3483),[dataBindDir(_h3482,_h3519,_h3483),accessFile(_h3481,_h3482,write,_h3519),localAccess(_h3481,_h3502,root),aclNW(_h3482,_h3502,_h3503,_h3504),isIngressTool(_h3491),canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491)]))))))))).
+
+:-(mvTrc(canExfiltrateData(_h3481,_h3482,_h3483,_h3484,_h3485,16)),','(mvTrc(exfiltrationOverC2Channel(_h3481,_h3482,_h3483,_h3484,_h3485,_h3539)),assert_trace(because(16,rule_desc('Asset - Able to exfiltrate data from host using C2 channel',0.5),canExfiltrateData(_h3481,_h3482,_h3483,_h3484,_h3485),[exfiltrationOverC2Channel(_h3481,_h3482,_h3483,_h3484,_h3485)])))).
+
+:-(mvTrc(exfiltrationOverC2Channel(_h3481,_h3482,_h3483,_h3484,_h3485,17)),','(mvTrc(canCollectData(_h3481,_h3482,_h3485,_h3543)),','(mvTrc(dataFlow(_h3482,_h3483,_h3484,_h3500,_h3577)),','(mvTrc(localAccess(_h3481,_h3483,root,_h3625)),assert_trace(because(17,rule_desc('T1041 - Exfiltration Over C2 Channel',0.5),exfiltrationOverC2Channel(_h3481,_h3482,_h3483,_h3484,_h3485),[localAccess(_h3481,_h3483,root),dataFlow(_h3482,_h3483,_h3484,_h3500),canCollectData(_h3481,_h3482,_h3485)])))))).
+
+:-(mvTrc(canDataStage(_h3481,_h3482,_h3483,18)),','(mvTrc(dataStaged(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(18,rule_desc('Asset - Able to stage collected data',0.5),canDataStage(_h3481,_h3482,_h3483),[dataStaged(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(dataStaged(_h3481,_h3482,_h3483,19)),','(mvTrc(canCollectData(_h3481,_h3482,_h3483,_h3550)),','(mvTrc(accessFile(_h3481,_h3482,write,_h3498,_h3584)),','(fileAttr(_h3482,_h3498,d,_h3503,_h3504,_h3505,_h3506,_h3507,_h3508,_h3509,_h3510,_h3511),assert_trace(because(19,rule_desc('T1074 - Data Staged',0.5),dataStaged(_h3481,_h3482,_h3483),[fileAttr(_h3482,_h3498,d,_h3503,_h3504,_h3505,_h3506,_h3507,_h3508,_h3509,_h3510,_h3511),accessFile(_h3481,_h3482,write,_h3498),canCollectData(_h3481,_h3482,_h3483)])))))).
+
+:-(mvTrc(canArchiveData(_h3481,_h3482,_h3483,20)),','(mvTrc(archiveCollectedData(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(20,rule_desc('Asset - Able to archive data on host',0.5),canArchiveData(_h3481,_h3482,_h3483),[archiveCollectedData(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(archiveCollectedData(_h3481,_h3482,_h3483,21)),','(mvTrc(canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491,_h3539)),','(isArchiveTool(_h3491),','(mvTrc(canCollectData(_h3481,_h3482,_h3483,_h3592)),assert_trace(because(21,rule_desc('T1560 - Archive Collected Data',0.5),archiveCollectedData(_h3481,_h3482,_h3483),[canCollectData(_h3481,_h3482,_h3483),isArchiveTool(_h3491),canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491)])))))).
+
+:-(mvTrc(canCollectData(_h3481,_h3482,_h3483,22)),','(mvTrc(dataFromLocalSystem(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(22,rule_desc('Asset - Able to read data on host',0.5),canCollectData(_h3481,_h3482,_h3483),[dataFromLocalSystem(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(dataFromLocalSystem(_h3481,_h3482,_h3483,23)),','(mvTrc(canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491,_h3561)),','(isDataUtil(_h3491),','(mvTrc(canDiscoverData(_h3481,_h3482,_h3483,_h3605)),','(mvTrc(canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3510,_h3639)),','(dataBind(_h3482,_h3516,_h3483),','(mvTrc(accessFile(_h3481,_h3482,read,_h3516,_h3687)),assert_trace(because(23,rule_desc('T1005 - Data from Local System',0.5),dataFromLocalSystem(_h3481,_h3482,_h3483),[accessFile(_h3481,_h3482,read,_h3516),dataBind(_h3482,_h3516,_h3483),canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3510),canDiscoverData(_h3481,_h3482,_h3483),isDataUtil(_h3491),canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491)]))))))))).
+
+:-(mvTrc(canAutomateCollection(_h3481,_h3482,_h3483,24)),','(mvTrc(automatedCollection(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(24,rule_desc('Asset - Able to write a script and run it on host',0.5),canAutomateCollection(_h3481,_h3482,_h3483),[automatedCollection(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(automatedCollection(_h3481,_h3482,_h3483,25)),','(mvTrc(canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490,_h3565)),','(mvTrc(canDiscoverData(_h3481,_h3482,_h3483,_h3599)),','(mvTrc(accessFile(_h3481,_h3482,exec,_h3505,_h3633)),','(mvTrc(accessFile(_h3481,_h3482,write,_h3505,_h3672)),','(fileAttr(_h3482,_h3505,-,_h3518,_h3519,_h3520,_h3521,_h3522,_h3523,_h3524,_h3525,_h3526),assert_trace(because(25,rule_desc('T1119 - Automated Collection - Discovery - existing file',0.5),automatedCollection(_h3481,_h3482,_h3483),[fileAttr(_h3482,_h3505,-,_h3518,_h3519,_h3520,_h3521,_h3522,_h3523,_h3524,_h3525,_h3526),accessFile(_h3481,_h3482,write,_h3505),accessFile(_h3481,_h3482,exec,_h3505),canDiscoverData(_h3481,_h3482,_h3483),canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490)])))))))).
+
+:-(mvTrc(automatedCollection(_h3481,_h3482,_h3483,26)),','(mvTrc(canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490,_h3557)),','(mvTrc(canDiscoverData(_h3481,_h3482,_h3483,_h3591)),','(mvTrc(accessFile(_h3481,_h3482,write,_h3505,_h3625)),','(fileAttr(_h3482,_h3505,d,_h3510,_h3511,_h3512,_h3513,_h3514,_h3515,_h3516,_h3517,_h3518),assert_trace(because(26,rule_desc('T1119 - Automated Collection - Discovery - new file',0.5),automatedCollection(_h3481,_h3482,_h3483),[fileAttr(_h3482,_h3505,d,_h3510,_h3511,_h3512,_h3513,_h3514,_h3515,_h3516,_h3517,_h3518),accessFile(_h3481,_h3482,write,_h3505),canDiscoverData(_h3481,_h3482,_h3483),canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490)]))))))).
+
+:-(mvTrc(automatedCollection(_h3481,_h3482,_h3483,27)),','(mvTrc(canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490,_h3565)),','(mvTrc(canCollectData(_h3481,_h3482,_h3483,_h3599)),','(mvTrc(accessFile(_h3481,_h3482,exec,_h3505,_h3633)),','(mvTrc(accessFile(_h3481,_h3482,write,_h3505,_h3672)),','(fileAttr(_h3482,_h3505,-,_h3518,_h3519,_h3520,_h3521,_h3522,_h3523,_h3524,_h3525,_h3526),assert_trace(because(27,rule_desc('T1119 - Automated Collection - Discovery - existing file',0.5),automatedCollection(_h3481,_h3482,_h3483),[fileAttr(_h3482,_h3505,-,_h3518,_h3519,_h3520,_h3521,_h3522,_h3523,_h3524,_h3525,_h3526),accessFile(_h3481,_h3482,write,_h3505),accessFile(_h3481,_h3482,exec,_h3505),canCollectData(_h3481,_h3482,_h3483),canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490)])))))))).
+
+:-(mvTrc(automatedCollection(_h3481,_h3482,_h3483,28)),','(mvTrc(canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490,_h3557)),','(mvTrc(canCollectData(_h3481,_h3482,_h3483,_h3591)),','(mvTrc(accessFile(_h3481,_h3482,write,_h3505,_h3625)),','(fileAttr(_h3482,_h3505,d,_h3510,_h3511,_h3512,_h3513,_h3514,_h3515,_h3516,_h3517,_h3518),assert_trace(because(28,rule_desc('T1119 - Automated Collection - Collection - new file',0.5),automatedCollection(_h3481,_h3482,_h3483),[fileAttr(_h3482,_h3505,d,_h3510,_h3511,_h3512,_h3513,_h3514,_h3515,_h3516,_h3517,_h3518),accessFile(_h3481,_h3482,write,_h3505),canCollectData(_h3481,_h3482,_h3483),canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3490)]))))))).
+
+:-(mvTrc(canDiscoverData(_h3481,_h3482,_h3483,29)),','(mvTrc(fileAndDirectoryDiscovery(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(29,rule_desc('Asset - Able to run file and directory discovery process on host',0.5),canDiscoverData(_h3481,_h3482,_h3483),[fileAndDirectoryDiscovery(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(fileAndDirectoryDiscovery(_h3481,_h3482,_h3483,30)),','(mvTrc(canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491,_h3554)),','(isSearchUtil(_h3491),','(mvTrc(canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3503,_h3598)),','(dataBindDir(_h3482,_h3509,_h3483),','(mvTrc(accessFile(_h3481,_h3482,read,_h3509,_h3646)),assert_trace(because(30,rule_desc('T1083 - File and Directory Discovery',0.5),fileAndDirectoryDiscovery(_h3481,_h3482,_h3483),[accessFile(_h3481,_h3482,read,_h3509),dataBindDir(_h3482,_h3509,_h3483),canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3503),isSearchUtil(_h3491),canRunInstalledSoftware(_h3481,_h3482,_h3490,_h3491)])))))))).
+
+:-(mvTrc(canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3483,31)),','(mvTrc(cmdScriptingInterpreter(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(31,rule_desc('Asset - Able to abuse command and scripting interpreters',0.40000000000000002),canAbuseCmdScriptingInterpreter(_h3481,_h3482,_h3483),[cmdScriptingInterpreter(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(canAbusePowerShell(_h3481,_h3482,_h3483,32)),','(mvTrc(cmdScriptingInterpreterPowerShell(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(32,rule_desc('Asset - Able to abuse PowerShell',0.40000000000000002),canAbusePowerShell(_h3481,_h3482,_h3483),[cmdScriptingInterpreterPowerShell(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(canAbuseUnixShell(_h3481,_h3482,_h3483,33)),','(mvTrc(cmdScriptingInterpreterUnixShell(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(33,rule_desc('Asset - Able to abuse UnixShell',0.40000000000000002),canAbuseUnixShell(_h3481,_h3482,_h3483),[cmdScriptingInterpreterUnixShell(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(cmdScriptingInterpreter(_h3481,_h3482,_h3483,34)),','(mvTrc(cmdScriptingInterpreterPowerShell(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(34,rule_desc('T1059 - Command and Scripting Interpreter',0.5),cmdScriptingInterpreter(_h3481,_h3482,_h3483),[cmdScriptingInterpreterPowerShell(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(cmdScriptingInterpreter(_h3481,_h3482,_h3483,35)),','(mvTrc(cmdScriptingInterpreterUnixShell(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(35,rule_desc('T1059 - Command and Scripting Interpreter',0.5),cmdScriptingInterpreter(_h3481,_h3482,_h3483),[cmdScriptingInterpreterUnixShell(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(cmdScriptingInterpreterPowerShell(_h3481,_h3482,_h3483,36)),','(malicious(_h3481),','(mvTrc(canRunInstalledSoftware(_h3481,_h3482,_h3483,_h3496,_h3542)),','(isPowerShell(_h3496),assert_trace(because(36,rule_desc('T1059.001 - Command and Scripting Interpreter - PowerShell',0.5),cmdScriptingInterpreterPowerShell(_h3481,_h3482,_h3483),[isPowerShell(_h3496),canRunInstalledSoftware(_h3481,_h3482,_h3483,_h3496),malicious(_h3481)])))))).
+
+:-(mvTrc(cmdScriptingInterpreterUnixShell(_h3481,_h3482,_h3483,37)),','(malicious(_h3481),','(mvTrc(canRunInstalledSoftware(_h3481,_h3482,_h3483,_h3496,_h3542)),','(isUnixShell(_h3496),assert_trace(because(37,rule_desc('T1059.004 - Command and Scripting Interpreter - PowerShell',0.5),cmdScriptingInterpreterUnixShell(_h3481,_h3482,_h3483),[isUnixShell(_h3496),canRunInstalledSoftware(_h3481,_h3482,_h3483,_h3496),malicious(_h3481)])))))).
+
+:-(mvTrc(canRunInstalledSoftware(_h3481,_h3482,_h3483,_h3484,38)),','(installed(_h3482,_h3483,_h3484),','(mvTrc(accessFile(_h3481,_h3482,exec,_h3483,_h3549)),assert_trace(because(38,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(_h3481,_h3482,_h3483,_h3484),[accessFile(_h3481,_h3482,exec,_h3483),installed(_h3482,_h3483,_h3484)]))))).
+
+:-(mvTrc(execCode(_h3481,_h3482,_h3483,39)),','(mvTrc(dataFlow(_h3482,_h3489,_h3490,_h3491,_h3547)),','(mvTrc(dataFlowReverseShell(_h3490,_h3586)),','(mvTrc(accessDataFlow(_h3481,write,_h3490,_h3610)),','(mvTrc(canAccessFile(_h3482,_h3483,exec,_h3508,_h3653)),assert_trace(because(39,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(_h3481,_h3482,_h3483),[canAccessFile(_h3482,_h3483,exec,_h3508),accessDataFlow(_h3481,write,_h3490),dataFlowReverseShell(_h3490),dataFlow(_h3482,_h3489,_h3490,_h3491)]))))))).
+
+:-(mvTrc(accessDataFlow(_h3481,_h3482,_h3483,40)),','(mvTrc(localAccess(_h3481,_h3489,root,_h3539)),','(mvTrc(dataFlow(_h3495,_h3489,_h3483,_h3498,_h3573)),','(mvTrc(dataFlowReverseShell(_h3483,_h3621)),assert_trace(because(40,rule_desc('BB - The remote root user has write access to the dataFlow',0.5),accessDataFlow(_h3481,_h3482,_h3483),[dataFlowReverseShell(_h3483),dataFlow(_h3495,_h3489,_h3483,_h3498),localAccess(_h3481,_h3489,root)])))))).
+
+:-(mvTrc(dataFlowReverseShell(_h3481,41)),','(mvTrc(dataFlow(_h3486,_h3487,_h3481,_h3489,_h3539)),','(mvTrc(flowBind(_h3481,_h3495,_h3496,_h3578)),','(isReverseShell(_h3486,_h3487,_h3500),assert_trace(because(41,rule_desc('BB - Reverse shell data flow',0.5),dataFlowReverseShell(_h3481),[isReverseShell(_h3486,_h3487,_h3500),flowBind(_h3481,_h3495,_h3496),dataFlow(_h3486,_h3487,_h3481,_h3489)])))))).
+
+:-(mvTrc(connOnNonStandardPort(_h3481,_h3482,42)),','(mvTrc(dataFlowOnNonStandardPort(_h3481,_h3482,_h3533)),assert_trace(because(42,rule_desc('Asset - Established connection on non-standard port',0.40000000000000002),connOnNonStandardPort(_h3481,_h3482),[dataFlowOnNonStandardPort(_h3481,_h3482)])))).
+
+:-(mvTrc(dataFlowOnNonStandardPort(_h3481,_h3482,43)),','(mvTrc(dataFlow(_h3487,_h3481,_h3489,_h3490,_h3539)),','(tempNotStandardPort(_h3495,_h3482),','(mvTrc(flowBind(_h3489,_h3495,_h3482,_h3592)),assert_trace(because(43,rule_desc('T1571 - Non-Standard Port',0.5),dataFlowOnNonStandardPort(_h3481,_h3482),[flowBind(_h3489,_h3495,_h3482),tempNotStandardPort(_h3495,_h3482),dataFlow(_h3487,_h3481,_h3489,_h3490)])))))).
+
+:-(mvTrc(flowBind(_h3481,_h3482,_h3483,44)),','(mvTrc(canScriptAccessHost(_h3485,_h3486,_h3487,_h3481,_h3482,_h3483,_h3538)),assert_trace(because(44,rule_desc('BB - Flow associated port and protocol',0.59999999999999998),flowBind(_h3481,_h3482,_h3483),[canScriptAccessHost(_h3485,_h3486,_h3487,_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(dataFlow(_h3481,_h3482,_h3483,_h3484,45)),','(mvTrc(canScriptAccessHost(_h3481,_h3482,_h3488,_h3483,_h3490,_h3491,_h3539)),assert_trace(because(45,rule_desc('BB - Data flow initiated by script',0.29999999999999999),dataFlow(_h3481,_h3482,_h3483,_h3484),[canScriptAccessHost(_h3481,_h3482,_h3488,_h3483,_h3490,_h3491)])))).
+
+:-(mvTrc(canScriptAccessHost(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486,46)),','(mvTrc(scriptNetAccess(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486,_h3549)),','(mvTrc(accessFile(_h3501,_h3481,exec,_h3483,_h3598)),','(networkServiceInfo(_h3482,_h3507,_h3508,_h3485,_h3486),assert_trace(because(46,rule_desc('BB - Script access an exposed service',1.0),canScriptAccessHost(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486),[networkServiceInfo(_h3482,_h3507,_h3508,_h3485,_h3486),accessFile(_h3501,_h3481,exec,_h3483),scriptNetAccess(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486)])))))).
+
+:-(mvTrc(scriptNetAccess(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486,47)),','(aclNW(_h3481,_h3482,_h3485,_h3486),','(isNetScript(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486),assert_trace(because(47,rule_desc('BB - Direct script network access',0.29999999999999999),scriptNetAccess(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486),[isNetScript(_h3481,_h3482,_h3483,_h3484,_h3485,_h3486),aclNW(_h3481,_h3482,_h3485,_h3486)]))))).
+
+:-(mvTrc(canExecuteMaliciousFile(_h3481,_h3482,_h3483,48)),','(mvTrc(userExecutionMaliciousFile(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(48,rule_desc('Asset - Malicious file can be successfuly executed by a user',0.40000000000000002),canExecuteMaliciousFile(_h3481,_h3482,_h3483),[userExecutionMaliciousFile(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(canExecuteMaliciousPayload(_h3481,_h3482,_h3483,49)),','(mvTrc(userExecution(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(49,rule_desc('Asset - Successfuly malicious payload execution',0.40000000000000002),canExecuteMaliciousPayload(_h3481,_h3482,_h3483),[userExecution(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(userExecution(_h3481,_h3482,_h3483,50)),','(mvTrc(userExecutionMaliciousFile(_h3481,_h3482,_h3483,_h3535)),assert_trace(because(50,rule_desc('T1204 - User Execution - A legitimate user executes a malicious payload',0.5),userExecution(_h3481,_h3482,_h3483),[userExecutionMaliciousFile(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(userExecutionMaliciousFile(_h3481,_h3482,_h3483,51)),','(mvTrc(seemsBenign(_h3482,_h3483,_h3533)),','(mvTrc(accessFile(_h3481,_h3482,exec,_h3483,_h3571)),assert_trace(because(51,rule_desc('T1204.002 - User Execution - Malicious File - A legitimate user executes a malicious file',0.5),userExecutionMaliciousFile(_h3481,_h3482,_h3483),[accessFile(_h3481,_h3482,exec,_h3483),seemsBenign(_h3482,_h3483)]))))).
+
+:-(mvTrc(userExecutionMaliciousFile(_h3481,_h3482,_h3483,52)),','(inCompetent(_h3481),','(mvTrc(isMaliciousFile(_h3482,_h3483,_h3543)),','(mvTrc(accessFile(_h3481,_h3482,exec,_h3483,_h3581)),assert_trace(because(52,rule_desc('T1204.002 - User Execution - Malicious File - A legitimate user executes a malicious file',0.5),userExecutionMaliciousFile(_h3481,_h3482,_h3483),[accessFile(_h3481,_h3482,exec,_h3483),isMaliciousFile(_h3482,_h3483),inCompetent(_h3481)])))))).
+
+:-(mvTrc(accessFile(_h3481,_h3482,_h3483,_h3484,53)),','(mvTrc(execCode(_h3481,_h3482,_h3491,_h3535)),','(mvTrc(canAccessFile(_h3482,_h3491,_h3483,_h3484,_h3578)),assert_trace(because(53,rule_desc('BB - execCode implies file access',1.0),accessFile(_h3481,_h3482,_h3483,_h3484),[canAccessFile(_h3482,_h3491,_h3483,_h3484),execCode(_h3481,_h3482,_h3491)]))))).
+
+:-(mvTrc(execCode(_h3481,_h3482,_h3483,54)),','(hasAccount(_h3481,_h3482,_h3483),assert_trace(because(54,rule_desc('BB - A User can execute code using his account on a specific host',1),execCode(_h3481,_h3482,_h3483),[hasAccount(_h3481,_h3482,_h3483)])))).
+
+:-(mvTrc(canAccessFile(_h3481,_h3482,_h3483,_h3484,55)),','(mvTrc(localFileProtection(_h3481,_h3482,_h3483,_h3484,_h3537)),assert_trace(because(55,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(_h3481,_h3482,_h3483,_h3484),[localFileProtection(_h3481,_h3482,_h3483,_h3484)])))).
+
+:-(mvTrc(localFileProtection(_h3481,_h3482,_h3483,_h3484,56)),','(fileOwner(_h3481,_h3482,_h3484),','(mvTrc(ownerAccessible(_h3481,_h3483,_h3484,_h3548)),assert_trace(because(56,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(_h3481,_h3482,_h3483,_h3484),[ownerAccessible(_h3481,_h3483,_h3484),fileOwner(_h3481,_h3482,_h3484)]))))).
+
+:-(mvTrc(localFileProtection(_h3481,_h3482,_h3483,_h3484,57)),','(inGroup(_h3482,_h3490),','(fileGroupOwner(_h3481,_h3484,_h3490),','(mvTrc(groupAccessible(_h3481,_h3483,_h3484,_h3559)),assert_trace(because(57,rule_desc('BB - group file access',0.10000000000000001),localFileProtection(_h3481,_h3482,_h3483,_h3484),[groupAccessible(_h3481,_h3483,_h3484),fileGroupOwner(_h3481,_h3484,_h3490),inGroup(_h3482,_h3490)])))))).
+
+:-(mvTrc(localFileProtection(_h3481,_h3482,_h3483,_h3484,58)),','(mvTrc(worldAccessible(_h3481,_h3483,_h3484,_h3536)),assert_trace(because(58,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(_h3481,_h3482,_h3483,_h3484),[worldAccessible(_h3481,_h3483,_h3484)])))).
+
+:-(mvTrc(ownerAccessible(_h3481,read,_h3483,59)),','(fileAttr(_h3481,_h3483,_h3487,r,_h3489,_h3490,_h3491,_h3492,_h3493,_h3494,_h3495,_h3496),assert_trace(because(59,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(_h3481,read,_h3483),[fileAttr(_h3481,_h3483,_h3487,r,_h3489,_h3490,_h3491,_h3492,_h3493,_h3494,_h3495,_h3496)])))).
+
+:-(mvTrc(groupAccessible(_h3481,read,_h3483,60)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,r,_h3492,_h3493,_h3494,_h3495,_h3496),assert_trace(because(60,rule_desc('BB - group file access',0.10000000000000001),groupAccessible(_h3481,read,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,r,_h3492,_h3493,_h3494,_h3495,_h3496)])))).
+
+:-(mvTrc(worldAccessible(_h3481,read,_h3483,61)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,_h3493,r,_h3495,_h3496),assert_trace(because(61,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(_h3481,read,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,_h3493,r,_h3495,_h3496)])))).
+
+:-(mvTrc(ownerAccessible(_h3481,write,_h3483,62)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,w,_h3490,_h3491,_h3492,_h3493,_h3494,_h3495,_h3496),assert_trace(because(62,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(_h3481,write,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,w,_h3490,_h3491,_h3492,_h3493,_h3494,_h3495,_h3496)])))).
+
+:-(mvTrc(groupAccessible(_h3481,write,_h3483,63)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,w,_h3493,_h3494,_h3495,_h3496),assert_trace(because(63,rule_desc('BB - group file access',0.10000000000000001),groupAccessible(_h3481,write,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,w,_h3493,_h3494,_h3495,_h3496)])))).
+
+:-(mvTrc(worldAccessible(_h3481,write,_h3483,64)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,_h3493,_h3494,w,_h3496),assert_trace(because(64,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(_h3481,write,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,_h3493,_h3494,w,_h3496)])))).
+
+:-(mvTrc(ownerAccessible(_h3481,exec,_h3483,65)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,x,_h3491,_h3492,_h3493,_h3494,_h3495,_h3496),assert_trace(because(65,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(_h3481,exec,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,x,_h3491,_h3492,_h3493,_h3494,_h3495,_h3496)])))).
+
+:-(mvTrc(groupAccessible(_h3481,exec,_h3483,66)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,x,_h3494,_h3495,_h3496),assert_trace(because(66,rule_desc('BB - group file access',0.10000000000000001),groupAccessible(_h3481,exec,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,x,_h3494,_h3495,_h3496)])))).
+
+:-(mvTrc(worldAccessible(_h3481,exec,_h3483,67)),','(fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,_h3493,_h3494,_h3495,x),assert_trace(because(67,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(_h3481,exec,_h3483),[fileAttr(_h3481,_h3483,_h3487,_h3488,_h3489,_h3490,_h3491,_h3492,_h3493,_h3494,_h3495,x)])))).
+
+:-(mvTrc(seemsBenign(_h3481,_h3482,68)),','(mvTrc(masquerading(_h3481,_h3482,_h3533)),assert_trace(because(68,rule_desc('Asset - Seems like a benign file - Masquerading',0.5),seemsBenign(_h3481,_h3482),[masquerading(_h3481,_h3482)])))).
+
+:-(mvTrc(seemsBenign(_h3481,_h3482,69)),','(isBenignFile(_h3481,_h3482),assert_trace(because(69,rule_desc('Asset - Seems like a benign file - Fact',0.5),seemsBenign(_h3481,_h3482),[isBenignFile(_h3481,_h3482)])))).
+
+:-(mvTrc(masquerading(_h3481,_h3482,70)),','(mvTrc(isMaliciousFile(_h3481,_h3482,_h3530)),','(doubleFileExtension(_h3481,_h3482),assert_trace(because(70,rule_desc('T1036.007 - Masquerading - Double File Extension',0.5),masquerading(_h3481,_h3482),[doubleFileExtension(_h3481,_h3482),isMaliciousFile(_h3481,_h3482)]))))).
+
+:-(mvTrc(masquerading(_h3481,_h3482,71)),','(mvTrc(isMaliciousFile(_h3481,_h3482,_h3530)),','(rightToLeftOverride(_h3481,_h3482),assert_trace(because(71,rule_desc('T1036.002 - Masquerading - Right-to-Left Override',0.5),masquerading(_h3481,_h3482),[rightToLeftOverride(_h3481,_h3482),isMaliciousFile(_h3481,_h3482)]))))).
+
+:-(mvTrc(isMaliciousFile(_h3481,_h3482,72)),','(malicious(_h3487),','(mvTrc(localAccess(_h3487,_h3493,_h3494,_h3542)),','(isReverseShell(_h3481,_h3493,_h3482),assert_trace(because(72,rule_desc('Fact - Malicious file on host',0.40000000000000002),isMaliciousFile(_h3481,_h3482),[isReverseShell(_h3481,_h3493,_h3482),localAccess(_h3487,_h3493,_h3494),malicious(_h3487)])))))).
+
+:-(mvTrc(localAccess(_h3481,_h3482,root,73)),','(located(_h3481,_h3482),assert_trace(because(73,rule_desc('BB - An user who is located in a host has root access to that host',0.20000000000000001),localAccess(_h3481,_h3482,root),[located(_h3481,_h3482)])))).
+
