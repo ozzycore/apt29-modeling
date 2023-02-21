@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canIngressTransfer(attacker, victimHost)).
+attackGoal(seemsObfuscated(victimHost, '/private/doc.jpg')).
 
 /************/
 /* Attacker */
@@ -89,6 +89,8 @@ fileAttr(victimHost, '/bin/tcpdump', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/tcpdump').
 fileGroupOwner(victimHost, '/bin/tcpdump', root).
 
+
+steganography(victimHost, '/private/doc.jpg').
 
 /************/
 /*   Temp   */
