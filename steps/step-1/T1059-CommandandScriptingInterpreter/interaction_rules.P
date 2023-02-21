@@ -21,6 +21,9 @@ primitive(isNetScript(_srcHost, _destHost, _path, _flowName, _protocol, _port)).
 primitive(networkServiceInfo(_destHost, _account, _software, _protocol, _port)).
 primitive(tempNotStandardPort(_protocol, _port)).
 primitive(standardPort(_protocol, _port)).
+primitive(installed(_host, _path, _software)).
+primitive(isUnixShell(_software)).
+primitive(isPowerShell(_software)).
 
 
 /****       Technique Assets        *****/
@@ -29,6 +32,9 @@ derived(seemsBenign(_host, _path)).
 derived(canExecuteMaliciousPayload(_user, _host, _path)).
 derived(canExecuteMaliciousFile(_user, _host, _path)).
 derived(connOnNonStandardPort(_destHost, _port)).
+derived(canAbuseCmdScriptingInterpreter(_user, _host, _path)).
+derived(canAbusePowerShell(_user, _host, _path)).
+derived(canAbuseUnixShell(_user, _host, _path)).
 
 /****   Technique Implementation    *****/
 
@@ -36,6 +42,10 @@ derived(masquerading(_host, _path)).
 derived(userExecutionMaliciousFile(_user, _host, _path)).
 derived(userExecution(_user, _host, _path)).
 derived(dataFlowOnNonStandardPort(_destHost, _port)).
+derived(cmdScriptingInterpreter(_user, _host, _path)).
+derived(cmdScriptingInterpreterUnixShell(_user, _host, _path)).
+derived(cmdScriptingInterpreterPowerShell(_user, _host, _path)).
+
 
 /****       Building Blocks         *****/
 
@@ -53,6 +63,10 @@ derived(canScriptAccessHost(_srcHost, _destHost, _path, _flowName, _protocol, _p
 derived(dataFlow(_srcHost, _destHost, _flowName, _direction)).
 derived(flowBind(_flowName, _protocol, _port)).
 derived(useStandardPort(_protocol, _port)).
+derived(dataFlowReverseShell(_flowName)).
+derived(accessDataFlow(_user, _access, _flowName)).
+derived(canRunInstalledSoftware(_user, _host, _path, _software)).
+
 
 
 meta(attackGoal(_)).
@@ -67,10 +81,16 @@ meta(advances(_, _)).
 :- table canExecuteMaliciousPayload/3.
 :- table canExecuteMaliciousFile/3.
 :- table connOnNonStandardPort/2.
+:- table canAbuseCmdScriptingInterpreter/3.
+:- table canAbusePowerShell/3.
+:- table canAbuseUnixShell/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
 :- table dataFlowOnNonStandardPort/2.
+:- table cmdScriptingInterpreter/3.
+:- table cmdScriptingInterpreterUnixShell/3.
+:- table cmdScriptingInterpreterPowerShell/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -85,20 +105,98 @@ meta(advances(_, _)).
 :- table dataFlow/4.
 :- table flowBind/3.
 :- table useStandardPort/2.
-
+:- table dataFlowReverseShell/1.
+:- table accessDataFlow/3.
+:- table canRunInstalledSoftware/4.
 
 
 /******************************************************/
 /****         Step 1 - Interaction Rules          *****/
 /******************************************************/
 
+interaction_rule(
+  (canAbuseCmdScriptingInterpreter(User, Host, Path) :-
+    cmdScriptingInterpreter(User, Host, Path)),
+  rule_desc('Asset - Able to abuse command and scripting interpreters',
+  0.4)).
+
+interaction_rule(
+  (canAbusePowerShell(User, Host, Path) :-
+    cmdScriptingInterpreterPowerShell(User, Host, Path)),
+  rule_desc('Asset - Able to abuse PowerShell',
+  0.4)).
+
+interaction_rule(
+  (canAbuseUnixShell(User, Host, Path) :-
+    cmdScriptingInterpreterUnixShell(User, Host, Path)),
+  rule_desc('Asset - Able to abuse UnixShell',
+  0.4)).
+
+interaction_rule(
+  (cmdScriptingInterpreter(User, Host, Path) :-
+		cmdScriptingInterpreterPowerShell(User, Host, Path)),
+  rule_desc('T1059 - Command and Scripting Interpreter',
+  0.5)).
+
+interaction_rule(
+  (cmdScriptingInterpreter(User, Host, Path) :-
+		cmdScriptingInterpreterUnixShell(User, Host, Path)),
+  rule_desc('T1059 - Command and Scripting Interpreter',
+  0.5)).
+
+interaction_rule(
+  (cmdScriptingInterpreterPowerShell(User, Host, Path) :-
+		malicious(User),
+    canRunInstalledSoftware(User, Host, Path, Software),
+    isPowerShell(Software)),
+  rule_desc('T1059.001 - Command and Scripting Interpreter - PowerShell',
+  0.5)).
+
+interaction_rule(
+  (cmdScriptingInterpreterUnixShell(User, Host, Path) :-
+		malicious(User),
+		canRunInstalledSoftware(User, Host, Path, Software),
+		isUnixShell(Software)),
+  rule_desc('T1059.004 - Command and Scripting Interpreter - PowerShell',
+  0.5)).
+
+interaction_rule(
+  (canRunInstalledSoftware(User, Host, Path, Software) :-
+		installed(Host, Path, Software),
+    accessFile(User, Host, exec, Path)),
+  rule_desc('BB - User is able to run installed software',
+  0.5)).
+
+interaction_rule(
+  (execCode(User, SrcHost, Account) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		dataFlowReverseShell(FlowName),
+    accessDataFlow(User, write, FlowName),
+    canAccessFile(SrcHost, Account, exec, Path)),
+  rule_desc('BB - User is able to use a reverse shell',
+  0.5)).
+
+interaction_rule(
+  (accessDataFlow(User, Access, FlowName) :-
+    localAccess(User, DestHost, root),
+    dataFlow(SrcHost, DestHost, FlowName, Direction),
+		dataFlowReverseShell(FlowName)),
+  rule_desc('BB - The remote root user has write access to the dataFlow',
+  0.5)).
+
+interaction_rule(
+  (dataFlowReverseShell(FlowName) :-
+    dataFlow(SrcHost, DestHost, FlowName, Direction),
+		flowBind(FlowName, Protocol, Port),
+		isReverseShell(SrcHost, DestHost, Path)),
+  rule_desc('BB - Reverse shell data flow',
+  0.5)).
 
 interaction_rule(
   (connOnNonStandardPort(DestHost, Port) :-
     dataFlowOnNonStandardPort(DestHost, Port)),
   rule_desc('Asset - Established connection on non-standard port',
   0.4)).
-
 
 interaction_rule(
   (dataFlowOnNonStandardPort(DestHost, Port) :-

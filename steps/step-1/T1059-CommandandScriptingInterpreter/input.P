@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(connOnNonStandardPort(pupyC2Server, 1234)).
+attackGoal(canAbuseCmdScriptingInterpreter(attacker, victimHost, '/bin/powershell')).
 
 /************/
 /* Attacker */
@@ -29,9 +29,20 @@ standardPort(http, 8080).
 /************/
 /*  Victim  */
 /************/
-fileAttr(victimHost, '/home/victimAccount/3aka3.doc', _,r,w,x,_,_,_,_,_,_).
+fileAttr(victimHost, '/home/victimAccount/3aka3.doc', -,r,w,x,-,-,-,-,-,-).
 fileOwner(victimHost, victimAccount, '/home/victimAccount/3aka3.doc').
 hasAccount(victimUser, victimHost, victimAccount).
+
+installed(victimHost, '/bin/powershell', powerShell).
+isPowerShell(powerShell).
+fileAttr(victimHost, '/bin/powershell', -,r,w,x,-,-,-,-,-,-).
+fileOwner(victimHost, victimAccount, '/bin/powershell').
+
+installed(victimHost, '/bin/bash', bash).
+isUnixShell(bash).
+fileAttr(victimHost, '/bin/bash', -,-,-,-,r,w,x,-,-,-).
+fileGroupOwner(victimHost, '/bin/bash', victimGroup).
+inGroup(victimAccount, victimGroup).
 
 /************/
 /*   Temp   */
