@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canExfiltrateData(attacker, victimHost, pupyC2Server, reversePupy, privateDocuments)).
+attackGoal(canIngressTransfer(attacker, victimHost)).
 
 /************/
 /* Attacker */
@@ -82,6 +82,12 @@ installed(victimHost, '/bin/zip', zip).
 fileAttr(victimHost, '/bin/zip', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/zip').
 fileGroupOwner(victimHost, '/bin/zip', root).
+
+isIngressTool(tcpdump).
+installed(victimHost, '/bin/tcpdump', tcpdump).
+fileAttr(victimHost, '/bin/tcpdump', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/tcpdump').
+fileGroupOwner(victimHost, '/bin/tcpdump', root).
 
 
 /************/

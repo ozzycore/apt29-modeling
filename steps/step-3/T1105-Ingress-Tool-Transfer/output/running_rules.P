@@ -29,6 +29,8 @@ primitive(dataBind(_host, _path, _data)).
 primitive(dataBindDir(_host, _path, _data)).
 primitive(isDataUtil(_software)).
 primitive(isArchiveTool(_software)).
+primitive(isIngressTool(_software)).
+
 
 
 /****       Technique Assets        *****/
@@ -46,6 +48,8 @@ derived(canCollectData(_user, _host, _data)).
 derived(canArchiveData(_user, _host, _data)).
 derived(canDataStage(_user, _host, _data)).
 derived(canExfiltrateData(_user, _srcHost, _destHost, _flowName, _data)).
+derived(canIngressTransfer(_user, _srcHost)).
+
 
 
 /****   Technique Implementation    *****/
@@ -63,6 +67,7 @@ derived(dataFromLocalSystem(_user, _host, _data)).
 derived(archiveCollectedData(_user, _host, _data)).
 derived(dataStaged(_user, _host, _data)).
 derived(exfiltrationOverC2Channel(_user, _srcHost, _destHost, _flowName, _data)).
+derived(ingressToolTransfer(_user, _srcHost)).
 
 
 /****       Building Blocks         *****/
@@ -108,6 +113,7 @@ meta(advances(_, _)).
 :- table canArchiveData/3.
 :- table canDataStage/3.
 :- table canExfiltrateData/5.
+:- table canIngressTransfer/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -121,6 +127,7 @@ meta(advances(_, _)).
 :- table archiveCollectedData/3.
 :- table dataStaged/3.
 :- table exfiltrationOverC2Channel/5.
+:- table ingressToolTransfer/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -143,6 +150,22 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 2 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canIngressTransfer(User, SrcHost) :-
+    ingressToolTransfer(User, SrcHost)),
+  rule_desc('Asset - Able to ingress transfer tools or other files',
+  0.5)).
+
+interaction_rule(
+  (ingressToolTransfer(User, SrcHost) :-
+		canRunInstalledSoftware(User, SrcHost, UtilPath, Software),
+		isIngressTool(Software),
+		aclNW(SrcHost, DestHost, Protocol, Port),
+		localAccess(User, DestHost, root),
+		accessFile(User, SrcHost, write, DataPath)),
+  rule_desc('T1083 - File and Directory Discovery',
+  0.5)).
 
 interaction_rule(
   (canExfiltrateData(User, SrcHost, DestHost, FlowName, Data) :-
