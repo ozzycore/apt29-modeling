@@ -1,0 +1,569 @@
+
+/******************************************************/
+/****         Predicates Declaration              *****/
+/******************************************************/
+
+primitive(malicious(_user)).
+primitive(located(_user, _host)).
+primitive(isBenignFile(_host, _path)).
+primitive(rightToLeftOverride(_host, _path)).
+primitive(doubleFileExtension(_host, _path)).
+primitive(isReverseShell(_srcHost, _desthost, _path)).
+primitive(fileAttr(_host, _path, _s, _ro, _wo, _xo, _rg, _wg, _xg, _rw, _ww, _xw)).
+primitive(inGroup(_account, _group)).
+primitive(fileGroupOwner(_host, _path, _group)).
+primitive(groupAccessible(_host, _access, _path)).
+primitive(fileOwner(_host, _account, _path)).
+primitive(hasAccount(_user, _host, _account)).
+primitive(inCompetent(_user)).
+primitive(aclNW(_srcHost, _destHost, _protocol, _port)).
+primitive(isNetScript(_srcHost, _destHost, _path, _flowName, _protocol, _port)).
+primitive(networkServiceInfo(_destHost, _account, _software, _protocol, _port)).
+primitive(tempNotStandardPort(_protocol, _port)).
+primitive(standardPort(_protocol, _port)).
+primitive(installed(_host, _path, _software)).
+primitive(isUnixShell(_software)).
+primitive(isPowerShell(_software)).
+primitive(isSearchUtil(_software)).
+primitive(dataBind(_host, _path, _data)).
+primitive(dataBindDir(_host, _path, _data)).
+primitive(isDataUtil(_software)).
+primitive(isArchiveTool(_software)).
+
+
+/****       Technique Assets        *****/
+
+derived(seemsBenign(_host, _path)).
+derived(canExecuteMaliciousPayload(_user, _host, _path)).
+derived(canExecuteMaliciousFile(_user, _host, _path)).
+derived(connOnNonStandardPort(_destHost, _port)).
+derived(canAbuseCmdScriptingInterpreter(_user, _host, _path)).
+derived(canAbusePowerShell(_user, _host, _path)).
+derived(canAbuseUnixShell(_user, _host, _path)).
+derived(canDiscoverData(_user, _host, _data)).
+derived(canAutomateCollection(_user, _host, _data)).
+derived(canCollectData(_user, _host, _data)).
+derived(canArchiveData(_user, _host, _data)).
+derived(canDataStage(_user, _host, _data)).
+derived(canExfiltrateData(_user, _srcHost, _destHost, _flowName, _data)).
+
+
+/****   Technique Implementation    *****/
+
+derived(masquerading(_host, _path)).
+derived(userExecutionMaliciousFile(_user, _host, _path)).
+derived(userExecution(_user, _host, _path)).
+derived(dataFlowOnNonStandardPort(_destHost, _port)).
+derived(cmdScriptingInterpreter(_user, _host, _path)).
+derived(cmdScriptingInterpreterUnixShell(_user, _host, _path)).
+derived(cmdScriptingInterpreterPowerShell(_user, _host, _path)).
+derived(fileAndDirectoryDiscovery(_user, _host, _data)).
+derived(automatedCollection(_user, _host, _data)).
+derived(dataFromLocalSystem(_user, _host, _data)).
+derived(archiveCollectedData(_user, _host, _data)).
+derived(dataStaged(_user, _host, _data)).
+derived(exfiltrationOverC2Channel(_user, _srcHost, _destHost, _flowName, _data)).
+
+
+/****       Building Blocks         *****/
+
+derived(isMaliciousFile(_host, _path)).
+derived(localAccess(_user, _host, _account)).
+derived(ownerAccessible(_host, _access, _path)).
+derived(groupAccessible(_host, _access, _path)).
+derived(worldAccessible(_host, _access, _path)).
+derived(localFileProtection(_host, _account, _access, _path)).
+derived(canAccessFile(_host, _account, _access, _path)).
+derived(accessFile(_user, _host, _access, _path)).
+derived(execCode(_user, _host, _account)).
+derived(scriptNetAccess(_srcHost, _destHost, _path, _flowName, _protocol, _port)).
+derived(canScriptAccessHost(_srcHost, _destHost, _path, _flowName, _protocol, _port)).
+derived(dataFlow(_srcHost, _destHost, _flowName, _direction)).
+derived(flowBind(_flowName, _protocol, _port)).
+derived(useStandardPort(_protocol, _port)).
+derived(dataFlowReverseShell(_flowName)).
+derived(accessDataFlow(_user, _access, _flowName)).
+derived(canRunInstalledSoftware(_user, _host, _path, _software)).
+
+
+
+meta(attackGoal(_)).
+meta(advances(_, _)).
+
+/******************************************************/
+/****         Tabling Predicates                  *****/
+/*   All derived predicates should be tabled          */
+/******************************************************/
+
+:- table seemsBenign/2.
+:- table canExecuteMaliciousPayload/3.
+:- table canExecuteMaliciousFile/3.
+:- table connOnNonStandardPort/2.
+:- table canAbuseCmdScriptingInterpreter/3.
+:- table canAbusePowerShell/3.
+:- table canAbuseUnixShell/3.
+:- table canDiscoverData/3.
+:- table canAutomateCollection/3.
+:- table canCollectData/3.
+:- table canArchiveData/3.
+:- table canDataStage/3.
+:- table canExfiltrateData/5.
+:- table masquerading/2.
+:- table userExecutionMaliciousFile/3.
+:- table userExecution/3.
+:- table dataFlowOnNonStandardPort/2.
+:- table cmdScriptingInterpreter/3.
+:- table cmdScriptingInterpreterUnixShell/3.
+:- table cmdScriptingInterpreterPowerShell/3.
+:- table fileAndDirectoryDiscovery/3.
+:- table automatedCollection/3.
+:- table dataFromLocalSystem/3.
+:- table archiveCollectedData/3.
+:- table dataStaged/3.
+:- table exfiltrationOverC2Channel/5.
+:- table isMaliciousFile/2.
+:- table localAccess/3.
+:- table ownerAccessible/3.
+:- table groupAccessible/3.
+:- table worldAccessible/3.
+:- table localFileProtection/4.
+:- table canAccessFile/4.
+:- table accessFile/4.
+:- table execCode/3.
+:- table scriptNetAccess/6.
+:- table canScriptAccessHost/6.
+:- table dataFlow/4.
+:- table flowBind/3.
+:- table useStandardPort/2.
+:- table dataFlowReverseShell/1.
+:- table accessDataFlow/3.
+:- table canRunInstalledSoftware/4.
+
+
+/******************************************************/
+/****         Step 2 - Interaction Rules          *****/
+/******************************************************/
+
+interaction_rule(
+  (canExfiltrateData(User, SrcHost, DestHost, FlowName, Data) :-
+    exfiltrationOverC2Channel(User, SrcHost, DestHost, FlowName, Data)),
+  rule_desc('Asset - Able to exfiltrate data from host using C2 channel',
+  0.5)).
+
+interaction_rule(
+  (exfiltrationOverC2Channel(User, SrcHost, DestHost, FlowName, Data) :-
+		canCollectData(User, SrcHost, Data),
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		localAccess(User, DestHost, root)),
+  rule_desc('T1041 - Exfiltration Over C2 Channel',
+  0.5)).
+
+interaction_rule(
+  (canDataStage(User, Host, Data) :-
+    dataStaged(User, Host, Data)),
+  rule_desc('Asset - Able to stage collected data',
+  0.5)).
+
+interaction_rule(
+  (dataStaged(User, Host, Data) :-
+    canCollectData(User, Host, Data),
+		accessFile(User, Host, write, Path),
+		fileAttr(Host, Path, d,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1074 - Data Staged',
+  0.5)).
+
+interaction_rule(
+  (canArchiveData(User, Host, Data) :-
+    archiveCollectedData(User, Host, Data)),
+  rule_desc('Asset - Able to archive data on host',
+  0.5)).
+
+interaction_rule(
+  (archiveCollectedData(User, Host, Data) :-
+		canRunInstalledSoftware(User, Host, UtilPath, Software),
+		isArchiveTool(Software),
+		canCollectData(User, Host, Data)),
+  rule_desc('T1560 - Archive Collected Data',
+  0.5)).
+
+interaction_rule(
+  (canCollectData(User, Host, Data) :-
+    dataFromLocalSystem(User, Host, Data)),
+  rule_desc('Asset - Able to read data on host',
+  0.5)).
+
+interaction_rule(
+  (dataFromLocalSystem(User, Host, Data) :-
+    canRunInstalledSoftware(User, Host, UtilPath, Software),
+		isDataUtil(Software),
+    canDiscoverData(User, Host, Data),
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		dataBind(Host, DataPath, Data),
+		accessFile(User, Host, read, DataPath)),
+  rule_desc('T1005 - Data from Local System',
+  0.5)).
+
+interaction_rule(
+  (canAutomateCollection(User, Host, Data) :-
+    automatedCollection(User, Host, Data)),
+  rule_desc('Asset - Able to write a script and run it on host',
+  0.5)).
+
+interaction_rule(
+  (automatedCollection(User, Host, Data) :-
+    canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+    canDiscoverData(User, Host, Data),
+    accessFile(User, Host, exec, Path),
+    accessFile(User, Host, write, Path),
+    fileAttr(Host, Path, -,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1119 - Automated Collection - Discovery - existing file',
+  0.5)).
+
+interaction_rule(
+  (automatedCollection(User, Host, Data) :-
+    canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+    canDiscoverData(User, Host, Data),
+    accessFile(User, Host, write, Path),
+    fileAttr(Host, Path, d,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1119 - Automated Collection - Discovery - new file',
+  0.5)).
+
+interaction_rule(
+  (automatedCollection(User, Host, Data) :-
+    canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+    canCollectData(User, Host, Data),
+    accessFile(User, Host, exec, Path),
+    accessFile(User, Host, write, Path),
+    fileAttr(Host, Path, -,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1119 - Automated Collection - Discovery - existing file',
+  0.5)).
+
+interaction_rule(
+  (automatedCollection(User, Host, Data) :-
+    canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+    canCollectData(User, Host, Data),
+    accessFile(User, Host, write, Path),
+    fileAttr(Host, Path, d,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1119 - Automated Collection - Collection - new file',
+  0.5)).
+
+interaction_rule(
+  (canDiscoverData(User, Host, Data) :-
+    fileAndDirectoryDiscovery(User, Host, Data)),
+  rule_desc('Asset - Able to run file and directory discovery process on host',
+  0.5)).
+
+interaction_rule(
+  (fileAndDirectoryDiscovery(User, Host, Data) :-
+    canRunInstalledSoftware(User, Host, UtilPath, Software),
+		isSearchUtil(Software),
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		dataBindDir(Host, DirPath, Data),
+		accessFile(User, Host, read, DirPath)),
+  rule_desc('T1083 - File and Directory Discovery',
+  0.5)).
+
+/******************************************************/
+/****         Step 1 - Interaction Rules          *****/
+/******************************************************/
+
+interaction_rule(
+  (canAbuseCmdScriptingInterpreter(User, Host, Path) :-
+    cmdScriptingInterpreter(User, Host, Path)),
+  rule_desc('Asset - Able to abuse command and scripting interpreters',
+  0.4)).
+
+interaction_rule(
+  (canAbusePowerShell(User, Host, Path) :-
+    cmdScriptingInterpreterPowerShell(User, Host, Path)),
+  rule_desc('Asset - Able to abuse PowerShell',
+  0.4)).
+
+interaction_rule(
+  (canAbuseUnixShell(User, Host, Path) :-
+    cmdScriptingInterpreterUnixShell(User, Host, Path)),
+  rule_desc('Asset - Able to abuse UnixShell',
+  0.4)).
+
+interaction_rule(
+  (cmdScriptingInterpreter(User, Host, Path) :-
+		cmdScriptingInterpreterPowerShell(User, Host, Path)),
+  rule_desc('T1059 - Command and Scripting Interpreter',
+  0.5)).
+
+interaction_rule(
+  (cmdScriptingInterpreter(User, Host, Path) :-
+		cmdScriptingInterpreterUnixShell(User, Host, Path)),
+  rule_desc('T1059 - Command and Scripting Interpreter',
+  0.5)).
+
+interaction_rule(
+  (cmdScriptingInterpreterPowerShell(User, Host, Path) :-
+		malicious(User),
+    canRunInstalledSoftware(User, Host, Path, Software),
+    isPowerShell(Software)),
+  rule_desc('T1059.001 - Command and Scripting Interpreter - PowerShell',
+  0.5)).
+
+interaction_rule(
+  (cmdScriptingInterpreterUnixShell(User, Host, Path) :-
+		malicious(User),
+		canRunInstalledSoftware(User, Host, Path, Software),
+		isUnixShell(Software)),
+  rule_desc('T1059.004 - Command and Scripting Interpreter - PowerShell',
+  0.5)).
+
+interaction_rule(
+  (canRunInstalledSoftware(User, Host, Path, Software) :-
+		installed(Host, Path, Software),
+    accessFile(User, Host, exec, Path)),
+  rule_desc('BB - User is able to run installed software',
+  0.5)).
+
+interaction_rule(
+  (execCode(User, SrcHost, Account) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		dataFlowReverseShell(FlowName),
+    accessDataFlow(User, write, FlowName),
+    canAccessFile(SrcHost, Account, exec, Path)),
+  rule_desc('BB - User is able to use a reverse shell',
+  0.5)).
+
+interaction_rule(
+  (accessDataFlow(User, Access, FlowName) :-
+    localAccess(User, DestHost, root),
+    dataFlow(SrcHost, DestHost, FlowName, Direction),
+		dataFlowReverseShell(FlowName)),
+  rule_desc('BB - The remote root user has write access to the dataFlow',
+  0.5)).
+
+interaction_rule(
+  (dataFlowReverseShell(FlowName) :-
+    dataFlow(SrcHost, DestHost, FlowName, Direction),
+		flowBind(FlowName, Protocol, Port),
+		isReverseShell(SrcHost, DestHost, Path)),
+  rule_desc('BB - Reverse shell data flow',
+  0.5)).
+
+interaction_rule(
+  (connOnNonStandardPort(DestHost, Port) :-
+    dataFlowOnNonStandardPort(DestHost, Port)),
+  rule_desc('Asset - Established connection on non-standard port',
+  0.4)).
+
+interaction_rule(
+  (dataFlowOnNonStandardPort(DestHost, Port) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		tempNotStandardPort(Protocol, Port),
+    flowBind(FlowName, Protocol, Port)),
+  rule_desc('T1571 - Non-Standard Port',
+  0.5)).
+
+/*
+interaction_rule(
+  (dataFlowOnNonStandardPort(DestHost, Port) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+    flowBind(FlowName, Protocol, Port),
+		not useStandardPort(Protocol, Port)),
+  rule_desc('T1571 - Non-Standard Port',
+  0.5)).
+
+interaction_rule(
+  (useStandardPort(Protocol, Port) :-
+		standardPort(Protocol, Port)),
+  rule_desc('BB - Using a standard Port',
+  0.5)).
+*/
+
+interaction_rule(
+  (flowBind(FlowName, Protocol, Port) :-
+    canScriptAccessHost(SrcHost, DestHost, Path, FlowName, Protocol, Port)),
+  rule_desc('BB - Flow associated port and protocol',
+  0.6)).
+
+interaction_rule(
+  (dataFlow(SrcHost, DestHost, FlowName, Direction) :-
+    canScriptAccessHost(SrcHost, DestHost, Path, FlowName, Protocol, Port)),
+  rule_desc('BB - Data flow initiated by script',
+  0.3)).
+
+interaction_rule(
+  (canScriptAccessHost(SrcHost, DestHost, Path, FlowName, Protocol, Port) :-
+		scriptNetAccess(SrcHost, DestHost, Path, FlowName, Protocol, Port),
+		accessFile(User, SrcHost, exec, Path),
+		networkServiceInfo(DestHost, Account, Software, Protocol, Port)),
+  rule_desc('BB - Script access an exposed service',
+  1.0)).
+
+interaction_rule(
+  (scriptNetAccess(SrcHost, DestHost, Path, FlowName, Protocol, Port) :-
+		aclNW(SrcHost, DestHost, Protocol, Port),
+		isNetScript(SrcHost, DestHost, Path, FlowName, Protocol, Port)),
+  rule_desc('BB - Direct script network access',
+  0.3)).
+
+interaction_rule(
+  (canExecuteMaliciousFile(User, Host, Path) :-
+    userExecutionMaliciousFile(User, Host, Path)),
+  rule_desc('Asset - Malicious file can be successfuly executed by a user',
+  0.4)).
+
+interaction_rule(
+  (canExecuteMaliciousPayload(User, Host, Path) :-
+    userExecution(User, Host, Path)),
+  rule_desc('Asset - Successfuly malicious payload execution',
+  0.4)).
+
+interaction_rule(
+  (userExecution(User, Host, Path) :-
+		userExecutionMaliciousFile(User, Host, Path)),
+  rule_desc('T1204 - User Execution - A legitimate user executes a malicious payload',
+  0.5)).
+
+interaction_rule(
+  (userExecutionMaliciousFile(User, Host, Path) :-
+		seemsBenign(Host, Path),
+    accessFile(User, Host, exec, Path)),
+  rule_desc('T1204.002 - User Execution - Malicious File - A legitimate user executes a malicious file',
+  0.5)).
+
+interaction_rule(
+  (userExecutionMaliciousFile(User, Host, Path) :-
+		inCompetent(User),
+    isMaliciousFile(Host, Path),
+    accessFile(User, Host, exec, Path)),
+  rule_desc('T1204.002 - User Execution - Malicious File - A legitimate user executes a malicious file',
+  0.5)).
+
+interaction_rule(
+  (accessFile(User, Host, Access, Path) :-
+		execCode(User, Host, Account),
+		canAccessFile(Host, Account, Access, Path)),
+  rule_desc('BB - execCode implies file access',
+  1.0)).
+
+interaction_rule(
+   (execCode(User, Host, Account) :-
+		 hasAccount(User, Host, Account)),
+   rule_desc('BB - A User can execute code using his account on a specific host', 1)).
+
+interaction_rule(
+  (canAccessFile(Host, Account, Access, Path) :-
+	  localFileProtection(Host, Account, Access, Path)),
+  rule_desc('BB - A legitimate account can access file',
+  0.1)).
+
+interaction_rule(
+  (localFileProtection(Host, Account, Access, Path) :-
+	  fileOwner(Host, Account, Path),
+    ownerAccessible(Host, Access, Path)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (localFileProtection(Host, Account, Access, Path) :-
+	  inGroup(Account, Group),
+    fileGroupOwner(Host, Path, Group),
+    groupAccessible(Host, Access, Path)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (localFileProtection(Host, Account, Access, Path) :-
+	  worldAccessible(Host, Access, Path)),
+  rule_desc('BB - world file access',
+  0.1)).
+
+interaction_rule(
+  (ownerAccessible(Host, read, Path) :-
+	  fileAttr(Host, Path, _,r,_,_,_,_,_,_,_,_)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (groupAccessible(Host, read, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,r,_,_,_,_,_)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (worldAccessible(Host, read, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,_,r,_,_)),
+  rule_desc('BB - world file access',
+  0.1)).
+
+interaction_rule(
+  (ownerAccessible(Host, write, Path) :-
+	  fileAttr(Host, Path, _,_,w,_,_,_,_,_,_,_)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (groupAccessible(Host, write, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,w,_,_,_,_)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (worldAccessible(Host, write, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,_,_,w,_)),
+  rule_desc('BB - world file access',
+  0.1)).
+
+interaction_rule(
+  (ownerAccessible(Host, exec, Path) :-
+	  fileAttr(Host, Path, _,_,_,x,_,_,_,_,_,_)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (groupAccessible(Host, exec, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,x,_,_,_)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (worldAccessible(Host, exec, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,_,_,_,x)),
+  rule_desc('BB - world file access',
+  0.1)).  
+
+interaction_rule(
+  (seemsBenign(Host, Path) :-
+    masquerading(Host, Path)),
+  rule_desc('Asset - Seems like a benign file - Masquerading',
+  0.5)).
+
+interaction_rule(
+  (seemsBenign(Host, Path) :-
+    isBenignFile(Host, Path)),
+  rule_desc('Asset - Seems like a benign file - Fact',
+  0.5)).
+
+interaction_rule(
+  (masquerading(Host, Path) :-
+    isMaliciousFile(Host, Path),
+    doubleFileExtension(Host, Path)),
+  rule_desc('T1036.007 - Masquerading - Double File Extension',
+  0.5)).
+
+interaction_rule(
+  (masquerading(Host, Path) :-
+    isMaliciousFile(Host, Path),
+    rightToLeftOverride(Host, Path)),
+  rule_desc('T1036.002 - Masquerading - Right-to-Left Override',
+  0.5)).
+
+interaction_rule(
+  (isMaliciousFile(SrcHost, Path) :-
+    malicious(User),
+    localAccess(User, DestHost, Account),
+    isReverseShell(SrcHost, DestHost, Path)),
+  rule_desc('Malicious file - Reverse shell',
+  0.4)).
+
+interaction_rule(
+  (localAccess(User, Host, root):-
+    located(User, Host)),
+  rule_desc('BB - An user who is located in a host has root access to that host',
+  0.2)).
