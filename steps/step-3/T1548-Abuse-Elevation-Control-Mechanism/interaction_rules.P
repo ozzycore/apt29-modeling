@@ -56,7 +56,8 @@ derived(canIngressTransfer(_user, _srcHost, _data)).
 derived(seemsObfuscated(_host, _path)).
 derived(abuseEventTriggeredExec(_user, _host)).
 derived(abuseEventTriggeredExecUnixShell(_user, _host)).
-
+derived(canAbuseElevationCtl(_user, _host, _path)).
+derived(canAbuseElevationSetuidCtl(_user, _host, _path)).
 
 
 /****   Technique Implementation    *****/
@@ -78,6 +79,9 @@ derived(ingressToolTransfer(_user, _srcHost, _data)).
 derived(obfuscatedFilesOrInformation(_host, _path)).
 derived(eventTriggeredExecution(_user, _host)).
 derived(eventTriggeredExecutionUnixShell(_user, _host)).
+derived(abuseElevationControlMechanism(_user, _host, _path)).
+derived(abuseElevationControlMechanismSetuid(_user, _host, _path)).
+
 
 /****       Building Blocks         *****/
 
@@ -126,6 +130,8 @@ meta(advances(_, _)).
 :- table seemsObfuscated/2.
 :- table abuseEventTriggeredExec/2.
 :- table abuseEventTriggeredExecUnixShell/2.
+:- table canAbuseElevationCtl/3.
+:- table canAbuseElevationSetuidCtl/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -143,6 +149,8 @@ meta(advances(_, _)).
 :- table obfuscatedFilesOrInformation/2.
 :- table eventTriggeredExecution/2.
 :- table eventTriggeredExecutionUnixShell/2.
+:- table abuseElevationControlMechanism/3.
+:- table abuseElevationControlMechanismSetuid/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -164,6 +172,33 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 3 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canAbuseElevationCtl(User, Host, Path) :-
+    abuseElevationControlMechanism(User, Host, Path)),
+  rule_desc('Asset - Able to run file and directory discovery process on host',
+  0.5)).
+
+interaction_rule(
+  (canAbuseElevationSetuidCtl(User, Host, Path) :-
+    abuseElevationControlMechanismSetuid(User, Host, Path)),
+  rule_desc('Asset - Able to run file and directory discovery process on host',
+  0.5)).
+
+interaction_rule(
+  (abuseElevationControlMechanism(User, Host, Path) :-
+		abuseElevationControlMechanismSetuid(User, Host, Path)),
+  rule_desc('T1548 - Abuse Elevation Control Mechanism',
+  0.5)).
+
+interaction_rule(
+  (abuseElevationControlMechanismSetuid(User, Host, Path) :-
+		malicious(User),
+		fileOwner(Host, root, Path),
+		fileAttr(Host, Path, -,_,_,s,_,_,_,_,_,x),
+    execCode(User, Host, Account)),
+  rule_desc('T1548.001 - Abuse Elevation Control Mechanism - Setuid',
+  0.5)).
 
 interaction_rule(
   (abuseEventTriggeredExec(User, Host) :-

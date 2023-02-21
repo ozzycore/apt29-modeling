@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(abuseEventTriggeredExec(attacker, victimHost)).
+attackGoal(canAbuseElevationCtl(attacker, victimHost, '/usr/bin/sudo')).
 
 /************/
 /* Attacker */
@@ -95,6 +95,10 @@ fileAttr(victimHost, '/home/victimAccount/.bash_login', -,r,w,x,r,w,x,-,-,-).
 fileOwner(victimHost, victimAccount, '/home/victimAccount/.bash_login').
 fileGroupOwner(victimHost, '/home/victimAccount/.bash_login', victimGroup).
 isUnixLoginScript(victimHost, '/home/victimAccount/.bash_login').
+
+fileAttr(victimHost, '/usr/bin/sudo', -,r,w,s,r,-,-,r,-,x).
+fileOwner(victimHost, root, '/usr/bin/sudo').
+fileGroupOwner(victimHost, '/usr/bin/sudo', root).
 
 /************/
 /*   Temp   */
