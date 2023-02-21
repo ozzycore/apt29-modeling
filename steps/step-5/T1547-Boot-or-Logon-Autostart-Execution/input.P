@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canCreateOrModifySystemdService(attacker, victimHost)).
+attackGoal(canModifyKernelModulesAndExtensions(attacker, victimHost)).
 
 /************/
 /* Attacker */
@@ -181,6 +181,12 @@ fileAttr(victimHost, '/etc/systemd/system', d,r,w,x,r,-,x,r,-,x).
 fileOwner(victimHost, root, '/etc/systemd/system').
 fileGroupOwner(victimHost, '/etc/systemd/system', root).
 
+isKernelModuleUtil(insmod).
+dataBind(victimHost, '/bin/insmod', insmod).
+installed(victimHost, '/bin/insmod', insmod).
+fileAttr(victimHost, '/bin/insmod', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/insmod').
+fileGroupOwner(victimHost, '/bin/insmod', root).
 
 /************/
 /*   Temp   */

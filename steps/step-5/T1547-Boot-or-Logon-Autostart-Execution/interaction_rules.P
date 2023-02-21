@@ -50,6 +50,7 @@ primitive(isGroupDiscoverUtil(_software)).
 primitive(isSystemdUtil(_software)).
 primitive(isSystemdDir(_dirPath)).
 primitive(isSystemdFile(_filePath)).
+primitive(isKernelModuleUtil(_software)).
 
 
 
@@ -93,6 +94,8 @@ derived(canDiscoverGroupsPermissions(_user, _host)).
 derived(canDiscoverLocalGroupsPermissions(_user, _host)).
 derived(canCreateOrModifySystemProcess(_user, _host)).
 derived(canCreateOrModifySystemdService(_user, _host)).
+derived(canBootOrLogonAutostartExecution(_user, _host)).
+derived(canModifyKernelModulesAndExtensions(_user, _host)).
 
 /****   Technique Implementation    *****/
 
@@ -134,7 +137,8 @@ derived(permissionGroupsDiscovery(_user, _host)).
 derived(permissionGroupsDiscoveryLocalGroups(_user, _host)).
 derived(createOrModifySystemProcess(_user, _host)).
 derived(createOrModifySystemdService(_user, _host)).
-
+derived(bootOrLogonAutostartExecution(_user, _host)).
+derived(kernelModulesAndExtensions(_user, _host)).
 
 /****       Building Blocks         *****/
 
@@ -204,6 +208,8 @@ meta(advances(_, _)).
 :- table canDiscoverLocalGroupsPermissions/2.
 :- table canCreateOrModifySystemProcess/2.
 :- table canCreateOrModifySystemdService/2.
+:- table canBootOrLogonAutostartExecution/2.
+:- table canModifyKernelModulesAndExtensions/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -242,6 +248,8 @@ meta(advances(_, _)).
 :- table permissionGroupsDiscoveryLocalGroups/2.
 :- table createOrModifySystemProcess/2.
 :- table createOrModifySystemdService/2.
+:- table bootOrLogonAutostartExecution/2.
+:- table kernelModulesAndExtensions/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -266,6 +274,33 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 5 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canBootOrLogonAutostartExecution(User, Host) :-
+    bootOrLogonAutostartExecution(User, Host)),
+  rule_desc('Asset - Able to boot or logon autostart execution',
+  0.5)).
+
+interaction_rule(
+  (canModifyKernelModulesAndExtensions(User, Host) :-
+    kernelModulesAndExtensions(User, Host)),
+  rule_desc('Asset - Able to modify kernel modules and extensions',
+  0.5)).
+
+interaction_rule(
+  (bootOrLogonAutostartExecution(User, Host) :-
+		kernelModulesAndExtensions(User, Host)),
+  rule_desc('T1547 - Boot or Logon Autostart Execution',
+  0.5)).
+
+interaction_rule(
+  (kernelModulesAndExtensions(User, Host) :-
+    malicious(User),
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		canRunInstalledSoftware(User, Host, UtilPath, Software),
+    isKernelModuleUtil(Software)),
+  rule_desc('T1547.006 - Boot or Logon Autostart Execution - Kernel Modules and Extensions',
+  0.5)).
 
 interaction_rule(
   (canCreateOrModifySystemProcess(User, Host) :-

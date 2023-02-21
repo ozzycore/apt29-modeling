@@ -92,5 +92,7 @@
 
 :-(dynamic(isSystemdFile(_h3150))).
 
+:-(dynamic(isKernelModuleUtil(_h3150))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 
