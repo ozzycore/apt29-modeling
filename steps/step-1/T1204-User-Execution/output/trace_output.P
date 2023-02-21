@@ -4,20 +4,60 @@ primitive(isBenignFile,2).
 primitive(rightToLeftOverride,2).
 primitive(doubleFileExtension,2).
 primitive(isReverseShell,3).
+primitive(fileAttr,12).
+primitive(inGroup,2).
+primitive(fileGroupOwner,3).
+primitive(groupAccessible,3).
+primitive(fileOwner,3).
+primitive(hasAccount,3).
+primitive(inCompetent,1).
 derived(seemsBenign,2).
-derived(isMaliciousFile,2).
+derived(canExecuteMaliciousPayload,3).
+derived(canExecuteMaliciousFile,3).
 derived(masquerading,2).
+derived(userExecutionMaliciousFile,3).
+derived(userExecution,3).
+derived(isMaliciousFile,2).
 derived(localAccess,3).
+derived(ownerAccessible,3).
+derived(groupAccessible,3).
+derived(worldAccessible,3).
+derived(localFileProtection,4).
+derived(canAccessFile,4).
+derived(accessFile,4).
+derived(execCode,3).
 meta(attackGoal,1).
 meta(advances,2).
 
-attack(seemsBenign(victimHost,'/home/victimAccount/3aka3.doc')).
+attack(canExecuteMaliciousPayload(victimUser,victimHost,'/home/victimAccount/3aka3.doc')).
 
-possible_duplicate_trace_step(because(5,rule_desc('An user who is located in a host has root access to that host',0.20000000000000001),localAccess(attacker,pupyC2Server,root),[located(attacker,pupyC2Server)])).
+possible_duplicate_trace_step(because(25,rule_desc('BB - An user who is located in a host has root access to that host',0.20000000000000001),localAccess(attacker,pupyC2Server,root),[located(attacker,pupyC2Server)])).
 
-possible_duplicate_trace_step(because(4,rule_desc('Malicious file - Reverse shell',0.40000000000000002),isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc'),[isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc'),localAccess(attacker,pupyC2Server,root),malicious(attacker)])).
+possible_duplicate_trace_step(because(24,rule_desc('Malicious file - Reverse shell',0.40000000000000002),isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc'),[isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc'),localAccess(attacker,pupyC2Server,root),malicious(attacker)])).
 
-possible_duplicate_trace_step(because(2,rule_desc('T1036.007 - Masquerading - Double File Extension',0.5),masquerading(victimHost,'/home/victimAccount/3aka3.doc'),[doubleFileExtension(victimHost,'/home/victimAccount/3aka3.doc'),isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc')])).
+possible_duplicate_trace_step(because(22,rule_desc('T1036.007 - Masquerading - Double File Extension',0.5),masquerading(victimHost,'/home/victimAccount/3aka3.doc'),[doubleFileExtension(victimHost,'/home/victimAccount/3aka3.doc'),isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc')])).
 
-possible_duplicate_trace_step(because(0,rule_desc('Asset - Seems like a benign file - Masquerading',0.5),seemsBenign(victimHost,'/home/victimAccount/3aka3.doc'),[masquerading(victimHost,'/home/victimAccount/3aka3.doc')])).
+possible_duplicate_trace_step(because(20,rule_desc('Asset - Seems like a benign file - Masquerading',0.5),seemsBenign(victimHost,'/home/victimAccount/3aka3.doc'),[masquerading(victimHost,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(6,rule_desc('BB - A User can execute code using his account on a specific host',1),execCode(victimUser,victimHost,victimAccount),[hasAccount(victimUser,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(17,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc'),[fileAttr(victimHost,'/home/victimAccount/3aka3.doc',_h3930,r,w,x,_h3934,_h3935,_h3936,_h3937,_h3938,_h3939)])).
+
+possible_duplicate_trace_step(because(8,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc'),fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(19,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc'),[fileAttr(victimHost,'/home/victimAccount/3aka3.doc',_h3917,r,w,x,_h3921,_h3922,_h3923,_h3924,_h3925,x)])).
+
+possible_duplicate_trace_step(because(10,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[worldAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(7,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(7,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(5,rule_desc('BB - execCode implies file access',1.0),accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc'),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),execCode(victimUser,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(3,rule_desc('T1204.002 - User Execution - Malicious File - A legitimate user executes a malicious file',0.5),userExecutionMaliciousFile(victimUser,victimHost,'/home/victimAccount/3aka3.doc'),[accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc'),seemsBenign(victimHost,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(2,rule_desc('T1204 - User Execution - A legitimate user executes a malicious payload',0.5),userExecution(victimUser,victimHost,'/home/victimAccount/3aka3.doc'),[userExecutionMaliciousFile(victimUser,victimHost,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(1,rule_desc('Asset - Successfuly malicious payload execution',0.40000000000000002),canExecuteMaliciousPayload(victimUser,victimHost,'/home/victimAccount/3aka3.doc'),[userExecution(victimUser,victimHost,'/home/victimAccount/3aka3.doc')])).
 
