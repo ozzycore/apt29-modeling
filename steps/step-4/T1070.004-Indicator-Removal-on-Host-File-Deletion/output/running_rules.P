@@ -42,6 +42,7 @@ primitive(isEncryptedNetScript(_flowName, _encryption)).
 primitive(isCmdHistory(_data)).
 primitive(isDeobfuscatorUtil(_software)).
 primitive(isProcessDiscoveryUtil(_software)).
+primitive(isDeletionUtil(_software)).
 
 
 
@@ -76,6 +77,7 @@ derived(canRemoveArtifacts(_user, _host, _data)).
 derived(canRemoveCmdHistory(_user, _host, _data)).
 derived(canDeobfuscateDecodeFiles(_user, _host, _path)).
 derived(canProcessDiscovery(_user, _host)).
+derived(canDeleteFiles(_user, _host, _data)).
 
 
 /****   Technique Implementation    *****/
@@ -109,6 +111,7 @@ derived(indicatorRemovalOnHost(_user, _host, _data)).
 derived(indicatorRemovalOnHostCmdHistory(_user, _host, _data)).
 derived(deobfuscatedDecodeFiles(_user, _host, _path)).
 derived(processDiscovery(_user, _host)).
+derived(indicatorRemovalOnHostFileDeletion(_user, _host, _data)).
 
 
 /****       Building Blocks         *****/
@@ -170,6 +173,7 @@ meta(advances(_, _)).
 :- table canRemoveCmdHistory/3.
 :- table canDeobfuscateDecodeFiles/3.
 :- table canProcessDiscovery/2.
+:- table canDeleteFiles/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -199,6 +203,7 @@ meta(advances(_, _)).
 :- table indicatorRemovalOnHostCmdHistory/3.
 :- table deobfuscatedDecodeFiles/3.
 :- table processDiscovery/2.
+:- table indicatorRemovalOnHostFileDeletion/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -224,6 +229,29 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 4 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canDeleteFiles(User, Host, Data) :-
+    indicatorRemovalOnHostFileDeletion(User, Host, Data)),
+  rule_desc('Asset - Able to remove generated artifacts on host - File Deletion',
+  0.5)).
+
+interaction_rule(
+  (indicatorRemovalOnHost(User, Host, Data) :-
+		indicatorRemovalOnHostFileDeletion(User, Host, Data)),
+  rule_desc('T1070 - Indicator Removal on Host',
+  0.5)).
+
+interaction_rule(
+  (indicatorRemovalOnHostFileDeletion(User, Host, Data) :-
+		malicious(User),
+		isDeletionUtil(Software),
+		dataBind(Host, Path, Data),
+		dataBindDir(Host, DirPath, Data),
+		accessFile(User, Host, write, DirPath)),
+  rule_desc('T1070.004 - Indicator Removal on Host - File Deletion',
+  0.5)).
+
 
 interaction_rule(
   (canProcessDiscovery(User, Host) :-

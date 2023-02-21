@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canProcessDiscovery(attacker, victimHost)).
+attackGoal(canRemoveArtifacts(attacker, victimHost, deletionUtil)).
 
 /************/
 /* Attacker */
@@ -114,16 +114,29 @@ fileGroupOwner(victimHost, '/home/victimAccount/.bash_history', victimGroup).
 isCmdHistory(cmdHistory).
 
 isDeobfuscatorUtil(certutil).
+dataBind(victimHost, '/bin/certutil', certutil).
 installed(victimHost, '/bin/certutil', certutil).
 fileAttr(victimHost, '/bin/certutil', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/certutil').
 fileGroupOwner(victimHost, '/bin/certutil', root).
 
 isProcessDiscoveryUtil(ps).
+dataBind(victimHost, '/bin/ps', ps).
 installed(victimHost, '/bin/ps', ps).
 fileAttr(victimHost, '/bin/ps', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/ps').
 fileGroupOwner(victimHost, '/bin/ps', root).
+
+isDeletionUtil(rm).
+dataBind(victimHost, '/bin/rm', deletionUtil).
+dataBindDir(victimHost, '/bin', deletionUtil).
+fileAttr(victimHost, '/bin', d,r,w,x,r,-,x,r,-,x).
+fileOwner(victimHost, root, '/bin').
+fileGroupOwner(victimHost, '/bin', root).
+installed(victimHost, '/bin/rm', rm).
+fileAttr(victimHost, '/bin/rm', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/rm').
+fileGroupOwner(victimHost, '/bin/rm', root).
 
 /************/
 /*   Temp   */
