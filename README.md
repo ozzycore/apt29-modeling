@@ -9,6 +9,24 @@ We present the usage of the proposed methodology on Techniques picked from the M
 ## Repository Structure
 - **/steps**: all the modeld IRs (Interaction Rules) chosed from the MITRE Evaluation APT29 scenario.
 - **/docs**: relevant documentaion.
+- **Dockerfile**: Dockerfile for running the MulVAL environment.
+
+## Build instructions
+```
+# Build the dockerfile
+docker build -f Dockerfile -t local/mulval:latest .
+
+# Run the image (you can mount the required directories)
+docker run \
+--mount src=`pwd`/scenarios,target=/root/mulval/scenarios,type=bind \
+--mount src=`pwd`/kb,target=/root/mulval/kb,type=bind \
+-it --platform linux/amd64 local/mulval /bin/bash ```
+
+```
+## Generating LAG using MulVAL
+```
+graph_gen.sh input.P -r interaction_rules.P -p -v
+```
 
 ## References
 
