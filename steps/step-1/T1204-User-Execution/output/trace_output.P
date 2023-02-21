@@ -1,0 +1,23 @@
+primitive(malicious,1).
+primitive(located,2).
+primitive(isBenignFile,2).
+primitive(rightToLeftOverride,2).
+primitive(doubleFileExtension,2).
+primitive(isReverseShell,3).
+derived(seemsBenign,2).
+derived(isMaliciousFile,2).
+derived(masquerading,2).
+derived(localAccess,3).
+meta(attackGoal,1).
+meta(advances,2).
+
+attack(seemsBenign(victimHost,'/home/victimAccount/3aka3.doc')).
+
+possible_duplicate_trace_step(because(5,rule_desc('An user who is located in a host has root access to that host',0.20000000000000001),localAccess(attacker,pupyC2Server,root),[located(attacker,pupyC2Server)])).
+
+possible_duplicate_trace_step(because(4,rule_desc('Malicious file - Reverse shell',0.40000000000000002),isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc'),[isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc'),localAccess(attacker,pupyC2Server,root),malicious(attacker)])).
+
+possible_duplicate_trace_step(because(2,rule_desc('T1036.007 - Masquerading - Double File Extension',0.5),masquerading(victimHost,'/home/victimAccount/3aka3.doc'),[doubleFileExtension(victimHost,'/home/victimAccount/3aka3.doc'),isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(0,rule_desc('Asset - Seems like a benign file - Masquerading',0.5),seemsBenign(victimHost,'/home/victimAccount/3aka3.doc'),[masquerading(victimHost,'/home/victimAccount/3aka3.doc')])).
+
