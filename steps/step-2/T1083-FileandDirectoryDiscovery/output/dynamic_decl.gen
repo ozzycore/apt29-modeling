@@ -40,5 +40,9 @@
 
 :-(dynamic(isPowerShell(_h3150))).
 
+:-(dynamic(dataBindDir(_h3150,_h3151,_h3152))).
+
+:-(dynamic(isSearchUtil(_h3150))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 

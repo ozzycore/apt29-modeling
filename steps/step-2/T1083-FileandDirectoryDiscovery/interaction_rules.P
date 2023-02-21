@@ -24,6 +24,8 @@ primitive(standardPort(_protocol, _port)).
 primitive(installed(_host, _path, _software)).
 primitive(isUnixShell(_software)).
 primitive(isPowerShell(_software)).
+primitive(dataBindDir(_host, _dirPath, _data)).
+primitive(isSearchUtil(_software)).
 
 
 /****       Technique Assets        *****/
@@ -35,6 +37,8 @@ derived(connOnNonStandardPort(_destHost, _port)).
 derived(canAbuseCmdScriptingInterpreter(_user, _host, _path)).
 derived(canAbusePowerShell(_user, _host, _path)).
 derived(canAbuseUnixShell(_user, _host, _path)).
+derived(canDiscoverData(_user, _host, _data)).
+
 
 /****   Technique Implementation    *****/
 
@@ -45,7 +49,7 @@ derived(dataFlowOnNonStandardPort(_destHost, _port)).
 derived(cmdScriptingInterpreter(_user, _host, _path)).
 derived(cmdScriptingInterpreterUnixShell(_user, _host, _path)).
 derived(cmdScriptingInterpreterPowerShell(_user, _host, _path)).
-
+derived(fileAndDirectoryDiscovery(_user, _host, _data)).
 
 /****       Building Blocks         *****/
 
@@ -84,6 +88,7 @@ meta(advances(_, _)).
 :- table canAbuseCmdScriptingInterpreter/3.
 :- table canAbusePowerShell/3.
 :- table canAbuseUnixShell/3.
+:- table canDiscoverData/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -91,6 +96,7 @@ meta(advances(_, _)).
 :- table cmdScriptingInterpreter/3.
 :- table cmdScriptingInterpreterUnixShell/3.
 :- table cmdScriptingInterpreterPowerShell/3.
+:- table fileAndDirectoryDiscovery/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -109,6 +115,27 @@ meta(advances(_, _)).
 :- table accessDataFlow/3.
 :- table canRunInstalledSoftware/4.
 
+
+/******************************************************/
+/****         Step 2 - Interaction Rules          *****/
+/******************************************************/
+
+interaction_rule(
+  (canDiscoverData(User, Host, Data) :-
+    fileAndDirectoryDiscovery(User, Host, Data)),
+  rule_desc('Asset - Able to run file and directory discovery process on host',
+  0.5)).
+
+interaction_rule(
+  (fileAndDirectoryDiscovery(User, Host, Data) :-
+    malicious(User),
+    canRunInstalledSoftware(User, Host, UtilPath, Software),
+		isSearchUtil(Software),
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		dataBindDir(Host, DirPath, Data),
+		accessFile(User, Host, read, DirPath)),
+  rule_desc('T1083 - File and Directory Discovery',
+  0.5)).
 
 /******************************************************/
 /****         Step 1 - Interaction Rules          *****/
