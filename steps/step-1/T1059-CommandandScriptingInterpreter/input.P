@@ -1,0 +1,39 @@
+
+/***************/
+/* Attack Goal */
+/***************/
+
+attackGoal(connOnNonStandardPort(pupyC2Server, 1234)).
+
+/************/
+/* Attacker */
+/************/
+
+aclNW(victimHost, _, _, _).
+aclNW(H,H,_,_).
+
+/************/
+/* Attacker */
+/************/
+
+malicious(attacker).
+located(attacker, pupyC2Server).
+isReverseShell(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc').
+isNetScript(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc', reversePupy, http, 1234).
+isRcFourEncryptedNetScript(victimHost, '/home/victimAccount/3aka3.doc').
+doubleFileExtension(victimHost, '/home/victimAccount/3aka3.doc').
+networkServiceInfo(pupyC2Server, root, pupyd, http, 1234).
+tempNotStandardPort(http, 1234).
+standardPort(http, 8080).
+
+/************/
+/*  Victim  */
+/************/
+fileAttr(victimHost, '/home/victimAccount/3aka3.doc', _,r,w,x,_,_,_,_,_,_).
+fileOwner(victimHost, victimAccount, '/home/victimAccount/3aka3.doc').
+hasAccount(victimUser, victimHost, victimAccount).
+
+/************/
+/*   Temp   */
+/************/
+tempNotStandardPort(http, 1234).

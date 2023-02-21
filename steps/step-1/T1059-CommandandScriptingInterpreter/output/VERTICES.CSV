@@ -1,0 +1,33 @@
+1,"connOnNonStandardPort(pupyC2Server,1234)","OR",0
+2,"RULE 0 (Asset - Established connection on non-standard port)","AND",0
+3,"dataFlowOnNonStandardPort(pupyC2Server,1234)","OR",0
+4,"RULE 1 (T1571 - Non-Standard Port)","AND",0
+5,"flowBind(reversePupy,http,1234)","OR",0
+6,"RULE 2 (BB - Flow associated port and protocol)","AND",0
+7,"canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+8,"RULE 4 (BB - Script access an exposed service)","AND",0
+9,"networkServiceInfo(pupyC2Server,root,pupyd,http,1234)","LEAF",1
+10,"accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+11,"RULE 11 (BB - execCode implies file access)","AND",0
+12,"canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+13,"RULE 13 (BB - A legitimate account can access file)","AND",0
+14,"localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+15,"RULE 14 (BB - owner file access)","AND",0
+16,"ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+17,"RULE 23 (BB - owner file access)","AND",0
+18,"fileAttr(victimHost,'/home/victimAccount/3aka3.doc',_,r,w,x,_,_,_,_,_,_)","LEAF",1
+19,"fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')","LEAF",1
+20,"RULE 16 (BB - world file access)","AND",0
+21,"worldAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+22,"RULE 25 (BB - world file access)","AND",0
+23,"fileAttr(victimHost,'/home/victimAccount/3aka3.doc',_,r,w,x,_,_,_,_,_,x)","LEAF",1
+24,"execCode(victimUser,victimHost,victimAccount)","OR",0
+25,"RULE 12 (BB - A User can execute code using his account on a specific host)","AND",0
+26,"hasAccount(victimUser,victimHost,victimAccount)","LEAF",1
+27,"scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+28,"RULE 5 (BB - Direct script network access)","AND",0
+29,"isNetScript(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","LEAF",1
+30,"aclNW(victimHost,pupyC2Server,http,1234)","LEAF",1
+31,"tempNotStandardPort(http,1234)","LEAF",1
+32,"dataFlow(victimHost,pupyC2Server,reversePupy,_)","OR",0
+33,"RULE 3 (BB - Data flow initiated by script)","AND",0
