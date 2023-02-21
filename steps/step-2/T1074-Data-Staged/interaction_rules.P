@@ -44,6 +44,8 @@ derived(canDiscoverData(_user, _host, _data)).
 derived(canAutomateCollection(_user, _host, _data)).
 derived(canCollectData(_user, _host, _data)).
 derived(canArchiveData(_user, _host, _data)).
+derived(canDataStage(_user, _host, _data)).
+
 
 /****   Technique Implementation    *****/
 
@@ -58,6 +60,7 @@ derived(fileAndDirectoryDiscovery(_user, _host, _data)).
 derived(automatedCollection(_user, _host, _data)).
 derived(dataFromLocalSystem(_user, _host, _data)).
 derived(archiveCollectedData(_user, _host, _data)).
+derived(dataStaged(_user, _host, _data)).
 
 
 /****       Building Blocks         *****/
@@ -101,6 +104,7 @@ meta(advances(_, _)).
 :- table canAutomateCollection/3.
 :- table canCollectData/3.
 :- table canArchiveData/3.
+:- table canDataStage/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -112,6 +116,7 @@ meta(advances(_, _)).
 :- table automatedCollection/3.
 :- table dataFromLocalSystem/3.
 :- table archiveCollectedData/3.
+:- table dataStaged/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -134,6 +139,20 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 2 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canDataStage(User, Host, Data) :-
+    dataStaged(User, Host, Data)),
+  rule_desc('Asset - Able to stage collected data',
+  0.5)).
+
+interaction_rule(
+  (dataStaged(User, Host, Data) :-
+    canCollectData(User, Host, Data),
+		accessFile(User, Host, write, Path),
+		fileAttr(Host, Path, d,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1074 - Data Staged',
+  0.5)).
 
 interaction_rule(
   (canArchiveData(User, Host, Data) :-

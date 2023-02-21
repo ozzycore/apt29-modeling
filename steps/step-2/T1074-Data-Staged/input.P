@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canArchiveData(attacker, victimHost, privateDocuments)).
+attackGoal(canDataStage(attacker, victimHost, privateDocuments)).
 
 /************/
 /* Attacker */
