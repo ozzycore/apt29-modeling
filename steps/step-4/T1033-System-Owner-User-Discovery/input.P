@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canRemoveArtifacts(attacker, victimHost, deletionUtil)).
+attackGoal(canDiscoverSystemOwnerUser(attacker, victimHost)).
 
 /************/
 /* Attacker */
@@ -137,6 +137,13 @@ installed(victimHost, '/bin/rm', rm).
 fileAttr(victimHost, '/bin/rm', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/rm').
 fileGroupOwner(victimHost, '/bin/rm', root).
+
+isUserDiscoverUtil(who).
+dataBind(victimHost, '/bin/who', who).
+installed(victimHost, '/bin/who', who).
+fileAttr(victimHost, '/bin/who', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/who').
+fileGroupOwner(victimHost, '/bin/who', root).
 
 /************/
 /*   Temp   */

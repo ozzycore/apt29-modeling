@@ -7,18 +7,18 @@ XSB Version 3.6. (Gazpatcho) of April 28, 2015
 [Build date: 2022-05-01]
 
 | ?- [Compiling ./run]
-[run compiled, cpu time used: 0.0300 seconds]
+[run compiled, cpu time used: 0.0340 seconds]
 [run loaded]
-[libmulval loaded]
+[libmulval loaded, cpu time used: 0.0010 seconds]
 [translate loaded, cpu time used: 0.0010 seconds]
-[attack_trace loaded]
+[attack_trace loaded, cpu time used: 0.0010 seconds]
 [auxiliary loaded, cpu time used: 0.0010 seconds]
 [/root/mulval/scenarios/outputs/final/running_rules.P dynamically loaded, cpu time used: 0.0440 seconds]
 [/root/mulval/scenarios/final/input.P dynamically loaded, cpu time used: 0.0100 seconds]
-[/root/mulval/src/analyzer/advances_notrim.P dynamically loaded, cpu time used: 0.0000 seconds]
+[/root/mulval/src/analyzer/advances_notrim.P dynamically loaded, cpu time used: 0.0010 seconds]
 @@@@@@@@@@@@@@Done transforming in mode dynamic_decl
 
-[/root/mulval/scenarios/outputs/final/dynamic_decl.gen dynamically loaded, cpu time used: 0.0040 seconds]
+[/root/mulval/scenarios/outputs/final/dynamic_decl.gen dynamically loaded, cpu time used: 0.0070 seconds]
 @@@@@@@@@@@@@@Done transforming in mode completeTrace2
 
 @@@@@@@@@@@@@@Done transforming in mode completeTrace2
@@ -29,4 +29,4 @@ Running attack simulation...
 
 yes
 | ?- 
-End XSB (cputime 0.25 secs, elapsetime 0.57 secs)
+End XSB (cputime 0.27 secs, elapsetime 0.51 secs)
