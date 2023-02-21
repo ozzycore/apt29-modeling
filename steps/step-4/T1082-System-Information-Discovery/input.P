@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canDiscoverSystemOwnerUser(attacker, victimHost)).
+attackGoal(canDiscoverSystemInformation(attacker, victimHost)).
 
 /************/
 /* Attacker */
@@ -144,6 +144,14 @@ installed(victimHost, '/bin/who', who).
 fileAttr(victimHost, '/bin/who', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/who').
 fileGroupOwner(victimHost, '/bin/who', root).
+
+isSystemDiscoverUtil(df).
+dataBind(victimHost, '/bin/df', df).
+installed(victimHost, '/bin/df', df).
+fileAttr(victimHost, '/bin/df', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/df').
+fileGroupOwner(victimHost, '/bin/df', root).
+
 
 /************/
 /*   Temp   */
