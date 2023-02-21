@@ -48,5 +48,7 @@
 
 :-(dynamic(isDataUtil(_h3150))).
 
+:-(dynamic(isArchiveTool(_h3150))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 

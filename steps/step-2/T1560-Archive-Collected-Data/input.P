@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(dataFromLocalSystem(attacker, victimHost, privateDocuments)).
+attackGoal(canArchiveData(attacker, victimHost, privateDocuments)).
 
 /************/
 /* Attacker */
@@ -76,6 +76,13 @@ installed(victimHost, '/bin/cat', cat).
 fileAttr(victimHost, '/bin/cat', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/cat').
 fileGroupOwner(victimHost, '/bin/cat', root).
+
+isArchiveTool(zip).
+installed(victimHost, '/bin/zip', zip).
+fileAttr(victimHost, '/bin/zip', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/zip').
+fileGroupOwner(victimHost, '/bin/zip', root).
+
 
 /************/
 /*   Temp   */
