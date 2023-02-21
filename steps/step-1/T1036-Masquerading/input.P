@@ -1,0 +1,15 @@
+
+/***************/
+/* Attack Goal */
+/***************/
+
+attackGoal(seemsBenign(victimHost, '/home/victimAccount/3aka3.doc')).
+
+/************/
+/* Attacker */
+/************/
+
+malicious(attacker).
+located(attacker, pupyC2Server).
+isReverseShell(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc').
+doubleFileExtension(victimHost, '/home/victimAccount/3aka3.doc').

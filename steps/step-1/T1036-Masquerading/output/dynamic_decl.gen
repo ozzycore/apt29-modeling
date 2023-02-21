@@ -1,0 +1,14 @@
+:-(dynamic(malicious(_h3150))).
+
+:-(dynamic(located(_h3150,_h3151))).
+
+:-(dynamic(isBenignFile(_h3150,_h3151))).
+
+:-(dynamic(rightToLeftOverride(_h3150,_h3151))).
+
+:-(dynamic(doubleFileExtension(_h3150,_h3151))).
+
+:-(dynamic(isReverseShell(_h3150,_h3151,_h3152))).
+
+:-(dynamic(trace_step(_h3085,_h3086))).
+

@@ -1,0 +1,78 @@
+
+/******************************************************/
+/****         Predicates Declaration              *****/
+/******************************************************/
+
+primitive(malicious(_user)).
+primitive(located(_user, _host)).
+primitive(isBenignFile(_host, _path)).
+primitive(rightToLeftOverride(_host, _path)).
+primitive(doubleFileExtension(_host, _path)).
+primitive(isReverseShell(_srcHost, _desthost, _path)).
+
+derived(seemsBenign(_host, _path)).
+derived(isMaliciousFile(_host, _path)).
+derived(masquerading(_host, _path)).
+derived(localAccess(_user, _host, _account)).
+
+
+meta(attackGoal(_)).
+meta(advances(_, _)).
+
+/******************************************************/
+/****         Tabling Predicates                  *****/
+/*   All derived predicates should be tabled          */
+/******************************************************/
+
+:- table seemsBenign/2.
+:- table isMaliciousFile/2.
+:- table masquerading/2.
+:- table localAccess/3.
+
+/******************************************************/
+/****         Step 1 - Interaction Rules          *****/
+/******************************************************/
+
+
+
+/****         Step 1 - Interaction Rules          *****/
+
+interaction_rule(
+  (seemsBenign(Host, Path) :-
+    masquerading(Host, Path)),
+  rule_desc('Asset - Seems like a benign file - Masquerading',
+  0.5)).
+
+interaction_rule(
+  (seemsBenign(Host, Path) :-
+    isBenignFile(Host, Path)),
+  rule_desc('Asset - Seems like a benign file - Fact',
+  0.5)).
+
+interaction_rule(
+  (masquerading(Host, Path) :-
+    isMaliciousFile(Host, Path),
+    doubleFileExtension(Host, Path)),
+  rule_desc('T1036.007 - Masquerading - Double File Extension',
+  0.5)).
+
+interaction_rule(
+  (masquerading(Host, Path) :-
+    isMaliciousFile(Host, Path),
+    rightToLeftOverride(Host, Path)),
+  rule_desc('T1036.002 - Masquerading - Right-to-Left Override',
+  0.5)).
+
+interaction_rule(
+  (isMaliciousFile(SrcHost, Path) :-
+    malicious(User),
+    localAccess(User, DestHost, Account),
+    isReverseShell(SrcHost, DestHost, Path)),
+  rule_desc('Malicious file - Reverse shell',
+  0.4)).
+
+interaction_rule(
+  (localAccess(User, Host, root):-
+    located(User, Host)),
+  rule_desc('An user who is located in a host has root access to that host',
+  0.2)).
