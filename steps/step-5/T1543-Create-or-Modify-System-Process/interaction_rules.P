@@ -47,6 +47,10 @@ primitive(isUserDiscoverUtil(_software)).
 primitive(isSystemDiscoverUtil(_software)).
 primitive(isNetworkDiscoverUtil(_software)).
 primitive(isGroupDiscoverUtil(_software)).
+primitive(isSystemdUtil(_software)).
+primitive(isSystemdDir(_dirPath)).
+primitive(isSystemdFile(_filePath)).
+
 
 
 /****       Technique Assets        *****/
@@ -87,7 +91,8 @@ derived(canDiscoverSystemNetworkConfiguration(_user, _host)).
 derived(canDiscoverInternetConnections(_user, _host)).
 derived(canDiscoverGroupsPermissions(_user, _host)).
 derived(canDiscoverLocalGroupsPermissions(_user, _host)).
-
+derived(canCreateOrModifySystemProcess(_user, _host)).
+derived(canCreateOrModifySystemdService(_user, _host)).
 
 /****   Technique Implementation    *****/
 
@@ -127,6 +132,9 @@ derived(systemNetworkConfigurationDiscovery(_user, _host)).
 derived(systemNetworkInternetConnectionDiscovery(_user, _host)).
 derived(permissionGroupsDiscovery(_user, _host)).
 derived(permissionGroupsDiscoveryLocalGroups(_user, _host)).
+derived(createOrModifySystemProcess(_user, _host)).
+derived(createOrModifySystemdService(_user, _host)).
+
 
 /****       Building Blocks         *****/
 
@@ -194,6 +202,8 @@ meta(advances(_, _)).
 :- table canDiscoverInternetConnections/2.
 :- table canDiscoverGroupsPermissions/2.
 :- table canDiscoverLocalGroupsPermissions/2.
+:- table canCreateOrModifySystemProcess/2.
+:- table canCreateOrModifySystemdService/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -230,6 +240,8 @@ meta(advances(_, _)).
 :- table systemNetworkInternetConnectionDiscovery/2.
 :- table permissionGroupsDiscovery/2.
 :- table permissionGroupsDiscoveryLocalGroups/2.
+:- table createOrModifySystemProcess/2.
+:- table createOrModifySystemdService/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -249,6 +261,49 @@ meta(advances(_, _)).
 :- table canRunInstalledSoftware/4.
 :- table newDataBind/3.
 :- table dataFlowOnStandardPort/4.
+
+
+/******************************************************/
+/****         Step 5 - Interaction Rules          *****/
+/******************************************************/
+
+interaction_rule(
+  (canCreateOrModifySystemProcess(User, Host) :-
+    createOrModifySystemProcess(User, Host)),
+  rule_desc('Asset - Able to create or modify system processes',
+  0.5)).
+
+interaction_rule(
+  (canCreateOrModifySystemdService(User, Host) :-
+    createOrModifySystemdService(User, Host)),
+  rule_desc('Asset - Able to create or modify systemd service',
+  0.5)).
+
+interaction_rule(
+  (createOrModifySystemProcess(User, Host) :-
+    createOrModifySystemdService(User, Host)),
+  rule_desc('T1543 - Create or Modify System Process',
+  0.4)).
+
+interaction_rule(
+  (createOrModifySystemdService(User, Host) :-
+		malicious(User),
+		isSystemdUtil(Software),
+		installed(Host, UtilPath, Software),
+		isSystemdDir(DirPath),
+		accessFile(User, Host, write, DirPath)),
+  rule_desc('T1543.002 - Create or Modify System Process - Create Systemd Service',
+  0.5)).
+
+interaction_rule(
+  (createOrModifySystemdService(User, Host) :-
+		malicious(User),
+		isSystemdUtil(Software),
+		installed(Host, UtilPath, Software),
+		isSystemdFile(FilePath),
+		accessFile(User, Host, write, FilePath)),
+  rule_desc('T1543.002 - Create or Modify System Process - Modify Systemd Service',
+  0.5)).
 
 
 /******************************************************/

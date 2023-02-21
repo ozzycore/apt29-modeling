@@ -86,5 +86,11 @@
 
 :-(dynamic(isGroupDiscoverUtil(_h3150))).
 
+:-(dynamic(isSystemdUtil(_h3150))).
+
+:-(dynamic(isSystemdDir(_h3150))).
+
+:-(dynamic(isSystemdFile(_h3150))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 

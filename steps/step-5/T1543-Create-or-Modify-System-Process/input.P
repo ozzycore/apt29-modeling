@@ -167,6 +167,21 @@ fileAttr(victimHost, '/bin/groups', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/groups').
 fileGroupOwner(victimHost, '/bin/groups', root).
 
+
+isSystemdUtil(groups).
+dataBind(victimHost, '/bin/systemd', systemd).
+installed(victimHost, '/bin/systemd', systemd).
+fileAttr(victimHost, '/bin/systemd', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/systemd').
+fileGroupOwner(victimHost, '/bin/systemd', root).
+
+isSystemdDir('/etc/systemd/system').
+dataBindDir(victimHost, '/etc/systemd/system', systemd).
+fileAttr(victimHost, '/etc/systemd/system', d,r,w,x,r,-,x,r,-,x).
+fileOwner(victimHost, root, '/etc/systemd/system').
+fileGroupOwner(victimHost, '/etc/systemd/system', root).
+
+
 /************/
 /*   Temp   */
 /************/
