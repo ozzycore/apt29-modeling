@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canDiscoverInternetConnections(attacker, victimHost)).
+attackGoal(canDiscoverLocalGroupsPermissions(attacker, victimHost)).
 
 /************/
 /* Attacker */
@@ -159,6 +159,13 @@ installed(victimHost, '/bin/tracert', tracert).
 fileAttr(victimHost, '/bin/tracert', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/tracert').
 fileGroupOwner(victimHost, '/bin/tracert', root).
+
+isGroupDiscoverUtil(groups).
+dataBind(victimHost, '/bin/groups', groups).
+installed(victimHost, '/bin/groups', groups).
+fileAttr(victimHost, '/bin/groups', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/groups').
+fileGroupOwner(victimHost, '/bin/groups', root).
 
 /************/
 /*   Temp   */

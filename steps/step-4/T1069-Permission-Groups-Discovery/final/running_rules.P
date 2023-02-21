@@ -46,6 +46,7 @@ primitive(isDeletionUtil(_software)).
 primitive(isUserDiscoverUtil(_software)).
 primitive(isSystemDiscoverUtil(_software)).
 primitive(isNetworkDiscoverUtil(_software)).
+primitive(isGroupDiscoverUtil(_software)).
 
 
 /****       Technique Assets        *****/
@@ -84,6 +85,8 @@ derived(canDiscoverSystemOwnerUser(_user, _host)).
 derived(canDiscoverSystemInformation(_user, _host)).
 derived(canDiscoverSystemNetworkConfiguration(_user, _host)).
 derived(canDiscoverInternetConnections(_user, _host)).
+derived(canDiscoverGroupsPermissions(_user, _host)).
+derived(canDiscoverLocalGroupsPermissions(_user, _host)).
 
 
 /****   Technique Implementation    *****/
@@ -122,7 +125,8 @@ derived(systemOwnerUserDiscovery(_user, _host)).
 derived(systemInformationDiscovery(_user, _host)).
 derived(systemNetworkConfigurationDiscovery(_user, _host)).
 derived(systemNetworkInternetConnectionDiscovery(_user, _host)).
-
+derived(permissionGroupsDiscovery(_user, _host)).
+derived(permissionGroupsDiscoveryLocalGroups(_user, _host)).
 
 /****       Building Blocks         *****/
 
@@ -188,6 +192,8 @@ meta(advances(_, _)).
 :- table canDiscoverSystemInformation/2.
 :- table canDiscoverSystemNetworkConfiguration/2.
 :- table canDiscoverInternetConnections/2.
+:- table canDiscoverGroupsPermissions/2.
+:- table canDiscoverLocalGroupsPermissions/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -222,6 +228,8 @@ meta(advances(_, _)).
 :- table systemInformationDiscovery/2.
 :- table systemNetworkConfigurationDiscovery/2.
 :- table systemNetworkInternetConnectionDiscovery/2.
+:- table permissionGroupsDiscovery/2.
+:- table permissionGroupsDiscoveryLocalGroups/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -246,6 +254,33 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 4 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canDiscoverGroupsPermissions(User, Host) :-
+    permissionGroupsDiscovery(User, Host)),
+  rule_desc('Asset - Able to discover groups permissions',
+  0.5)).
+
+interaction_rule(
+  (canDiscoverLocalGroupsPermissions(User, Host) :-
+    permissionGroupsDiscoveryLocalGroups(User, Host)),
+  rule_desc('Asset - Able to discover local groups permissions',
+  0.5)).
+
+interaction_rule(
+  (permissionGroupsDiscovery(User, Host) :-
+		permissionGroupsDiscoveryLocalGroups(User, Host)),
+  rule_desc('T1069 - Permission Groups Discovery',
+  0.5)).
+
+interaction_rule(
+  (permissionGroupsDiscoveryLocalGroups(User, Host) :-
+		malicious(User),
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		canRunInstalledSoftware(User, Host, UtilPath, Software),
+    isGroupDiscoverUtil(Software)),
+  rule_desc('T1069.001 - Permission Groups Discovery - Local Groups',
+  0.5)).
 
 interaction_rule(
   (canDiscoverSystemNetworkConfiguration(User, Host) :-
