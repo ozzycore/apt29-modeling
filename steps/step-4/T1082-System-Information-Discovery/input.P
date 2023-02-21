@@ -1,0 +1,151 @@
+
+/***************/
+/* Attack Goal */
+/***************/
+
+attackGoal(canDiscoverSystemOwnerUser(attacker, victimHost)).
+
+/************/
+/* Attacker */
+/************/
+
+aclNW(victimHost, _, _, _).
+aclNW(H,H,_,_).
+
+/************/
+/* Attacker */
+/************/
+
+malicious(attacker).
+located(attacker, pupyC2Server).
+isReverseShell(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc').
+dataBind(victimHost, '/home/victimAccount/3aka3.doc', pupyPayload).
+isNetScript(victimHost, pupyC2Server, reversePupy, http, 1234, pupyPayload).
+isEncryptedNetScript(reversePupy, rc4).
+isSymmetricEncryption(rc4).
+doubleFileExtension(victimHost, '/home/victimAccount/3aka3.doc').
+networkServiceInfo(pupyC2Server, root, pupyd, http, 1234).
+tempNotStandardPort(http, 1234).
+standardPort(http, 8080).
+
+/************/
+/*  Victim  */
+/************/
+fileAttr(victimHost, '/home/victimAccount/3aka3.doc', -,r,w,x,-,-,-,-,-,-).
+fileOwner(victimHost, victimAccount, '/home/victimAccount/3aka3.doc').
+hasAccount(victimUser, victimHost, victimAccount).
+
+installed(victimHost, '/bin/powershell', powerShell).
+isPowerShell(powerShell).
+fileAttr(victimHost, '/bin/powershell', -,r,w,x,-,-,-,-,-,-).
+fileOwner(victimHost, victimAccount, '/bin/powershell').
+
+installed(victimHost, '/bin/bash', bash).
+isUnixShell(bash).
+fileAttr(victimHost, '/bin/bash', -,-,-,-,r,w,x,-,-,-).
+fileGroupOwner(victimHost, '/bin/bash', victimGroup).
+inGroup(victimAccount, victimGroup).
+
+dataBind(victimHost, '/private/secret1.doc', privateDocuments).
+dataBind(victimHost, '/private/secret2.doc', privateDocuments).
+
+dataBindDir(victimHost, '/private', privateDocuments).
+fileAttr(victimHost, '/private', d,r,w,x,r,-,x,r,-,x).
+fileOwner(victimHost, victimAccount, '/private').
+fileGroupOwner(victimHost, '/private', victimGroup).
+
+
+fileAttr(victimHost, '/private/secret1.doc', -,-,-,-,-,-,-,r,w,x).
+fileOwner(victimHost, victimAccount, '/private/secret1.doc').
+
+fileAttr(victimHost, '/private/secret2.doc', -,-,-,-,-,-,-,r,w,x).
+fileOwner(victimHost, victimAccount, '/private/secret2.doc').
+
+isSearchUtil(ls).
+installed(victimHost, '/bin/ls', ls).
+fileAttr(victimHost, '/bin/ls', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/ls').
+fileGroupOwner(victimHost, '/bin/ls', root).
+
+isSearchUtil(find).
+installed(victimHost, '/bin/find', find).
+fileAttr(victimHost, '/bin/find', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/find').
+fileGroupOwner(victimHost, '/bin/find', root).
+
+isDataUtil(cat).
+installed(victimHost, '/bin/cat', cat).
+fileAttr(victimHost, '/bin/cat', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/cat').
+fileGroupOwner(victimHost, '/bin/cat', root).
+
+isArchiveTool(zip).
+installed(victimHost, '/bin/zip', zip).
+fileAttr(victimHost, '/bin/zip', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/zip').
+fileGroupOwner(victimHost, '/bin/zip', root).
+
+isIngressTool(tcpdump).
+installed(victimHost, '/bin/tcpdump', tcpdump).
+fileAttr(victimHost, '/bin/tcpdump', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/tcpdump').
+fileGroupOwner(victimHost, '/bin/tcpdump', root).
+
+steganography(victimHost, '/private/doc.jpg').
+
+fileAttr(victimHost, '/home/victimAccount/.bash_login', -,r,w,x,r,w,x,-,-,-).
+fileOwner(victimHost, victimAccount, '/home/victimAccount/.bash_login').
+fileGroupOwner(victimHost, '/home/victimAccount/.bash_login', victimGroup).
+isUnixLoginScript(victimHost, '/home/victimAccount/.bash_login').
+
+fileAttr(victimHost, '/usr/bin/sudo', -,r,w,s,r,-,-,r,-,x).
+fileOwner(victimHost, root, '/usr/bin/sudo').
+fileGroupOwner(victimHost, '/usr/bin/sudo', root).
+
+
+isNetScript(victimHost, pupyC2Server, powerC2, http, 443, powerPayload).
+standardPort(http, 1234).
+iswebProtocol(http).
+
+dataBind(victimHost, '/home/victimAccount/.bash_history', cmdHistory).
+fileAttr(victimHost, '/home/victimAccount/.bash_history', -,r,w,x,r,w,x,-,-,-).
+fileOwner(victimHost, victimAccount, '/home/victimAccount/.bash_history').
+fileGroupOwner(victimHost, '/home/victimAccount/.bash_history', victimGroup).
+isCmdHistory(cmdHistory).
+
+isDeobfuscatorUtil(certutil).
+dataBind(victimHost, '/bin/certutil', certutil).
+installed(victimHost, '/bin/certutil', certutil).
+fileAttr(victimHost, '/bin/certutil', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/certutil').
+fileGroupOwner(victimHost, '/bin/certutil', root).
+
+isProcessDiscoveryUtil(ps).
+dataBind(victimHost, '/bin/ps', ps).
+installed(victimHost, '/bin/ps', ps).
+fileAttr(victimHost, '/bin/ps', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/ps').
+fileGroupOwner(victimHost, '/bin/ps', root).
+
+isDeletionUtil(rm).
+dataBind(victimHost, '/bin/rm', deletionUtil).
+dataBindDir(victimHost, '/bin', deletionUtil).
+fileAttr(victimHost, '/bin', d,r,w,x,r,-,x,r,-,x).
+fileOwner(victimHost, root, '/bin').
+fileGroupOwner(victimHost, '/bin', root).
+installed(victimHost, '/bin/rm', rm).
+fileAttr(victimHost, '/bin/rm', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/rm').
+fileGroupOwner(victimHost, '/bin/rm', root).
+
+isUserDiscoverUtil(who).
+dataBind(victimHost, '/bin/who', who).
+installed(victimHost, '/bin/who', who).
+fileAttr(victimHost, '/bin/who', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/who').
+fileGroupOwner(victimHost, '/bin/who', root).
+
+/************/
+/*   Temp   */
+/************/
+tempNotStandardPort(http, 1234).
