@@ -24,9 +24,10 @@ primitive(standardPort(_protocol, _port)).
 primitive(installed(_host, _path, _software)).
 primitive(isUnixShell(_software)).
 primitive(isPowerShell(_software)).
-primitive(dataBindDir(_host, _dirPath, _data)).
 primitive(isSearchUtil(_software)).
-
+primitive(dataBind(_host, _path, _data)).
+primitive(dataBindDir(_host, _path, _data)).
+primitive(isDataUtil(_software)).
 
 /****       Technique Assets        *****/
 
@@ -39,6 +40,8 @@ derived(canAbusePowerShell(_user, _host, _path)).
 derived(canAbuseUnixShell(_user, _host, _path)).
 derived(canDiscoverData(_user, _host, _data)).
 derived(canAutomateCollection(_user, _host, _data)).
+derived(canCollectData(_user, _host, _data)).
+
 
 /****   Technique Implementation    *****/
 
@@ -51,6 +54,8 @@ derived(cmdScriptingInterpreterUnixShell(_user, _host, _path)).
 derived(cmdScriptingInterpreterPowerShell(_user, _host, _path)).
 derived(fileAndDirectoryDiscovery(_user, _host, _data)).
 derived(automatedCollection(_user, _host, _data)).
+derived(dataFromLocalSystem(_user, _host, _data)).
+
 
 
 /****       Building Blocks         *****/
@@ -92,6 +97,7 @@ meta(advances(_, _)).
 :- table canAbuseUnixShell/3.
 :- table canDiscoverData/3.
 :- table canAutomateCollection/3.
+:- table canCollectData/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -101,6 +107,7 @@ meta(advances(_, _)).
 :- table cmdScriptingInterpreterPowerShell/3.
 :- table fileAndDirectoryDiscovery/3.
 :- table automatedCollection/3.
+:- table dataFromLocalSystem/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -125,6 +132,23 @@ meta(advances(_, _)).
 /******************************************************/
 
 interaction_rule(
+  (canCollectData(User, Host, Data) :-
+    dataFromLocalSystem(User, Host, Data)),
+  rule_desc('Asset - Able to read data on host',
+  0.5)).
+
+interaction_rule(
+  (dataFromLocalSystem(User, Host, Data) :-
+    canRunInstalledSoftware(User, Host, UtilPath, Software),
+		isDataUtil(Software),
+    canDiscoverData(User, Host, Data),
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		dataBind(Host, DataPath, Data),
+		accessFile(User, Host, read, DataPath)),
+  rule_desc('T1005 - Data from Local System',
+  0.5)).
+
+interaction_rule(
   (canAutomateCollection(User, Host, Data) :-
     automatedCollection(User, Host, Data)),
   rule_desc('Asset - Able to write a script and run it on host',
@@ -132,7 +156,7 @@ interaction_rule(
 
 interaction_rule(
   (automatedCollection(User, Host, Data) :-
-    malicious(User),
+    canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
     canDiscoverData(User, Host, Data),
     accessFile(User, Host, exec, Path),
     accessFile(User, Host, write, Path),
@@ -142,7 +166,7 @@ interaction_rule(
 
 interaction_rule(
   (automatedCollection(User, Host, Data) :-
-    malicious(User),
+    canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
     canDiscoverData(User, Host, Data),
     accessFile(User, Host, write, Path),
     fileAttr(Host, Path, d,_,_,_,_,_,_,_,_,_)),
@@ -157,7 +181,6 @@ interaction_rule(
 
 interaction_rule(
   (fileAndDirectoryDiscovery(User, Host, Data) :-
-    malicious(User),
     canRunInstalledSoftware(User, Host, UtilPath, Software),
 		isSearchUtil(Software),
 		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),

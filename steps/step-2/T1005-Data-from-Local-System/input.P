@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canAutomateCollection(attacker, victimHost, privateDocuments)).
+attackGoal(dataFromLocalSystem(attacker, victimHost, privateDocuments)).
 
 /************/
 /* Attacker */
@@ -44,10 +44,14 @@ fileAttr(victimHost, '/bin/bash', -,-,-,-,r,w,x,-,-,-).
 fileGroupOwner(victimHost, '/bin/bash', victimGroup).
 inGroup(victimAccount, victimGroup).
 
+dataBind(victimHost, '/private/secret1.doc', privateDocuments).
+dataBind(victimHost, '/private/secret2.doc', privateDocuments).
+
 dataBindDir(victimHost, '/private', privateDocuments).
 fileAttr(victimHost, '/private', d,r,w,x,r,-,x,r,-,x).
 fileOwner(victimHost, victimAccount, '/private').
 fileGroupOwner(victimHost, '/private', victimGroup).
+
 
 fileAttr(victimHost, '/private/secret1.doc', -,-,-,-,-,-,-,r,w,x).
 fileOwner(victimHost, victimAccount, '/private/secret1.doc').
@@ -66,6 +70,12 @@ installed(victimHost, '/bin/find', find).
 fileAttr(victimHost, '/bin/find', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/find').
 fileGroupOwner(victimHost, '/bin/find', root).
+
+isDataUtil(cat).
+installed(victimHost, '/bin/cat', cat).
+fileAttr(victimHost, '/bin/cat', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/cat').
+fileGroupOwner(victimHost, '/bin/cat', root).
 
 /************/
 /*   Temp   */
