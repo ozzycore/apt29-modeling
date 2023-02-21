@@ -24,5 +24,15 @@
 
 :-(dynamic(inCompetent(_h3150))).
 
+:-(dynamic(aclNW(_h3150,_h3151,_h3152,_h3153))).
+
+:-(dynamic(isNetScript(_h3150,_h3151,_h3152,_h3153,_h3154,_h3155))).
+
+:-(dynamic(networkServiceInfo(_h3150,_h3151,_h3152,_h3153,_h3154))).
+
+:-(dynamic(tempNotStandardPort(_h3150,_h3151))).
+
+:-(dynamic(standardPort(_h3150,_h3151))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 

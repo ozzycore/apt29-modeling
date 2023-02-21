@@ -16,18 +16,26 @@ primitive(groupAccessible(_host, _access, _path)).
 primitive(fileOwner(_host, _account, _path)).
 primitive(hasAccount(_user, _host, _account)).
 primitive(inCompetent(_user)).
+primitive(aclNW(_srcHost, _destHost, _protocol, _port)).
+primitive(isNetScript(_srcHost, _destHost, _path, _flowName, _protocol, _port)).
+primitive(networkServiceInfo(_destHost, _account, _software, _protocol, _port)).
+primitive(tempNotStandardPort(_protocol, _port)).
+primitive(standardPort(_protocol, _port)).
+
 
 /****       Technique Assets        *****/
 
 derived(seemsBenign(_host, _path)).
 derived(canExecuteMaliciousPayload(_user, _host, _path)).
 derived(canExecuteMaliciousFile(_user, _host, _path)).
+derived(connOnNonStandardPort(_destHost, _port)).
 
 /****   Technique Implementation    *****/
 
 derived(masquerading(_host, _path)).
 derived(userExecutionMaliciousFile(_user, _host, _path)).
 derived(userExecution(_user, _host, _path)).
+derived(dataFlowOnNonStandardPort(_destHost, _port)).
 
 /****       Building Blocks         *****/
 
@@ -40,7 +48,11 @@ derived(localFileProtection(_host, _account, _access, _path)).
 derived(canAccessFile(_host, _account, _access, _path)).
 derived(accessFile(_user, _host, _access, _path)).
 derived(execCode(_user, _host, _account)).
-
+derived(scriptNetAccess(_srcHost, _destHost, _path, _flowName, _protocol, _port)).
+derived(canScriptAccessHost(_srcHost, _destHost, _path, _flowName, _protocol, _port)).
+derived(dataFlow(_srcHost, _destHost, _flowName, _direction)).
+derived(flowBind(_flowName, _protocol, _port)).
+derived(useStandardPort(_protocol, _port)).
 
 
 meta(attackGoal(_)).
@@ -54,9 +66,11 @@ meta(advances(_, _)).
 :- table seemsBenign/2.
 :- table canExecuteMaliciousPayload/3.
 :- table canExecuteMaliciousFile/3.
+:- table connOnNonStandardPort/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
+:- table dataFlowOnNonStandardPort/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -66,6 +80,11 @@ meta(advances(_, _)).
 :- table canAccessFile/4.
 :- table accessFile/4.
 :- table execCode/3.
+:- table scriptNetAccess/6.
+:- table canScriptAccessHost/6.
+:- table dataFlow/4.
+:- table flowBind/3.
+:- table useStandardPort/2.
 
 
 
@@ -74,8 +93,63 @@ meta(advances(_, _)).
 /******************************************************/
 
 
+interaction_rule(
+  (connOnNonStandardPort(DestHost, Port) :-
+    dataFlowOnNonStandardPort(DestHost, Port)),
+  rule_desc('Asset - Established connection on non-standard port',
+  0.4)).
 
-/****         Step 1 - Interaction Rules          *****/
+
+interaction_rule(
+  (dataFlowOnNonStandardPort(DestHost, Port) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		tempNotStandardPort(Protocol, Port),
+    flowBind(FlowName, Protocol, Port)),
+  rule_desc('T1571 - Non-Standard Port',
+  0.5)).
+
+/*
+interaction_rule(
+  (dataFlowOnNonStandardPort(DestHost, Port) :-
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+    flowBind(FlowName, Protocol, Port),
+		not useStandardPort(Protocol, Port)),
+  rule_desc('T1571 - Non-Standard Port',
+  0.5)).
+
+interaction_rule(
+  (useStandardPort(Protocol, Port) :-
+		standardPort(Protocol, Port)),
+  rule_desc('BB - Using a standard Port',
+  0.5)).
+*/
+
+interaction_rule(
+  (flowBind(FlowName, Protocol, Port) :-
+    canScriptAccessHost(SrcHost, DestHost, Path, FlowName, Protocol, Port)),
+  rule_desc('BB - Flow associated port and protocol',
+  0.6)).
+
+interaction_rule(
+  (dataFlow(SrcHost, DestHost, FlowName, Direction) :-
+    canScriptAccessHost(SrcHost, DestHost, Path, FlowName, Protocol, Port)),
+  rule_desc('BB - Data flow initiated by script',
+  0.3)).
+
+interaction_rule(
+  (canScriptAccessHost(SrcHost, DestHost, Path, FlowName, Protocol, Port) :-
+		scriptNetAccess(SrcHost, DestHost, Path, FlowName, Protocol, Port),
+		accessFile(User, SrcHost, exec, Path),
+		networkServiceInfo(DestHost, Account, Software, Protocol, Port)),
+  rule_desc('BB - Script access an exposed service',
+  1.0)).
+
+interaction_rule(
+  (scriptNetAccess(SrcHost, DestHost, Path, FlowName, Protocol, Port) :-
+		aclNW(SrcHost, DestHost, Protocol, Port),
+		isNetScript(SrcHost, DestHost, Path, FlowName, Protocol, Port)),
+  rule_desc('BB - Direct script network access',
+  0.3)).
 
 interaction_rule(
   (canExecuteMaliciousFile(User, Host, Path) :-
