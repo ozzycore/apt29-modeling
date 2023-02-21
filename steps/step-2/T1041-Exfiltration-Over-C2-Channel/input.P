@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canDataStage(attacker, victimHost, privateDocuments)).
+attackGoal(canExfiltrateData(attacker, victimHost, pupyC2Server, reversePupy, privateDocuments)).
 
 /************/
 /* Attacker */

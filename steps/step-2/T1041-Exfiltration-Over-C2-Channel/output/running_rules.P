@@ -45,6 +45,7 @@ derived(canAutomateCollection(_user, _host, _data)).
 derived(canCollectData(_user, _host, _data)).
 derived(canArchiveData(_user, _host, _data)).
 derived(canDataStage(_user, _host, _data)).
+derived(canExfiltrateData(_user, _srcHost, _destHost, _flowName, _data)).
 
 
 /****   Technique Implementation    *****/
@@ -61,6 +62,7 @@ derived(automatedCollection(_user, _host, _data)).
 derived(dataFromLocalSystem(_user, _host, _data)).
 derived(archiveCollectedData(_user, _host, _data)).
 derived(dataStaged(_user, _host, _data)).
+derived(exfiltrationOverC2Channel(_user, _srcHost, _destHost, _flowName, _data)).
 
 
 /****       Building Blocks         *****/
@@ -105,6 +107,7 @@ meta(advances(_, _)).
 :- table canCollectData/3.
 :- table canArchiveData/3.
 :- table canDataStage/3.
+:- table canExfiltrateData/5.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -117,6 +120,7 @@ meta(advances(_, _)).
 :- table dataFromLocalSystem/3.
 :- table archiveCollectedData/3.
 :- table dataStaged/3.
+:- table exfiltrationOverC2Channel/5.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -139,6 +143,20 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 2 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canExfiltrateData(User, SrcHost, DestHost, FlowName, Data) :-
+    exfiltrationOverC2Channel(User, SrcHost, DestHost, FlowName, Data)),
+  rule_desc('Asset - Able to exfiltrate data from host using C2 channel',
+  0.5)).
+
+interaction_rule(
+  (exfiltrationOverC2Channel(User, SrcHost, DestHost, FlowName, Data) :-
+		canCollectData(User, SrcHost, Data),
+		dataFlow(SrcHost, DestHost, FlowName, Direction),
+		localAccess(User, DestHost, root)),
+  rule_desc('T1041 - Exfiltration Over C2 Channel',
+  0.5)).
 
 interaction_rule(
   (canDataStage(User, Host, Data) :-
