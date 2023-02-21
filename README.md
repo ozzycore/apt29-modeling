@@ -14,7 +14,7 @@ We present the usage of the proposed methodology on Techniques picked from the M
 ## Build instructions
 ```
 # Build the dockerfile
-docker build -f Dockerfile -t local/mulval:latest .
+docker build -f Dockerfile -t local/mulval:latest . 
 
 # Run the image (you can mount the required directories)
 docker run \
