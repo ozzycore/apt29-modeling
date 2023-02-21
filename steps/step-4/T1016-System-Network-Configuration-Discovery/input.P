@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canDiscoverSystemInformation(attacker, victimHost)).
+attackGoal(canDiscoverInternetConnections(attacker, victimHost)).
 
 /************/
 /* Attacker */
@@ -152,6 +152,13 @@ fileAttr(victimHost, '/bin/df', -,r,w,x,-,-,-,r,w,x).
 fileOwner(victimHost, root, '/bin/df').
 fileGroupOwner(victimHost, '/bin/df', root).
 
+
+isNetworkDiscoverUtil(tracert).
+dataBind(victimHost, '/bin/tracert', tracert).
+installed(victimHost, '/bin/tracert', tracert).
+fileAttr(victimHost, '/bin/tracert', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/tracert').
+fileGroupOwner(victimHost, '/bin/tracert', root).
 
 /************/
 /*   Temp   */

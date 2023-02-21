@@ -45,6 +45,7 @@ primitive(isProcessDiscoveryUtil(_software)).
 primitive(isDeletionUtil(_software)).
 primitive(isUserDiscoverUtil(_software)).
 primitive(isSystemDiscoverUtil(_software)).
+primitive(isNetworkDiscoverUtil(_software)).
 
 
 /****       Technique Assets        *****/
@@ -81,6 +82,8 @@ derived(canProcessDiscovery(_user, _host)).
 derived(canDeleteFiles(_user, _host, _data)).
 derived(canDiscoverSystemOwnerUser(_user, _host)).
 derived(canDiscoverSystemInformation(_user, _host)).
+derived(canDiscoverSystemNetworkConfiguration(_user, _host)).
+derived(canDiscoverInternetConnections(_user, _host)).
 
 
 /****   Technique Implementation    *****/
@@ -117,6 +120,8 @@ derived(processDiscovery(_user, _host)).
 derived(indicatorRemovalOnHostFileDeletion(_user, _host, _data)).
 derived(systemOwnerUserDiscovery(_user, _host)).
 derived(systemInformationDiscovery(_user, _host)).
+derived(systemNetworkConfigurationDiscovery(_user, _host)).
+derived(systemNetworkInternetConnectionDiscovery(_user, _host)).
 
 
 /****       Building Blocks         *****/
@@ -181,6 +186,8 @@ meta(advances(_, _)).
 :- table canDeleteFiles/3.
 :- table canDiscoverSystemOwnerUser/2.
 :- table canDiscoverSystemInformation/2.
+:- table canDiscoverSystemNetworkConfiguration/2.
+:- table canDiscoverInternetConnections/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -213,6 +220,8 @@ meta(advances(_, _)).
 :- table indicatorRemovalOnHostFileDeletion/3.
 :- table systemOwnerUserDiscovery/2.
 :- table systemInformationDiscovery/2.
+:- table systemNetworkConfigurationDiscovery/2.
+:- table systemNetworkInternetConnectionDiscovery/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -234,10 +243,36 @@ meta(advances(_, _)).
 :- table dataFlowOnStandardPort/4.
 
 
-
 /******************************************************/
 /****         Step 4 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canDiscoverSystemNetworkConfiguration(User, Host) :-
+    systemNetworkConfigurationDiscovery(User, Host)),
+  rule_desc('Asset - Able to discover system network configuration',
+  0.5)).
+
+interaction_rule(
+  (canDiscoverInternetConnections(User, Host) :-
+    systemNetworkInternetConnectionDiscovery(User, Host)),
+  rule_desc('Asset - Able to discover exsiting internet connection',
+  0.5)).
+
+interaction_rule(
+  (systemNetworkConfigurationDiscovery(User, Host) :-
+		systemNetworkInternetConnectionDiscovery(User, Host)),
+  rule_desc('T1016 - System Network Configuration Discovery',
+  0.5)).
+
+interaction_rule(
+  (systemNetworkInternetConnectionDiscovery(User, Host) :-
+		malicious(User),
+		canAbuseCmdScriptingInterpreter(User, Host, CmdPath),
+		canRunInstalledSoftware(User, Host, UtilPath, Software),
+    isNetworkDiscoverUtil(Software)),
+  rule_desc('T1016.001 - System Network Configuration Discovery - Internet Connection Discovery',
+  0.5)).
 
 interaction_rule(
   (canDiscoverSystemInformation(User, Host) :-

@@ -82,5 +82,7 @@
 
 :-(dynamic(isSystemDiscoverUtil(_h3150))).
 
+:-(dynamic(isNetworkDiscoverUtil(_h3150))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 
