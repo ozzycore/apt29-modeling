@@ -38,7 +38,7 @@ derived(canAbuseCmdScriptingInterpreter(_user, _host, _path)).
 derived(canAbusePowerShell(_user, _host, _path)).
 derived(canAbuseUnixShell(_user, _host, _path)).
 derived(canDiscoverData(_user, _host, _data)).
-
+derived(canAutomateCollection(_user, _host, _data)).
 
 /****   Technique Implementation    *****/
 
@@ -50,6 +50,8 @@ derived(cmdScriptingInterpreter(_user, _host, _path)).
 derived(cmdScriptingInterpreterUnixShell(_user, _host, _path)).
 derived(cmdScriptingInterpreterPowerShell(_user, _host, _path)).
 derived(fileAndDirectoryDiscovery(_user, _host, _data)).
+derived(automatedCollection(_user, _host, _data)).
+
 
 /****       Building Blocks         *****/
 
@@ -89,6 +91,7 @@ meta(advances(_, _)).
 :- table canAbusePowerShell/3.
 :- table canAbuseUnixShell/3.
 :- table canDiscoverData/3.
+:- table canAutomateCollection/3.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -97,6 +100,7 @@ meta(advances(_, _)).
 :- table cmdScriptingInterpreterUnixShell/3.
 :- table cmdScriptingInterpreterPowerShell/3.
 :- table fileAndDirectoryDiscovery/3.
+:- table automatedCollection/3.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -119,6 +123,31 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 2 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (canAutomateCollection(User, Host, Data) :-
+    automatedCollection(User, Host, Data)),
+  rule_desc('Asset - Able to write a script and run it on host',
+  0.5)).
+
+interaction_rule(
+  (automatedCollection(User, Host, Data) :-
+    malicious(User),
+    canDiscoverData(User, Host, Data),
+    accessFile(User, Host, exec, Path),
+    accessFile(User, Host, write, Path),
+    fileAttr(Host, Path, -,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1119 - Automated Collection - Discovery - existing file',
+  0.5)).
+
+interaction_rule(
+  (automatedCollection(User, Host, Data) :-
+    malicious(User),
+    canDiscoverData(User, Host, Data),
+    accessFile(User, Host, write, Path),
+    fileAttr(Host, Path, d,_,_,_,_,_,_,_,_,_)),
+  rule_desc('T1119 - Automated Collection - Discovery - new file',
+  0.5)).
 
 interaction_rule(
   (canDiscoverData(User, Host, Data) :-

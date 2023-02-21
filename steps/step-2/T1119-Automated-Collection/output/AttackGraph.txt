@@ -1,484 +1,861 @@
-1,"canDiscoverData(attacker,victimHost,privateDocuments)","OR",0
-2,"RULE 0 (Asset - Able to run file and directory discovery process on host)","AND",0
-3,"fileAndDirectoryDiscovery(attacker,victimHost,privateDocuments)","OR",0
-4,"RULE 1 (T1083 - File and Directory Discovery)","AND",0
-5,"accessFile(attacker,victimHost,read,'/private')","OR",0
-6,"RULE 24 (BB - execCode implies file access)","AND",0
-7,"canAccessFile(victimHost,_,read,'/private')","OR",0
-8,"RULE 26 (BB - A legitimate account can access file)","AND",0
-9,"localFileProtection(victimHost,_,read,'/private')","OR",0
-10,"RULE 29 (BB - world file access)","AND",0
-11,"worldAccessible(victimHost,read,'/private')","OR",0
-12,"RULE 32 (BB - world file access)","AND",0
-13,"fileAttr(victimHost,'/private',d,r,w,x,r,-,x,r,-,x)","LEAF",1
-12,13,-1
+1,"canAutomateCollection(attacker,victimHost,privateDocuments)","OR",0
+2,"RULE 0 (Asset - Able to write a script and run it on host)","AND",0
+3,"automatedCollection(attacker,victimHost,privateDocuments)","OR",0
+4,"RULE 1 (T1119 - Automated Collection - Discovery - existing file)","AND",0
+5,"fileAttr(victimHost,'/bin/bash',-,-,-,-,r,w,x,-,-,-)","LEAF",1
+4,5,-1
+6,"accessFile(attacker,victimHost,write,'/bin/bash')","OR",0
+7,"RULE 27 (BB - execCode implies file access)","AND",0
+8,"canAccessFile(victimHost,victimAccount,write,'/bin/bash')","OR",0
+9,"RULE 29 (BB - A legitimate account can access file)","AND",0
+10,"localFileProtection(victimHost,victimAccount,write,'/bin/bash')","OR",0
+11,"RULE 31 (BB - group file access)","AND",0
+12,"groupAccessible(victimHost,write,'/bin/bash')","LEAF",1
 11,12,-1
+13,"fileGroupOwner(victimHost,'/bin/bash',victimGroup)","LEAF",1
+11,13,-1
+14,"inGroup(victimAccount,victimGroup)","LEAF",1
+11,14,-1
 10,11,-1
 9,10,-1
 8,9,-1
 7,8,-1
-6,7,-1
-14,"execCode(attacker,victimHost,_)","OR",0
-15,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-16,"canAccessFile(victimHost,_,exec,'/bin/find')","OR",0
-17,"RULE 26 (BB - A legitimate account can access file)","AND",0
-18,"localFileProtection(victimHost,_,exec,'/bin/find')","OR",0
-19,"RULE 29 (BB - world file access)","AND",0
-20,"worldAccessible(victimHost,exec,'/bin/find')","OR",0
-21,"RULE 38 (BB - world file access)","AND",0
-22,"fileAttr(victimHost,'/bin/find',-,r,w,x,-,-,-,r,w,x)","LEAF",1
-21,22,-1
+15,"execCode(attacker,victimHost,victimAccount)","OR",0
+16,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+17,"canAccessFile(victimHost,victimAccount,exec,'/bin/bash')","OR",0
+18,"RULE 29 (BB - A legitimate account can access file)","AND",0
+19,"localFileProtection(victimHost,victimAccount,exec,'/bin/bash')","OR",0
+20,"RULE 31 (BB - group file access)","AND",0
+21,"groupAccessible(victimHost,exec,'/bin/bash')","LEAF",1
 20,21,-1
+20,13,-1
+20,14,-1
 19,20,-1
 18,19,-1
 17,18,-1
 16,17,-1
-15,16,-1
-23,"accessDataFlow(attacker,write,reversePupy)","OR",0
-24,"RULE 11 (BB - The remote root user has write access to the dataFlow)","AND",0
-25,"dataFlowReverseShell(reversePupy)","OR",0
-26,"RULE 12 (BB - Reverse shell data flow)","AND",0
-27,"isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc')","LEAF",1
-26,27,-1
-28,"flowBind(reversePupy,http,1234)","OR",0
-29,"RULE 15 (BB - Flow associated port and protocol)","AND",0
-30,"canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
-31,"RULE 17 (BB - Script access an exposed service)","AND",0
-32,"networkServiceInfo(pupyC2Server,root,pupyd,http,1234)","LEAF",1
-31,32,-1
-33,"accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
-34,"RULE 24 (BB - execCode implies file access)","AND",0
-35,"canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
-36,"RULE 26 (BB - A legitimate account can access file)","AND",0
-37,"localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
-38,"RULE 27 (BB - owner file access)","AND",0
-39,"ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
-40,"RULE 36 (BB - owner file access)","AND",0
-41,"fileAttr(victimHost,'/home/victimAccount/3aka3.doc',-,r,w,x,-,-,-,-,-,-)","LEAF",1
-40,41,-1
+22,"accessDataFlow(attacker,write,reversePupy)","OR",0
+23,"RULE 14 (BB - The remote root user has write access to the dataFlow)","AND",0
+24,"dataFlowReverseShell(reversePupy)","OR",0
+25,"RULE 15 (BB - Reverse shell data flow)","AND",0
+26,"isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc')","LEAF",1
+25,26,-1
+27,"flowBind(reversePupy,http,1234)","OR",0
+28,"RULE 18 (BB - Flow associated port and protocol)","AND",0
+29,"canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+30,"RULE 20 (BB - Script access an exposed service)","AND",0
+31,"networkServiceInfo(pupyC2Server,root,pupyd,http,1234)","LEAF",1
+30,31,-1
+32,"accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+33,"RULE 27 (BB - execCode implies file access)","AND",0
+34,"canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+35,"RULE 29 (BB - A legitimate account can access file)","AND",0
+36,"localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+37,"RULE 30 (BB - owner file access)","AND",0
+38,"ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+39,"RULE 39 (BB - owner file access)","AND",0
+40,"fileAttr(victimHost,'/home/victimAccount/3aka3.doc',-,r,w,x,-,-,-,-,-,-)","LEAF",1
 39,40,-1
 38,39,-1
-42,"fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')","LEAF",1
-38,42,-1
 37,38,-1
+41,"fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')","LEAF",1
+37,41,-1
 36,37,-1
 35,36,-1
 34,35,-1
-43,"execCode(victimUser,victimHost,victimAccount)","OR",0
-44,"RULE 25 (BB - A User can execute code using his account on a specific host)","AND",0
-45,"hasAccount(victimUser,victimHost,victimAccount)","LEAF",1
-44,45,-1
-43,44,-1
-34,43,-1
 33,34,-1
-31,33,-1
-46,"scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
-47,"RULE 18 (BB - Direct script network access)","AND",0
-48,"isNetScript(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","LEAF",1
-47,48,-1
-49,"aclNW(victimHost,pupyC2Server,http,1234)","LEAF",1
-47,49,-1
+42,"execCode(victimUser,victimHost,victimAccount)","OR",0
+43,"RULE 28 (BB - A User can execute code using his account on a specific host)","AND",0
+44,"hasAccount(victimUser,victimHost,victimAccount)","LEAF",1
+43,44,-1
+42,43,-1
+33,42,-1
+32,33,-1
+30,32,-1
+45,"scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+46,"RULE 21 (BB - Direct script network access)","AND",0
+47,"isNetScript(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","LEAF",1
 46,47,-1
-31,46,-1
-30,31,-1
+48,"aclNW(victimHost,pupyC2Server,http,1234)","LEAF",1
+46,48,-1
+45,46,-1
+30,45,-1
 29,30,-1
 28,29,-1
-26,28,-1
-50,"dataFlow(victimHost,pupyC2Server,reversePupy,_)","OR",0
-51,"RULE 16 (BB - Data flow initiated by script)","AND",0
-51,30,-1
-50,51,-1
-26,50,-1
-25,26,-1
+27,28,-1
+25,27,-1
+49,"dataFlow(victimHost,pupyC2Server,reversePupy,_)","OR",0
+50,"RULE 19 (BB - Data flow initiated by script)","AND",0
+50,29,-1
+49,50,-1
+25,49,-1
 24,25,-1
-24,50,-1
-52,"localAccess(attacker,pupyC2Server,root)","OR",0
-53,"RULE 44 (BB - An user who is located in a host has root access to that host)","AND",0
-54,"located(attacker,pupyC2Server)","LEAF",1
-53,54,-1
-52,53,-1
-24,52,-1
 23,24,-1
-15,23,-1
-15,25,-1
-15,50,-1
-14,15,-1
-55,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-56,"canAccessFile(victimHost,_,exec,'/bin/ls')","OR",0
-57,"RULE 26 (BB - A legitimate account can access file)","AND",0
-58,"localFileProtection(victimHost,_,exec,'/bin/ls')","OR",0
-59,"RULE 29 (BB - world file access)","AND",0
-60,"worldAccessible(victimHost,exec,'/bin/ls')","OR",0
-61,"RULE 38 (BB - world file access)","AND",0
-62,"fileAttr(victimHost,'/bin/ls',-,r,w,x,-,-,-,r,w,x)","LEAF",1
-61,62,-1
+23,49,-1
+51,"localAccess(attacker,pupyC2Server,root)","OR",0
+52,"RULE 47 (BB - An user who is located in a host has root access to that host)","AND",0
+53,"located(attacker,pupyC2Server)","LEAF",1
+52,53,-1
+51,52,-1
+23,51,-1
+22,23,-1
+16,22,-1
+16,24,-1
+16,49,-1
+15,16,-1
+54,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+55,"canAccessFile(victimHost,victimAccount,exec,'/bin/powershell')","OR",0
+56,"RULE 29 (BB - A legitimate account can access file)","AND",0
+57,"localFileProtection(victimHost,victimAccount,exec,'/bin/powershell')","OR",0
+58,"RULE 30 (BB - owner file access)","AND",0
+59,"ownerAccessible(victimHost,exec,'/bin/powershell')","OR",0
+60,"RULE 39 (BB - owner file access)","AND",0
+61,"fileAttr(victimHost,'/bin/powershell',-,r,w,x,-,-,-,-,-,-)","LEAF",1
 60,61,-1
 59,60,-1
 58,59,-1
+62,"fileOwner(victimHost,victimAccount,'/bin/powershell')","LEAF",1
+58,62,-1
 57,58,-1
 56,57,-1
 55,56,-1
-55,23,-1
-55,25,-1
-55,50,-1
-14,55,-1
-63,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-64,"canAccessFile(victimHost,_,exec,'/private')","OR",0
-65,"RULE 26 (BB - A legitimate account can access file)","AND",0
-66,"localFileProtection(victimHost,_,exec,'/private')","OR",0
-67,"RULE 29 (BB - world file access)","AND",0
-68,"worldAccessible(victimHost,exec,'/private')","OR",0
-69,"RULE 38 (BB - world file access)","AND",0
-69,13,-1
+54,55,-1
+54,22,-1
+54,24,-1
+54,49,-1
+15,54,-1
+63,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+63,34,-1
+63,22,-1
+63,24,-1
+63,49,-1
+15,63,-1
+64,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+65,"canAccessFile(victimHost,victimAccount,exec,'/private')","OR",0
+66,"RULE 29 (BB - A legitimate account can access file)","AND",0
+67,"localFileProtection(victimHost,victimAccount,exec,'/private')","OR",0
+68,"RULE 30 (BB - owner file access)","AND",0
+69,"ownerAccessible(victimHost,exec,'/private')","OR",0
+70,"RULE 39 (BB - owner file access)","AND",0
+71,"fileAttr(victimHost,'/private',d,r,w,x,r,-,x,r,-,x)","LEAF",1
+70,71,-1
+69,70,-1
 68,69,-1
+72,"fileOwner(victimHost,victimAccount,'/private')","LEAF",1
+68,72,-1
 67,68,-1
+73,"RULE 31 (BB - group file access)","AND",0
+74,"groupAccessible(victimHost,exec,'/private')","LEAF",1
+73,74,-1
+75,"fileGroupOwner(victimHost,'/private',victimGroup)","LEAF",1
+73,75,-1
+73,14,-1
+67,73,-1
+76,"RULE 32 (BB - world file access)","AND",0
+77,"worldAccessible(victimHost,exec,'/private')","OR",0
+78,"RULE 41 (BB - world file access)","AND",0
+78,71,-1
+77,78,-1
+76,77,-1
+67,76,-1
 66,67,-1
 65,66,-1
 64,65,-1
-63,64,-1
-63,23,-1
-63,25,-1
-63,50,-1
-14,63,-1
-70,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-71,"canAccessFile(victimHost,_,exec,'/private/secret1.doc')","OR",0
-72,"RULE 26 (BB - A legitimate account can access file)","AND",0
-73,"localFileProtection(victimHost,_,exec,'/private/secret1.doc')","OR",0
-74,"RULE 29 (BB - world file access)","AND",0
-75,"worldAccessible(victimHost,exec,'/private/secret1.doc')","OR",0
-76,"RULE 38 (BB - world file access)","AND",0
-77,"fileAttr(victimHost,'/private/secret1.doc',-,-,-,-,-,-,-,r,w,x)","LEAF",1
-76,77,-1
-75,76,-1
-74,75,-1
-73,74,-1
-72,73,-1
-71,72,-1
-70,71,-1
-70,23,-1
-70,25,-1
-70,50,-1
-14,70,-1
-78,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-79,"canAccessFile(victimHost,_,exec,'/private/secret2.doc')","OR",0
-80,"RULE 26 (BB - A legitimate account can access file)","AND",0
-81,"localFileProtection(victimHost,_,exec,'/private/secret2.doc')","OR",0
-82,"RULE 29 (BB - world file access)","AND",0
-83,"worldAccessible(victimHost,exec,'/private/secret2.doc')","OR",0
-84,"RULE 38 (BB - world file access)","AND",0
-85,"fileAttr(victimHost,'/private/secret2.doc',-,-,-,-,-,-,-,r,w,x)","LEAF",1
-84,85,-1
-83,84,-1
-82,83,-1
-81,82,-1
-80,81,-1
+64,22,-1
+64,24,-1
+64,49,-1
+15,64,-1
+7,15,-1
+6,7,-1
+4,6,-1
+79,"accessFile(attacker,victimHost,exec,'/bin/bash')","OR",0
+80,"RULE 27 (BB - execCode implies file access)","AND",0
+80,17,-1
+80,15,-1
 79,80,-1
-78,79,-1
-78,23,-1
-78,25,-1
-78,50,-1
-14,78,-1
-6,14,-1
-5,6,-1
-86,"RULE 24 (BB - execCode implies file access)","AND",0
-87,"canAccessFile(victimHost,root,read,'/private')","OR",0
-88,"RULE 26 (BB - A legitimate account can access file)","AND",0
-89,"localFileProtection(victimHost,root,read,'/private')","OR",0
-90,"RULE 29 (BB - world file access)","AND",0
-90,11,-1
+4,79,-1
+81,"canDiscoverData(attacker,victimHost,privateDocuments)","OR",0
+82,"RULE 3 (Asset - Able to run file and directory discovery process on host)","AND",0
+83,"fileAndDirectoryDiscovery(attacker,victimHost,privateDocuments)","OR",0
+84,"RULE 4 (T1083 - File and Directory Discovery)","AND",0
+85,"accessFile(attacker,victimHost,read,'/private')","OR",0
+86,"RULE 27 (BB - execCode implies file access)","AND",0
+87,"canAccessFile(victimHost,_,read,'/private')","OR",0
+88,"RULE 29 (BB - A legitimate account can access file)","AND",0
+89,"localFileProtection(victimHost,_,read,'/private')","OR",0
+90,"RULE 32 (BB - world file access)","AND",0
+91,"worldAccessible(victimHost,read,'/private')","OR",0
+92,"RULE 35 (BB - world file access)","AND",0
+92,71,-1
+91,92,-1
+90,91,-1
 89,90,-1
 88,89,-1
 87,88,-1
 86,87,-1
-91,"execCode(attacker,victimHost,root)","OR",0
-92,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-93,"canAccessFile(victimHost,root,exec,'/bin/find')","OR",0
-94,"RULE 26 (BB - A legitimate account can access file)","AND",0
-95,"localFileProtection(victimHost,root,exec,'/bin/find')","OR",0
-96,"RULE 27 (BB - owner file access)","AND",0
-97,"ownerAccessible(victimHost,exec,'/bin/find')","OR",0
-98,"RULE 36 (BB - owner file access)","AND",0
-98,22,-1
+93,"execCode(attacker,victimHost,_)","OR",0
+94,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+95,"canAccessFile(victimHost,_,exec,'/bin/find')","OR",0
+96,"RULE 29 (BB - A legitimate account can access file)","AND",0
+97,"localFileProtection(victimHost,_,exec,'/bin/find')","OR",0
+98,"RULE 32 (BB - world file access)","AND",0
+99,"worldAccessible(victimHost,exec,'/bin/find')","OR",0
+100,"RULE 41 (BB - world file access)","AND",0
+101,"fileAttr(victimHost,'/bin/find',-,r,w,x,-,-,-,r,w,x)","LEAF",1
+100,101,-1
+99,100,-1
+98,99,-1
 97,98,-1
 96,97,-1
-99,"fileOwner(victimHost,root,'/bin/find')","LEAF",1
-96,99,-1
 95,96,-1
-100,"RULE 29 (BB - world file access)","AND",0
-100,20,-1
-95,100,-1
 94,95,-1
+94,22,-1
+94,24,-1
+94,49,-1
 93,94,-1
-92,93,-1
-92,23,-1
-92,25,-1
-92,50,-1
-91,92,-1
-101,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-102,"canAccessFile(victimHost,root,exec,'/bin/ls')","OR",0
-103,"RULE 26 (BB - A legitimate account can access file)","AND",0
-104,"localFileProtection(victimHost,root,exec,'/bin/ls')","OR",0
-105,"RULE 27 (BB - owner file access)","AND",0
-106,"ownerAccessible(victimHost,exec,'/bin/ls')","OR",0
-107,"RULE 36 (BB - owner file access)","AND",0
-107,62,-1
+102,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+103,"canAccessFile(victimHost,_,exec,'/bin/ls')","OR",0
+104,"RULE 29 (BB - A legitimate account can access file)","AND",0
+105,"localFileProtection(victimHost,_,exec,'/bin/ls')","OR",0
+106,"RULE 32 (BB - world file access)","AND",0
+107,"worldAccessible(victimHost,exec,'/bin/ls')","OR",0
+108,"RULE 41 (BB - world file access)","AND",0
+109,"fileAttr(victimHost,'/bin/ls',-,r,w,x,-,-,-,r,w,x)","LEAF",1
+108,109,-1
+107,108,-1
 106,107,-1
 105,106,-1
-108,"fileOwner(victimHost,root,'/bin/ls')","LEAF",1
-105,108,-1
 104,105,-1
-109,"RULE 29 (BB - world file access)","AND",0
-109,60,-1
-104,109,-1
 103,104,-1
 102,103,-1
-101,102,-1
-101,23,-1
-101,25,-1
-101,50,-1
-91,101,-1
-86,91,-1
-5,86,-1
-110,"RULE 24 (BB - execCode implies file access)","AND",0
-111,"canAccessFile(victimHost,victimAccount,read,'/private')","OR",0
-112,"RULE 26 (BB - A legitimate account can access file)","AND",0
-113,"localFileProtection(victimHost,victimAccount,read,'/private')","OR",0
-114,"RULE 27 (BB - owner file access)","AND",0
-115,"ownerAccessible(victimHost,read,'/private')","OR",0
-116,"RULE 30 (BB - owner file access)","AND",0
-116,13,-1
-115,116,-1
-114,115,-1
-117,"fileOwner(victimHost,victimAccount,'/private')","LEAF",1
-114,117,-1
+102,22,-1
+102,24,-1
+102,49,-1
+93,102,-1
+110,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+111,"canAccessFile(victimHost,_,exec,'/private')","OR",0
+112,"RULE 29 (BB - A legitimate account can access file)","AND",0
+113,"localFileProtection(victimHost,_,exec,'/private')","OR",0
+114,"RULE 32 (BB - world file access)","AND",0
+114,77,-1
 113,114,-1
-118,"RULE 28 (BB - group file access)","AND",0
-119,"groupAccessible(victimHost,read,'/private')","LEAF",1
-118,119,-1
-120,"fileGroupOwner(victimHost,'/private',victimGroup)","LEAF",1
-118,120,-1
-121,"inGroup(victimAccount,victimGroup)","LEAF",1
-118,121,-1
-113,118,-1
-122,"RULE 29 (BB - world file access)","AND",0
-122,11,-1
-113,122,-1
 112,113,-1
 111,112,-1
 110,111,-1
-123,"execCode(attacker,victimHost,victimAccount)","OR",0
-124,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-125,"canAccessFile(victimHost,victimAccount,exec,'/bin/bash')","OR",0
-126,"RULE 26 (BB - A legitimate account can access file)","AND",0
-127,"localFileProtection(victimHost,victimAccount,exec,'/bin/bash')","OR",0
-128,"RULE 28 (BB - group file access)","AND",0
-129,"groupAccessible(victimHost,exec,'/bin/bash')","LEAF",1
+110,22,-1
+110,24,-1
+110,49,-1
+93,110,-1
+115,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+116,"canAccessFile(victimHost,_,exec,'/private/secret1.doc')","OR",0
+117,"RULE 29 (BB - A legitimate account can access file)","AND",0
+118,"localFileProtection(victimHost,_,exec,'/private/secret1.doc')","OR",0
+119,"RULE 32 (BB - world file access)","AND",0
+120,"worldAccessible(victimHost,exec,'/private/secret1.doc')","OR",0
+121,"RULE 41 (BB - world file access)","AND",0
+122,"fileAttr(victimHost,'/private/secret1.doc',-,-,-,-,-,-,-,r,w,x)","LEAF",1
+121,122,-1
+120,121,-1
+119,120,-1
+118,119,-1
+117,118,-1
+116,117,-1
+115,116,-1
+115,22,-1
+115,24,-1
+115,49,-1
+93,115,-1
+123,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+124,"canAccessFile(victimHost,_,exec,'/private/secret2.doc')","OR",0
+125,"RULE 29 (BB - A legitimate account can access file)","AND",0
+126,"localFileProtection(victimHost,_,exec,'/private/secret2.doc')","OR",0
+127,"RULE 32 (BB - world file access)","AND",0
+128,"worldAccessible(victimHost,exec,'/private/secret2.doc')","OR",0
+129,"RULE 41 (BB - world file access)","AND",0
+130,"fileAttr(victimHost,'/private/secret2.doc',-,-,-,-,-,-,-,r,w,x)","LEAF",1
+129,130,-1
 128,129,-1
-130,"fileGroupOwner(victimHost,'/bin/bash',victimGroup)","LEAF",1
-128,130,-1
-128,121,-1
 127,128,-1
 126,127,-1
 125,126,-1
 124,125,-1
-124,23,-1
-124,25,-1
-124,50,-1
 123,124,-1
-131,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-132,"canAccessFile(victimHost,victimAccount,exec,'/bin/powershell')","OR",0
-133,"RULE 26 (BB - A legitimate account can access file)","AND",0
-134,"localFileProtection(victimHost,victimAccount,exec,'/bin/powershell')","OR",0
-135,"RULE 27 (BB - owner file access)","AND",0
-136,"ownerAccessible(victimHost,exec,'/bin/powershell')","OR",0
-137,"RULE 36 (BB - owner file access)","AND",0
-138,"fileAttr(victimHost,'/bin/powershell',-,r,w,x,-,-,-,-,-,-)","LEAF",1
-137,138,-1
-136,137,-1
-135,136,-1
-139,"fileOwner(victimHost,victimAccount,'/bin/powershell')","LEAF",1
-135,139,-1
+123,22,-1
+123,24,-1
+123,49,-1
+93,123,-1
+86,93,-1
+85,86,-1
+131,"RULE 27 (BB - execCode implies file access)","AND",0
+132,"canAccessFile(victimHost,root,read,'/private')","OR",0
+133,"RULE 29 (BB - A legitimate account can access file)","AND",0
+134,"localFileProtection(victimHost,root,read,'/private')","OR",0
+135,"RULE 32 (BB - world file access)","AND",0
+135,91,-1
 134,135,-1
 133,134,-1
 132,133,-1
 131,132,-1
-131,23,-1
-131,25,-1
-131,50,-1
-123,131,-1
-140,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-140,35,-1
-140,23,-1
-140,25,-1
-140,50,-1
-123,140,-1
-141,"RULE 10 (BB - User is able to use a reverse shell)","AND",0
-142,"canAccessFile(victimHost,victimAccount,exec,'/private')","OR",0
-143,"RULE 26 (BB - A legitimate account can access file)","AND",0
-144,"localFileProtection(victimHost,victimAccount,exec,'/private')","OR",0
-145,"RULE 27 (BB - owner file access)","AND",0
-146,"ownerAccessible(victimHost,exec,'/private')","OR",0
-147,"RULE 36 (BB - owner file access)","AND",0
-147,13,-1
-146,147,-1
-145,146,-1
-145,117,-1
-144,145,-1
-148,"RULE 28 (BB - group file access)","AND",0
-149,"groupAccessible(victimHost,exec,'/private')","LEAF",1
-148,149,-1
-148,120,-1
-148,121,-1
-144,148,-1
-143,144,-1
+136,"execCode(attacker,victimHost,root)","OR",0
+137,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+138,"canAccessFile(victimHost,root,exec,'/bin/find')","OR",0
+139,"RULE 29 (BB - A legitimate account can access file)","AND",0
+140,"localFileProtection(victimHost,root,exec,'/bin/find')","OR",0
+141,"RULE 30 (BB - owner file access)","AND",0
+142,"ownerAccessible(victimHost,exec,'/bin/find')","OR",0
+143,"RULE 39 (BB - owner file access)","AND",0
+143,101,-1
 142,143,-1
 141,142,-1
-141,23,-1
-141,25,-1
-141,50,-1
-123,141,-1
-110,123,-1
-5,110,-1
-4,5,-1
-150,"dataBindDir(victimHost,'/private',privateDocuments)","LEAF",1
-4,150,-1
-151,"canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/bash')","OR",0
-152,"RULE 2 (Asset - Able to abuse command and scripting interpreters)","AND",0
-153,"cmdScriptingInterpreter(attacker,victimHost,'/bin/bash')","OR",0
-154,"RULE 6 (T1059 - Command and Scripting Interpreter)","AND",0
-155,"cmdScriptingInterpreterUnixShell(attacker,victimHost,'/bin/bash')","OR",0
-156,"RULE 8 (T1059.004 - Command and Scripting Interpreter - PowerShell)","AND",0
-157,"isUnixShell(bash)","LEAF",1
-156,157,-1
-158,"canRunInstalledSoftware(attacker,victimHost,'/bin/bash',bash)","OR",0
-159,"RULE 9 (BB - User is able to run installed software)","AND",0
-160,"accessFile(attacker,victimHost,exec,'/bin/bash')","OR",0
-161,"RULE 24 (BB - execCode implies file access)","AND",0
-161,125,-1
-161,123,-1
+144,"fileOwner(victimHost,root,'/bin/find')","LEAF",1
+141,144,-1
+140,141,-1
+145,"RULE 32 (BB - world file access)","AND",0
+145,99,-1
+140,145,-1
+139,140,-1
+138,139,-1
+137,138,-1
+137,22,-1
+137,24,-1
+137,49,-1
+136,137,-1
+146,"RULE 13 (BB - User is able to use a reverse shell)","AND",0
+147,"canAccessFile(victimHost,root,exec,'/bin/ls')","OR",0
+148,"RULE 29 (BB - A legitimate account can access file)","AND",0
+149,"localFileProtection(victimHost,root,exec,'/bin/ls')","OR",0
+150,"RULE 30 (BB - owner file access)","AND",0
+151,"ownerAccessible(victimHost,exec,'/bin/ls')","OR",0
+152,"RULE 39 (BB - owner file access)","AND",0
+152,109,-1
+151,152,-1
+150,151,-1
+153,"fileOwner(victimHost,root,'/bin/ls')","LEAF",1
+150,153,-1
+149,150,-1
+154,"RULE 32 (BB - world file access)","AND",0
+154,107,-1
+149,154,-1
+148,149,-1
+147,148,-1
+146,147,-1
+146,22,-1
+146,24,-1
+146,49,-1
+136,146,-1
+131,136,-1
+85,131,-1
+155,"RULE 27 (BB - execCode implies file access)","AND",0
+156,"canAccessFile(victimHost,victimAccount,read,'/private')","OR",0
+157,"RULE 29 (BB - A legitimate account can access file)","AND",0
+158,"localFileProtection(victimHost,victimAccount,read,'/private')","OR",0
+159,"RULE 30 (BB - owner file access)","AND",0
+160,"ownerAccessible(victimHost,read,'/private')","OR",0
+161,"RULE 33 (BB - owner file access)","AND",0
+161,71,-1
 160,161,-1
 159,160,-1
-162,"installed(victimHost,'/bin/bash',bash)","LEAF",1
-159,162,-1
+159,72,-1
 158,159,-1
-156,158,-1
-163,"malicious(attacker)","LEAF",1
-156,163,-1
+162,"RULE 31 (BB - group file access)","AND",0
+163,"groupAccessible(victimHost,read,'/private')","LEAF",1
+162,163,-1
+162,75,-1
+162,14,-1
+158,162,-1
+164,"RULE 32 (BB - world file access)","AND",0
+164,91,-1
+158,164,-1
+157,158,-1
+156,157,-1
 155,156,-1
-154,155,-1
-153,154,-1
-152,153,-1
-151,152,-1
-4,151,-1
-164,"isSearchUtil(find)","LEAF",1
-4,164,-1
-165,"canRunInstalledSoftware(attacker,victimHost,'/bin/find',find)","OR",0
-166,"RULE 9 (BB - User is able to run installed software)","AND",0
-167,"accessFile(attacker,victimHost,exec,'/bin/find')","OR",0
-168,"RULE 24 (BB - execCode implies file access)","AND",0
-168,16,-1
-168,14,-1
-167,168,-1
-169,"RULE 24 (BB - execCode implies file access)","AND",0
-169,93,-1
-169,91,-1
-167,169,-1
-170,"RULE 24 (BB - execCode implies file access)","AND",0
-171,"canAccessFile(victimHost,victimAccount,exec,'/bin/find')","OR",0
-172,"RULE 26 (BB - A legitimate account can access file)","AND",0
-173,"localFileProtection(victimHost,victimAccount,exec,'/bin/find')","OR",0
-174,"RULE 29 (BB - world file access)","AND",0
-174,20,-1
-173,174,-1
-172,173,-1
+155,15,-1
+85,155,-1
+84,85,-1
+165,"dataBindDir(victimHost,'/private',privateDocuments)","LEAF",1
+84,165,-1
+166,"canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/bash')","OR",0
+167,"RULE 5 (Asset - Able to abuse command and scripting interpreters)","AND",0
+168,"cmdScriptingInterpreter(attacker,victimHost,'/bin/bash')","OR",0
+169,"RULE 9 (T1059 - Command and Scripting Interpreter)","AND",0
+170,"cmdScriptingInterpreterUnixShell(attacker,victimHost,'/bin/bash')","OR",0
+171,"RULE 11 (T1059.004 - Command and Scripting Interpreter - PowerShell)","AND",0
+172,"isUnixShell(bash)","LEAF",1
 171,172,-1
+173,"canRunInstalledSoftware(attacker,victimHost,'/bin/bash',bash)","OR",0
+174,"RULE 12 (BB - User is able to run installed software)","AND",0
+174,79,-1
+175,"installed(victimHost,'/bin/bash',bash)","LEAF",1
+174,175,-1
+173,174,-1
+171,173,-1
+176,"malicious(attacker)","LEAF",1
+171,176,-1
 170,171,-1
-170,123,-1
-167,170,-1
+169,170,-1
+168,169,-1
+167,168,-1
 166,167,-1
-175,"installed(victimHost,'/bin/find',find)","LEAF",1
-166,175,-1
-165,166,-1
-4,165,-1
-4,163,-1
-3,4,-1
-176,"RULE 1 (T1083 - File and Directory Discovery)","AND",0
-176,5,-1
-176,150,-1
-176,151,-1
-177,"isSearchUtil(ls)","LEAF",1
-176,177,-1
-178,"canRunInstalledSoftware(attacker,victimHost,'/bin/ls',ls)","OR",0
-179,"RULE 9 (BB - User is able to run installed software)","AND",0
-180,"accessFile(attacker,victimHost,exec,'/bin/ls')","OR",0
-181,"RULE 24 (BB - execCode implies file access)","AND",0
-181,56,-1
-181,14,-1
+84,166,-1
+177,"isSearchUtil(find)","LEAF",1
+84,177,-1
+178,"canRunInstalledSoftware(attacker,victimHost,'/bin/find',find)","OR",0
+179,"RULE 12 (BB - User is able to run installed software)","AND",0
+180,"accessFile(attacker,victimHost,exec,'/bin/find')","OR",0
+181,"RULE 27 (BB - execCode implies file access)","AND",0
+181,95,-1
+181,93,-1
 180,181,-1
-182,"RULE 24 (BB - execCode implies file access)","AND",0
-182,102,-1
-182,91,-1
+182,"RULE 27 (BB - execCode implies file access)","AND",0
+182,138,-1
+182,136,-1
 180,182,-1
-183,"RULE 24 (BB - execCode implies file access)","AND",0
-184,"canAccessFile(victimHost,victimAccount,exec,'/bin/ls')","OR",0
-185,"RULE 26 (BB - A legitimate account can access file)","AND",0
-186,"localFileProtection(victimHost,victimAccount,exec,'/bin/ls')","OR",0
-187,"RULE 29 (BB - world file access)","AND",0
-187,60,-1
+183,"RULE 27 (BB - execCode implies file access)","AND",0
+184,"canAccessFile(victimHost,victimAccount,exec,'/bin/find')","OR",0
+185,"RULE 29 (BB - A legitimate account can access file)","AND",0
+186,"localFileProtection(victimHost,victimAccount,exec,'/bin/find')","OR",0
+187,"RULE 32 (BB - world file access)","AND",0
+187,99,-1
 186,187,-1
 185,186,-1
 184,185,-1
 183,184,-1
-183,123,-1
+183,15,-1
 180,183,-1
 179,180,-1
-188,"installed(victimHost,'/bin/ls',ls)","LEAF",1
+188,"installed(victimHost,'/bin/find',find)","LEAF",1
 179,188,-1
 178,179,-1
-176,178,-1
-176,163,-1
-3,176,-1
-189,"RULE 1 (T1083 - File and Directory Discovery)","AND",0
-189,5,-1
-189,150,-1
-190,"canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/powershell')","OR",0
-191,"RULE 2 (Asset - Able to abuse command and scripting interpreters)","AND",0
-192,"cmdScriptingInterpreter(attacker,victimHost,'/bin/powershell')","OR",0
-193,"RULE 5 (T1059 - Command and Scripting Interpreter)","AND",0
-194,"cmdScriptingInterpreterPowerShell(attacker,victimHost,'/bin/powershell')","OR",0
-195,"RULE 7 (T1059.001 - Command and Scripting Interpreter - PowerShell)","AND",0
-196,"isPowerShell(powerShell)","LEAF",1
-195,196,-1
-197,"canRunInstalledSoftware(attacker,victimHost,'/bin/powershell',powerShell)","OR",0
-198,"RULE 9 (BB - User is able to run installed software)","AND",0
-199,"accessFile(attacker,victimHost,exec,'/bin/powershell')","OR",0
-200,"RULE 24 (BB - execCode implies file access)","AND",0
-200,132,-1
-200,123,-1
+84,178,-1
+84,176,-1
+83,84,-1
+189,"RULE 4 (T1083 - File and Directory Discovery)","AND",0
+189,85,-1
+189,165,-1
+189,166,-1
+190,"isSearchUtil(ls)","LEAF",1
+189,190,-1
+191,"canRunInstalledSoftware(attacker,victimHost,'/bin/ls',ls)","OR",0
+192,"RULE 12 (BB - User is able to run installed software)","AND",0
+193,"accessFile(attacker,victimHost,exec,'/bin/ls')","OR",0
+194,"RULE 27 (BB - execCode implies file access)","AND",0
+194,103,-1
+194,93,-1
+193,194,-1
+195,"RULE 27 (BB - execCode implies file access)","AND",0
+195,147,-1
+195,136,-1
+193,195,-1
+196,"RULE 27 (BB - execCode implies file access)","AND",0
+197,"canAccessFile(victimHost,victimAccount,exec,'/bin/ls')","OR",0
+198,"RULE 29 (BB - A legitimate account can access file)","AND",0
+199,"localFileProtection(victimHost,victimAccount,exec,'/bin/ls')","OR",0
+200,"RULE 32 (BB - world file access)","AND",0
+200,107,-1
 199,200,-1
 198,199,-1
-201,"installed(victimHost,'/bin/powershell',powerShell)","LEAF",1
-198,201,-1
 197,198,-1
-195,197,-1
-195,163,-1
-194,195,-1
-193,194,-1
+196,197,-1
+196,15,-1
+193,196,-1
 192,193,-1
+201,"installed(victimHost,'/bin/ls',ls)","LEAF",1
+192,201,-1
 191,192,-1
-190,191,-1
-189,190,-1
-189,164,-1
-189,165,-1
-189,163,-1
-3,189,-1
-202,"RULE 1 (T1083 - File and Directory Discovery)","AND",0
-202,5,-1
-202,150,-1
-202,190,-1
+189,191,-1
+189,176,-1
+83,189,-1
+202,"RULE 4 (T1083 - File and Directory Discovery)","AND",0
+202,85,-1
+202,165,-1
+203,"canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/powershell')","OR",0
+204,"RULE 5 (Asset - Able to abuse command and scripting interpreters)","AND",0
+205,"cmdScriptingInterpreter(attacker,victimHost,'/bin/powershell')","OR",0
+206,"RULE 8 (T1059 - Command and Scripting Interpreter)","AND",0
+207,"cmdScriptingInterpreterPowerShell(attacker,victimHost,'/bin/powershell')","OR",0
+208,"RULE 10 (T1059.001 - Command and Scripting Interpreter - PowerShell)","AND",0
+209,"isPowerShell(powerShell)","LEAF",1
+208,209,-1
+210,"canRunInstalledSoftware(attacker,victimHost,'/bin/powershell',powerShell)","OR",0
+211,"RULE 12 (BB - User is able to run installed software)","AND",0
+212,"accessFile(attacker,victimHost,exec,'/bin/powershell')","OR",0
+213,"RULE 27 (BB - execCode implies file access)","AND",0
+213,55,-1
+213,15,-1
+212,213,-1
+211,212,-1
+214,"installed(victimHost,'/bin/powershell',powerShell)","LEAF",1
+211,214,-1
+210,211,-1
+208,210,-1
+208,176,-1
+207,208,-1
+206,207,-1
+205,206,-1
+204,205,-1
+203,204,-1
+202,203,-1
 202,177,-1
 202,178,-1
-202,163,-1
-3,202,-1
+202,176,-1
+83,202,-1
+215,"RULE 4 (T1083 - File and Directory Discovery)","AND",0
+215,85,-1
+215,165,-1
+215,203,-1
+215,190,-1
+215,191,-1
+215,176,-1
+83,215,-1
+82,83,-1
+81,82,-1
+4,81,-1
+4,176,-1
+3,4,-1
+216,"RULE 1 (T1119 - Automated Collection - Discovery - existing file)","AND",0
+216,101,-1
+217,"accessFile(attacker,victimHost,write,'/bin/find')","OR",0
+218,"RULE 27 (BB - execCode implies file access)","AND",0
+219,"canAccessFile(victimHost,_,write,'/bin/find')","OR",0
+220,"RULE 29 (BB - A legitimate account can access file)","AND",0
+221,"localFileProtection(victimHost,_,write,'/bin/find')","OR",0
+222,"RULE 32 (BB - world file access)","AND",0
+223,"worldAccessible(victimHost,write,'/bin/find')","OR",0
+224,"RULE 38 (BB - world file access)","AND",0
+224,101,-1
+223,224,-1
+222,223,-1
+221,222,-1
+220,221,-1
+219,220,-1
+218,219,-1
+218,93,-1
+217,218,-1
+225,"RULE 27 (BB - execCode implies file access)","AND",0
+226,"canAccessFile(victimHost,root,write,'/bin/find')","OR",0
+227,"RULE 29 (BB - A legitimate account can access file)","AND",0
+228,"localFileProtection(victimHost,root,write,'/bin/find')","OR",0
+229,"RULE 30 (BB - owner file access)","AND",0
+230,"ownerAccessible(victimHost,write,'/bin/find')","OR",0
+231,"RULE 36 (BB - owner file access)","AND",0
+231,101,-1
+230,231,-1
+229,230,-1
+229,144,-1
+228,229,-1
+232,"RULE 32 (BB - world file access)","AND",0
+232,223,-1
+228,232,-1
+227,228,-1
+226,227,-1
+225,226,-1
+225,136,-1
+217,225,-1
+233,"RULE 27 (BB - execCode implies file access)","AND",0
+234,"canAccessFile(victimHost,victimAccount,write,'/bin/find')","OR",0
+235,"RULE 29 (BB - A legitimate account can access file)","AND",0
+236,"localFileProtection(victimHost,victimAccount,write,'/bin/find')","OR",0
+237,"RULE 32 (BB - world file access)","AND",0
+237,223,-1
+236,237,-1
+235,236,-1
+234,235,-1
+233,234,-1
+233,15,-1
+217,233,-1
+216,217,-1
+216,180,-1
+216,81,-1
+216,176,-1
+3,216,-1
+238,"RULE 1 (T1119 - Automated Collection - Discovery - existing file)","AND",0
+238,109,-1
+239,"accessFile(attacker,victimHost,write,'/bin/ls')","OR",0
+240,"RULE 27 (BB - execCode implies file access)","AND",0
+241,"canAccessFile(victimHost,_,write,'/bin/ls')","OR",0
+242,"RULE 29 (BB - A legitimate account can access file)","AND",0
+243,"localFileProtection(victimHost,_,write,'/bin/ls')","OR",0
+244,"RULE 32 (BB - world file access)","AND",0
+245,"worldAccessible(victimHost,write,'/bin/ls')","OR",0
+246,"RULE 38 (BB - world file access)","AND",0
+246,109,-1
+245,246,-1
+244,245,-1
+243,244,-1
+242,243,-1
+241,242,-1
+240,241,-1
+240,93,-1
+239,240,-1
+247,"RULE 27 (BB - execCode implies file access)","AND",0
+248,"canAccessFile(victimHost,root,write,'/bin/ls')","OR",0
+249,"RULE 29 (BB - A legitimate account can access file)","AND",0
+250,"localFileProtection(victimHost,root,write,'/bin/ls')","OR",0
+251,"RULE 30 (BB - owner file access)","AND",0
+252,"ownerAccessible(victimHost,write,'/bin/ls')","OR",0
+253,"RULE 36 (BB - owner file access)","AND",0
+253,109,-1
+252,253,-1
+251,252,-1
+251,153,-1
+250,251,-1
+254,"RULE 32 (BB - world file access)","AND",0
+254,245,-1
+250,254,-1
+249,250,-1
+248,249,-1
+247,248,-1
+247,136,-1
+239,247,-1
+255,"RULE 27 (BB - execCode implies file access)","AND",0
+256,"canAccessFile(victimHost,victimAccount,write,'/bin/ls')","OR",0
+257,"RULE 29 (BB - A legitimate account can access file)","AND",0
+258,"localFileProtection(victimHost,victimAccount,write,'/bin/ls')","OR",0
+259,"RULE 32 (BB - world file access)","AND",0
+259,245,-1
+258,259,-1
+257,258,-1
+256,257,-1
+255,256,-1
+255,15,-1
+239,255,-1
+238,239,-1
+238,193,-1
+238,81,-1
+238,176,-1
+3,238,-1
+260,"RULE 1 (T1119 - Automated Collection - Discovery - existing file)","AND",0
+260,61,-1
+261,"accessFile(attacker,victimHost,write,'/bin/powershell')","OR",0
+262,"RULE 27 (BB - execCode implies file access)","AND",0
+263,"canAccessFile(victimHost,victimAccount,write,'/bin/powershell')","OR",0
+264,"RULE 29 (BB - A legitimate account can access file)","AND",0
+265,"localFileProtection(victimHost,victimAccount,write,'/bin/powershell')","OR",0
+266,"RULE 30 (BB - owner file access)","AND",0
+267,"ownerAccessible(victimHost,write,'/bin/powershell')","OR",0
+268,"RULE 36 (BB - owner file access)","AND",0
+268,61,-1
+267,268,-1
+266,267,-1
+266,62,-1
+265,266,-1
+264,265,-1
+263,264,-1
+262,263,-1
+262,15,-1
+261,262,-1
+260,261,-1
+260,212,-1
+260,81,-1
+260,176,-1
+3,260,-1
+269,"RULE 1 (T1119 - Automated Collection - Discovery - existing file)","AND",0
+269,40,-1
+270,"accessFile(attacker,victimHost,write,'/home/victimAccount/3aka3.doc')","OR",0
+271,"RULE 27 (BB - execCode implies file access)","AND",0
+272,"canAccessFile(victimHost,victimAccount,write,'/home/victimAccount/3aka3.doc')","OR",0
+273,"RULE 29 (BB - A legitimate account can access file)","AND",0
+274,"localFileProtection(victimHost,victimAccount,write,'/home/victimAccount/3aka3.doc')","OR",0
+275,"RULE 30 (BB - owner file access)","AND",0
+276,"ownerAccessible(victimHost,write,'/home/victimAccount/3aka3.doc')","OR",0
+277,"RULE 36 (BB - owner file access)","AND",0
+277,40,-1
+276,277,-1
+275,276,-1
+275,41,-1
+274,275,-1
+273,274,-1
+272,273,-1
+271,272,-1
+271,15,-1
+270,271,-1
+269,270,-1
+278,"accessFile(attacker,victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+279,"RULE 27 (BB - execCode implies file access)","AND",0
+279,34,-1
+279,15,-1
+278,279,-1
+269,278,-1
+269,81,-1
+269,176,-1
+3,269,-1
+280,"RULE 1 (T1119 - Automated Collection - Discovery - existing file)","AND",0
+280,122,-1
+281,"accessFile(attacker,victimHost,write,'/private/secret1.doc')","OR",0
+282,"RULE 27 (BB - execCode implies file access)","AND",0
+283,"canAccessFile(victimHost,_,write,'/private/secret1.doc')","OR",0
+284,"RULE 29 (BB - A legitimate account can access file)","AND",0
+285,"localFileProtection(victimHost,_,write,'/private/secret1.doc')","OR",0
+286,"RULE 32 (BB - world file access)","AND",0
+287,"worldAccessible(victimHost,write,'/private/secret1.doc')","OR",0
+288,"RULE 38 (BB - world file access)","AND",0
+288,122,-1
+287,288,-1
+286,287,-1
+285,286,-1
+284,285,-1
+283,284,-1
+282,283,-1
+282,93,-1
+281,282,-1
+289,"RULE 27 (BB - execCode implies file access)","AND",0
+290,"canAccessFile(victimHost,root,write,'/private/secret1.doc')","OR",0
+291,"RULE 29 (BB - A legitimate account can access file)","AND",0
+292,"localFileProtection(victimHost,root,write,'/private/secret1.doc')","OR",0
+293,"RULE 32 (BB - world file access)","AND",0
+293,287,-1
+292,293,-1
+291,292,-1
+290,291,-1
+289,290,-1
+289,136,-1
+281,289,-1
+294,"RULE 27 (BB - execCode implies file access)","AND",0
+295,"canAccessFile(victimHost,victimAccount,write,'/private/secret1.doc')","OR",0
+296,"RULE 29 (BB - A legitimate account can access file)","AND",0
+297,"localFileProtection(victimHost,victimAccount,write,'/private/secret1.doc')","OR",0
+298,"RULE 32 (BB - world file access)","AND",0
+298,287,-1
+297,298,-1
+296,297,-1
+295,296,-1
+294,295,-1
+294,15,-1
+281,294,-1
+280,281,-1
+299,"accessFile(attacker,victimHost,exec,'/private/secret1.doc')","OR",0
+300,"RULE 27 (BB - execCode implies file access)","AND",0
+300,116,-1
+300,93,-1
+299,300,-1
+301,"RULE 27 (BB - execCode implies file access)","AND",0
+302,"canAccessFile(victimHost,root,exec,'/private/secret1.doc')","OR",0
+303,"RULE 29 (BB - A legitimate account can access file)","AND",0
+304,"localFileProtection(victimHost,root,exec,'/private/secret1.doc')","OR",0
+305,"RULE 32 (BB - world file access)","AND",0
+305,120,-1
+304,305,-1
+303,304,-1
+302,303,-1
+301,302,-1
+301,136,-1
+299,301,-1
+306,"RULE 27 (BB - execCode implies file access)","AND",0
+307,"canAccessFile(victimHost,victimAccount,exec,'/private/secret1.doc')","OR",0
+308,"RULE 29 (BB - A legitimate account can access file)","AND",0
+309,"localFileProtection(victimHost,victimAccount,exec,'/private/secret1.doc')","OR",0
+310,"RULE 32 (BB - world file access)","AND",0
+310,120,-1
+309,310,-1
+308,309,-1
+307,308,-1
+306,307,-1
+306,15,-1
+299,306,-1
+280,299,-1
+280,81,-1
+280,176,-1
+3,280,-1
+311,"RULE 1 (T1119 - Automated Collection - Discovery - existing file)","AND",0
+311,130,-1
+312,"accessFile(attacker,victimHost,write,'/private/secret2.doc')","OR",0
+313,"RULE 27 (BB - execCode implies file access)","AND",0
+314,"canAccessFile(victimHost,_,write,'/private/secret2.doc')","OR",0
+315,"RULE 29 (BB - A legitimate account can access file)","AND",0
+316,"localFileProtection(victimHost,_,write,'/private/secret2.doc')","OR",0
+317,"RULE 32 (BB - world file access)","AND",0
+318,"worldAccessible(victimHost,write,'/private/secret2.doc')","OR",0
+319,"RULE 38 (BB - world file access)","AND",0
+319,130,-1
+318,319,-1
+317,318,-1
+316,317,-1
+315,316,-1
+314,315,-1
+313,314,-1
+313,93,-1
+312,313,-1
+320,"RULE 27 (BB - execCode implies file access)","AND",0
+321,"canAccessFile(victimHost,root,write,'/private/secret2.doc')","OR",0
+322,"RULE 29 (BB - A legitimate account can access file)","AND",0
+323,"localFileProtection(victimHost,root,write,'/private/secret2.doc')","OR",0
+324,"RULE 32 (BB - world file access)","AND",0
+324,318,-1
+323,324,-1
+322,323,-1
+321,322,-1
+320,321,-1
+320,136,-1
+312,320,-1
+325,"RULE 27 (BB - execCode implies file access)","AND",0
+326,"canAccessFile(victimHost,victimAccount,write,'/private/secret2.doc')","OR",0
+327,"RULE 29 (BB - A legitimate account can access file)","AND",0
+328,"localFileProtection(victimHost,victimAccount,write,'/private/secret2.doc')","OR",0
+329,"RULE 32 (BB - world file access)","AND",0
+329,318,-1
+328,329,-1
+327,328,-1
+326,327,-1
+325,326,-1
+325,15,-1
+312,325,-1
+311,312,-1
+330,"accessFile(attacker,victimHost,exec,'/private/secret2.doc')","OR",0
+331,"RULE 27 (BB - execCode implies file access)","AND",0
+331,124,-1
+331,93,-1
+330,331,-1
+332,"RULE 27 (BB - execCode implies file access)","AND",0
+333,"canAccessFile(victimHost,root,exec,'/private/secret2.doc')","OR",0
+334,"RULE 29 (BB - A legitimate account can access file)","AND",0
+335,"localFileProtection(victimHost,root,exec,'/private/secret2.doc')","OR",0
+336,"RULE 32 (BB - world file access)","AND",0
+336,128,-1
+335,336,-1
+334,335,-1
+333,334,-1
+332,333,-1
+332,136,-1
+330,332,-1
+337,"RULE 27 (BB - execCode implies file access)","AND",0
+338,"canAccessFile(victimHost,victimAccount,exec,'/private/secret2.doc')","OR",0
+339,"RULE 29 (BB - A legitimate account can access file)","AND",0
+340,"localFileProtection(victimHost,victimAccount,exec,'/private/secret2.doc')","OR",0
+341,"RULE 32 (BB - world file access)","AND",0
+341,128,-1
+340,341,-1
+339,340,-1
+338,339,-1
+337,338,-1
+337,15,-1
+330,337,-1
+311,330,-1
+311,81,-1
+311,176,-1
+3,311,-1
+342,"RULE 2 (T1119 - Automated Collection - Discovery - new file)","AND",0
+342,71,-1
+343,"accessFile(attacker,victimHost,write,'/private')","OR",0
+344,"RULE 27 (BB - execCode implies file access)","AND",0
+345,"canAccessFile(victimHost,victimAccount,write,'/private')","OR",0
+346,"RULE 29 (BB - A legitimate account can access file)","AND",0
+347,"localFileProtection(victimHost,victimAccount,write,'/private')","OR",0
+348,"RULE 30 (BB - owner file access)","AND",0
+349,"ownerAccessible(victimHost,write,'/private')","OR",0
+350,"RULE 36 (BB - owner file access)","AND",0
+350,71,-1
+349,350,-1
+348,349,-1
+348,72,-1
+347,348,-1
+346,347,-1
+345,346,-1
+344,345,-1
+344,15,-1
+343,344,-1
+342,343,-1
+342,81,-1
+342,176,-1
+3,342,-1
 2,3,-1
 1,2,-1

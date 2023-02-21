@@ -3,7 +3,7 @@
 /* Attack Goal */
 /***************/
 
-attackGoal(canDiscoverData(attacker, victimHost, privateDocuments)).
+attackGoal(canAutomateCollection(attacker, victimHost, privateDocuments)).
 
 /************/
 /* Attacker */
