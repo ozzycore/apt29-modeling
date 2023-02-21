@@ -1,0 +1,73 @@
+
+/***************/
+/* Attack Goal */
+/***************/
+
+attackGoal(canAutomateCollection(attacker, victimHost, privateDocuments)).
+
+/************/
+/* Attacker */
+/************/
+
+aclNW(victimHost, _, _, _).
+aclNW(H,H,_,_).
+
+/************/
+/* Attacker */
+/************/
+
+malicious(attacker).
+located(attacker, pupyC2Server).
+isReverseShell(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc').
+isNetScript(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc', reversePupy, http, 1234).
+isRcFourEncryptedNetScript(victimHost, '/home/victimAccount/3aka3.doc').
+doubleFileExtension(victimHost, '/home/victimAccount/3aka3.doc').
+networkServiceInfo(pupyC2Server, root, pupyd, http, 1234).
+tempNotStandardPort(http, 1234).
+standardPort(http, 8080).
+
+/************/
+/*  Victim  */
+/************/
+fileAttr(victimHost, '/home/victimAccount/3aka3.doc', -,r,w,x,-,-,-,-,-,-).
+fileOwner(victimHost, victimAccount, '/home/victimAccount/3aka3.doc').
+hasAccount(victimUser, victimHost, victimAccount).
+
+installed(victimHost, '/bin/powershell', powerShell).
+isPowerShell(powerShell).
+fileAttr(victimHost, '/bin/powershell', -,r,w,x,-,-,-,-,-,-).
+fileOwner(victimHost, victimAccount, '/bin/powershell').
+
+installed(victimHost, '/bin/bash', bash).
+isUnixShell(bash).
+fileAttr(victimHost, '/bin/bash', -,-,-,-,r,w,x,-,-,-).
+fileGroupOwner(victimHost, '/bin/bash', victimGroup).
+inGroup(victimAccount, victimGroup).
+
+dataBindDir(victimHost, '/private', privateDocuments).
+fileAttr(victimHost, '/private', d,r,w,x,r,-,x,r,-,x).
+fileOwner(victimHost, victimAccount, '/private').
+fileGroupOwner(victimHost, '/private', victimGroup).
+
+fileAttr(victimHost, '/private/secret1.doc', -,-,-,-,-,-,-,r,w,x).
+fileOwner(victimHost, victimAccount, '/private/secret1.doc').
+
+fileAttr(victimHost, '/private/secret2.doc', -,-,-,-,-,-,-,r,w,x).
+fileOwner(victimHost, victimAccount, '/private/secret2.doc').
+
+isSearchUtil(ls).
+installed(victimHost, '/bin/ls', ls).
+fileAttr(victimHost, '/bin/ls', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/ls').
+fileGroupOwner(victimHost, '/bin/ls', root).
+
+isSearchUtil(find).
+installed(victimHost, '/bin/find', find).
+fileAttr(victimHost, '/bin/find', -,r,w,x,-,-,-,r,w,x).
+fileOwner(victimHost, root, '/bin/find').
+fileGroupOwner(victimHost, '/bin/find', root).
+
+/************/
+/*   Temp   */
+/************/
+tempNotStandardPort(http, 1234).
