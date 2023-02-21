@@ -1,0 +1,25 @@
+digraph G {
+	1 [label="1:seemsBenign(victimHost,'/home/victimAccount/3aka3.doc'):0",shape=diamond];
+	2 [label="2:RULE 0 (Asset - Seems like a benign file - Masquerading):0",shape=ellipse];
+	3 [label="3:masquerading(victimHost,'/home/victimAccount/3aka3.doc'):0",shape=diamond];
+	4 [label="4:RULE 2 (T1036.007 - Masquerading - Double File Extension):0",shape=ellipse];
+	5 [label="5:doubleFileExtension(victimHost,'/home/victimAccount/3aka3.doc'):1",shape=box];
+	6 [label="6:isMaliciousFile(victimHost,'/home/victimAccount/3aka3.doc'):0",shape=diamond];
+	7 [label="7:RULE 4 (Malicious file - Reverse shell):0",shape=ellipse];
+	8 [label="8:isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc'):1",shape=box];
+	9 [label="9:localAccess(attacker,pupyC2Server,root):0",shape=diamond];
+	10 [label="10:RULE 5 (An user who is located in a host has root access to that host):0",shape=ellipse];
+	11 [label="11:located(attacker,pupyC2Server):1",shape=box];
+	12 [label="12:malicious(attacker):1",shape=box];
+	5 -> 	4;
+	8 -> 	7;
+	11 -> 	10;
+	10 -> 	9;
+	9 -> 	7;
+	12 -> 	7;
+	7 -> 	6;
+	6 -> 	4;
+	4 -> 	3;
+	3 -> 	2;
+	2 -> 	1;
+}
