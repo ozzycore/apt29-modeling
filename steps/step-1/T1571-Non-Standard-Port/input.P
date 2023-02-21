@@ -1,0 +1,18 @@
+
+/***************/
+/* Attack Goal */
+/***************/
+
+attackGoal(canExecuteMaliciousPayload(victimUser, victimHost, '/home/victimAccount/3aka3.doc')).
+
+/************/
+/* Attacker */
+/************/
+
+malicious(attacker).
+located(attacker, pupyC2Server).
+isReverseShell(victimHost, pupyC2Server, '/home/victimAccount/3aka3.doc').
+doubleFileExtension(victimHost, '/home/victimAccount/3aka3.doc').
+fileAttr(victimHost, '/home/victimAccount/3aka3.doc', _,r,w,x,_,_,_,_,_,_).
+fileOwner(victimHost, victimAccount, '/home/victimAccount/3aka3.doc').
+hasAccount(victimUser, victimHost, victimAccount).

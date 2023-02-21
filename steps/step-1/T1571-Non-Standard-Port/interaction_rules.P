@@ -1,0 +1,244 @@
+
+/******************************************************/
+/****         Predicates Declaration              *****/
+/******************************************************/
+
+primitive(malicious(_user)).
+primitive(located(_user, _host)).
+primitive(isBenignFile(_host, _path)).
+primitive(rightToLeftOverride(_host, _path)).
+primitive(doubleFileExtension(_host, _path)).
+primitive(isReverseShell(_srcHost, _desthost, _path)).
+primitive(fileAttr(_host, _path, _s, _ro, _wo, _xo, _rg, _wg, _xg, _rw, _ww, _xw)).
+primitive(inGroup(_account, _group)).
+primitive(fileGroupOwner(_host, _path, _group)).
+primitive(groupAccessible(_host, _access, _path)).
+primitive(fileOwner(_host, _account, _path)).
+primitive(hasAccount(_user, _host, _account)).
+primitive(inCompetent(_user)).
+
+/****       Technique Assets        *****/
+
+derived(seemsBenign(_host, _path)).
+derived(canExecuteMaliciousPayload(_user, _host, _path)).
+derived(canExecuteMaliciousFile(_user, _host, _path)).
+
+/****   Technique Implementation    *****/
+
+derived(masquerading(_host, _path)).
+derived(userExecutionMaliciousFile(_user, _host, _path)).
+derived(userExecution(_user, _host, _path)).
+
+/****       Building Blocks         *****/
+
+derived(isMaliciousFile(_host, _path)).
+derived(localAccess(_user, _host, _account)).
+derived(ownerAccessible(_host, _access, _path)).
+derived(groupAccessible(_host, _access, _path)).
+derived(worldAccessible(_host, _access, _path)).
+derived(localFileProtection(_host, _account, _access, _path)).
+derived(canAccessFile(_host, _account, _access, _path)).
+derived(accessFile(_user, _host, _access, _path)).
+derived(execCode(_user, _host, _account)).
+
+
+
+meta(attackGoal(_)).
+meta(advances(_, _)).
+
+/******************************************************/
+/****         Tabling Predicates                  *****/
+/*   All derived predicates should be tabled          */
+/******************************************************/
+
+:- table seemsBenign/2.
+:- table canExecuteMaliciousPayload/3.
+:- table canExecuteMaliciousFile/3.
+:- table masquerading/2.
+:- table userExecutionMaliciousFile/3.
+:- table userExecution/3.
+:- table isMaliciousFile/2.
+:- table localAccess/3.
+:- table ownerAccessible/3.
+:- table groupAccessible/3.
+:- table worldAccessible/3.
+:- table localFileProtection/4.
+:- table canAccessFile/4.
+:- table accessFile/4.
+:- table execCode/3.
+
+
+
+/******************************************************/
+/****         Step 1 - Interaction Rules          *****/
+/******************************************************/
+
+
+
+/****         Step 1 - Interaction Rules          *****/
+
+interaction_rule(
+  (canExecuteMaliciousFile(User, Host, Path) :-
+    userExecutionMaliciousFile(User, Host, Path)),
+  rule_desc('Asset - Malicious file can be successfuly executed by a user',
+  0.4)).
+
+interaction_rule(
+  (canExecuteMaliciousPayload(User, Host, Path) :-
+    userExecution(User, Host, Path)),
+  rule_desc('Asset - Successfuly malicious payload execution',
+  0.4)).
+
+interaction_rule(
+  (userExecution(User, Host, Path) :-
+		userExecutionMaliciousFile(User, Host, Path)),
+  rule_desc('T1204 - User Execution - A legitimate user executes a malicious payload',
+  0.5)).
+
+interaction_rule(
+  (userExecutionMaliciousFile(User, Host, Path) :-
+		seemsBenign(Host, Path),
+    accessFile(User, Host, exec, Path)),
+  rule_desc('T1204.002 - User Execution - Malicious File - A legitimate user executes a malicious file',
+  0.5)).
+
+interaction_rule(
+  (userExecutionMaliciousFile(User, Host, Path) :-
+		inCompetent(User),
+    isMaliciousFile(Host, Path),
+    accessFile(User, Host, exec, Path)),
+  rule_desc('T1204.002 - User Execution - Malicious File - A legitimate user executes a malicious file',
+  0.5)).
+
+interaction_rule(
+  (accessFile(User, Host, Access, Path) :-
+		execCode(User, Host, Account),
+		canAccessFile(Host, Account, Access, Path)),
+  rule_desc('BB - execCode implies file access',
+  1.0)).
+
+interaction_rule(
+   (execCode(User, Host, Account) :-
+		 hasAccount(User, Host, Account)),
+   rule_desc('BB - A User can execute code using his account on a specific host', 1)).
+
+interaction_rule(
+  (canAccessFile(Host, Account, Access, Path) :-
+	  localFileProtection(Host, Account, Access, Path)),
+  rule_desc('BB - A legitimate account can access file',
+  0.1)).
+
+interaction_rule(
+  (localFileProtection(Host, Account, Access, Path) :-
+	  fileOwner(Host, Account, Path),
+    ownerAccessible(Host, Access, Path)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (localFileProtection(Host, Account, Access, Path) :-
+	  inGroup(Account, Group),
+    fileGroupOwner(Host, Path, Group),
+    groupAccessible(Host, Access, Path)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (localFileProtection(Host, Account, Access, Path) :-
+	  worldAccessible(Host, Access, Path)),
+  rule_desc('BB - world file access',
+  0.1)).
+
+interaction_rule(
+  (ownerAccessible(Host, read, Path) :-
+	  fileAttr(Host, Path, _,r,_,_,_,_,_,_,_,_)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (groupAccessible(Host, read, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,r,_,_,_,_,_)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (worldAccessible(Host, read, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,_,r,_,_)),
+  rule_desc('BB - world file access',
+  0.1)).
+
+interaction_rule(
+  (ownerAccessible(Host, write, Path) :-
+	  fileAttr(Host, Path, _,_,w,_,_,_,_,_,_,_)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (groupAccessible(Host, write, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,w,_,_,_,_)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (worldAccessible(Host, write, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,_,_,w,_)),
+  rule_desc('BB - world file access',
+  0.1)).
+
+interaction_rule(
+  (ownerAccessible(Host, exec, Path) :-
+	  fileAttr(Host, Path, _,_,_,x,_,_,_,_,_,_)),
+  rule_desc('BB - owner file access',
+  0.1)).
+
+interaction_rule(
+  (groupAccessible(Host, exec, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,x,_,_,_)),
+  rule_desc('BB - group file access',
+  0.1)).
+
+interaction_rule(
+  (worldAccessible(Host, exec, Path) :-
+	  fileAttr(Host, Path, _,_,_,_,_,_,_,_,_,x)),
+  rule_desc('BB - world file access',
+  0.1)).  
+
+interaction_rule(
+  (seemsBenign(Host, Path) :-
+    masquerading(Host, Path)),
+  rule_desc('Asset - Seems like a benign file - Masquerading',
+  0.5)).
+
+interaction_rule(
+  (seemsBenign(Host, Path) :-
+    isBenignFile(Host, Path)),
+  rule_desc('Asset - Seems like a benign file - Fact',
+  0.5)).
+
+interaction_rule(
+  (masquerading(Host, Path) :-
+    isMaliciousFile(Host, Path),
+    doubleFileExtension(Host, Path)),
+  rule_desc('T1036.007 - Masquerading - Double File Extension',
+  0.5)).
+
+interaction_rule(
+  (masquerading(Host, Path) :-
+    isMaliciousFile(Host, Path),
+    rightToLeftOverride(Host, Path)),
+  rule_desc('T1036.002 - Masquerading - Right-to-Left Override',
+  0.5)).
+
+interaction_rule(
+  (isMaliciousFile(SrcHost, Path) :-
+    malicious(User),
+    localAccess(User, DestHost, Account),
+    isReverseShell(SrcHost, DestHost, Path)),
+  rule_desc('Malicious file - Reverse shell',
+  0.4)).
+
+interaction_rule(
+  (localAccess(User, Host, root):-
+    located(User, Host)),
+  rule_desc('BB - An user who is located in a host has root access to that host',
+  0.2)).
