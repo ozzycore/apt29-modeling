@@ -1,0 +1,64 @@
+1,"canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/powershell')","OR",0
+2,"RULE 0 (Asset - Able to abuse command and scripting interpreters)","AND",0
+3,"cmdScriptingInterpreter(attacker,victimHost,'/bin/powershell')","OR",0
+4,"RULE 3 (T1059 - Command and Scripting Interpreter)","AND",0
+5,"cmdScriptingInterpreterPowerShell(attacker,victimHost,'/bin/powershell')","OR",0
+6,"RULE 5 (T1059.001 - Command and Scripting Interpreter - PowerShell)","AND",0
+7,"isPowerShell(powerShell)","LEAF",1
+8,"canRunInstalledSoftware(attacker,victimHost,'/bin/powershell',powerShell)","OR",0
+9,"RULE 7 (BB - User is able to run installed software)","AND",0
+10,"accessFile(attacker,victimHost,exec,'/bin/powershell')","OR",0
+11,"RULE 22 (BB - execCode implies file access)","AND",0
+12,"canAccessFile(victimHost,victimAccount,exec,'/bin/powershell')","OR",0
+13,"RULE 24 (BB - A legitimate account can access file)","AND",0
+14,"localFileProtection(victimHost,victimAccount,exec,'/bin/powershell')","OR",0
+15,"RULE 25 (BB - owner file access)","AND",0
+16,"ownerAccessible(victimHost,exec,'/bin/powershell')","OR",0
+17,"RULE 34 (BB - owner file access)","AND",0
+18,"fileAttr(victimHost,'/bin/powershell',-,r,w,x,-,-,-,-,-,-)","LEAF",1
+19,"fileOwner(victimHost,victimAccount,'/bin/powershell')","LEAF",1
+20,"execCode(attacker,victimHost,victimAccount)","OR",0
+21,"RULE 8 (BB - User is able to use a reverse shell)","AND",0
+22,"canAccessFile(victimHost,victimAccount,exec,'/bin/bash')","OR",0
+23,"RULE 24 (BB - A legitimate account can access file)","AND",0
+24,"localFileProtection(victimHost,victimAccount,exec,'/bin/bash')","OR",0
+25,"RULE 26 (BB - group file access)","AND",0
+26,"groupAccessible(victimHost,exec,'/bin/bash')","LEAF",1
+27,"fileGroupOwner(victimHost,'/bin/bash',victimGroup)","LEAF",1
+28,"inGroup(victimAccount,victimGroup)","LEAF",1
+29,"accessDataFlow(attacker,write,reversePupy)","OR",0
+30,"RULE 9 (BB - The remote root user has write access to the dataFlow)","AND",0
+31,"dataFlowReverseShell(reversePupy)","OR",0
+32,"RULE 10 (BB - Reverse shell data flow)","AND",0
+33,"isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc')","LEAF",1
+34,"flowBind(reversePupy,http,1234)","OR",0
+35,"RULE 13 (BB - Flow associated port and protocol)","AND",0
+36,"canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+37,"RULE 15 (BB - Script access an exposed service)","AND",0
+38,"networkServiceInfo(pupyC2Server,root,pupyd,http,1234)","LEAF",1
+39,"accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+40,"RULE 22 (BB - execCode implies file access)","AND",0
+41,"canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+42,"RULE 24 (BB - A legitimate account can access file)","AND",0
+43,"localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')","OR",0
+44,"RULE 25 (BB - owner file access)","AND",0
+45,"ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc')","OR",0
+46,"RULE 34 (BB - owner file access)","AND",0
+47,"fileAttr(victimHost,'/home/victimAccount/3aka3.doc',-,r,w,x,-,-,-,-,-,-)","LEAF",1
+48,"fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')","LEAF",1
+49,"execCode(victimUser,victimHost,victimAccount)","OR",0
+50,"RULE 23 (BB - A User can execute code using his account on a specific host)","AND",0
+51,"hasAccount(victimUser,victimHost,victimAccount)","LEAF",1
+52,"scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","OR",0
+53,"RULE 16 (BB - Direct script network access)","AND",0
+54,"isNetScript(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)","LEAF",1
+55,"aclNW(victimHost,pupyC2Server,http,1234)","LEAF",1
+56,"dataFlow(victimHost,pupyC2Server,reversePupy,_)","OR",0
+57,"RULE 14 (BB - Data flow initiated by script)","AND",0
+58,"localAccess(attacker,pupyC2Server,root)","OR",0
+59,"RULE 42 (BB - An user who is located in a host has root access to that host)","AND",0
+60,"located(attacker,pupyC2Server)","LEAF",1
+61,"RULE 8 (BB - User is able to use a reverse shell)","AND",0
+62,"RULE 8 (BB - User is able to use a reverse shell)","AND",0
+63,"installed(victimHost,'/bin/powershell',powerShell)","LEAF",1
+64,"malicious(attacker)","LEAF",1
