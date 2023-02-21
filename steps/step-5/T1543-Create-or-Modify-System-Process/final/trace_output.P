@@ -1,0 +1,1000 @@
+primitive(malicious,1).
+primitive(located,2).
+primitive(isBenignFile,2).
+primitive(rightToLeftOverride,2).
+primitive(doubleFileExtension,2).
+primitive(isReverseShell,3).
+primitive(fileAttr,12).
+primitive(inGroup,2).
+primitive(fileGroupOwner,3).
+primitive(groupAccessible,3).
+primitive(fileOwner,3).
+primitive(hasAccount,3).
+primitive(inCompetent,1).
+primitive(aclNW,4).
+primitive(isNetScript,6).
+primitive(networkServiceInfo,5).
+primitive(tempNotStandardPort,2).
+primitive(standardPort,2).
+primitive(installed,3).
+primitive(isUnixShell,1).
+primitive(isPowerShell,1).
+primitive(isSearchUtil,1).
+primitive(dataBind,3).
+primitive(dataBindDir,3).
+primitive(isDataUtil,1).
+primitive(isArchiveTool,1).
+primitive(isIngressTool,1).
+primitive(steganography,2).
+primitive(binaryPadding,2).
+primitive(isObfuscatedFiles,2).
+primitive(isUnixLoginScript,2).
+primitive(isFtpProtocol,1).
+primitive(iswebProtocol,1).
+primitive(isSymmetricEncryption,1).
+primitive(isAsymmetricEncryption,1).
+primitive(isEncryptedNetScript,2).
+primitive(isCmdHistory,1).
+primitive(isDeobfuscatorUtil,1).
+primitive(isProcessDiscoveryUtil,1).
+primitive(isDeletionUtil,1).
+primitive(isUserDiscoverUtil,1).
+primitive(isSystemDiscoverUtil,1).
+primitive(isNetworkDiscoverUtil,1).
+primitive(isGroupDiscoverUtil,1).
+derived(seemsBenign,2).
+derived(canExecuteMaliciousPayload,3).
+derived(canExecuteMaliciousFile,3).
+derived(connOnNonStandardPort,2).
+derived(canAbuseCmdScriptingInterpreter,3).
+derived(canAbusePowerShell,3).
+derived(canAbuseUnixShell,3).
+derived(canDiscoverData,3).
+derived(canAutomateCollection,3).
+derived(canCollectData,3).
+derived(canArchiveData,3).
+derived(canDataStage,3).
+derived(canExfiltrateData,5).
+derived(canIngressTransfer,3).
+derived(seemsObfuscated,2).
+derived(abuseEventTriggeredExec,2).
+derived(abuseEventTriggeredExecUnixShell,2).
+derived(canAbuseElevationCtl,3).
+derived(canAbuseElevationSetuidCtl,3).
+derived(connOnApplicationProtocol,4).
+derived(connOnFtpProtocol,4).
+derived(connOnWebProtocol,4).
+derived(connOnEncryptedChannel,3).
+derived(connOnSymmetricEncryptedChannel,3).
+derived(connOnAsymmetricEncryptedChannel,3).
+derived(canRemoveArtifacts,3).
+derived(canRemoveCmdHistory,3).
+derived(canDeobfuscateDecodeFiles,3).
+derived(canProcessDiscovery,2).
+derived(canDeleteFiles,3).
+derived(canDiscoverSystemOwnerUser,2).
+derived(canDiscoverSystemInformation,2).
+derived(canDiscoverSystemNetworkConfiguration,2).
+derived(canDiscoverInternetConnections,2).
+derived(canDiscoverGroupsPermissions,2).
+derived(canDiscoverLocalGroupsPermissions,2).
+derived(masquerading,2).
+derived(userExecutionMaliciousFile,3).
+derived(userExecution,3).
+derived(dataFlowOnNonStandardPort,2).
+derived(cmdScriptingInterpreter,3).
+derived(cmdScriptingInterpreterUnixShell,3).
+derived(cmdScriptingInterpreterPowerShell,3).
+derived(fileAndDirectoryDiscovery,3).
+derived(automatedCollection,3).
+derived(dataFromLocalSystem,3).
+derived(archiveCollectedData,3).
+derived(dataStaged,3).
+derived(exfiltrationOverC2Channel,5).
+derived(ingressToolTransfer,3).
+derived(obfuscatedFilesOrInformation,2).
+derived(eventTriggeredExecution,2).
+derived(eventTriggeredExecutionUnixShell,2).
+derived(abuseElevationControlMechanism,3).
+derived(abuseElevationControlMechanismSetuid,3).
+derived(dataFlowOnApplicationLayerProtocol,4).
+derived(dataFlowOnFtpProtocol,4).
+derived(dataFlowOnWebProtocol,4).
+derived(encryptedChannel,3).
+derived(symmetricCryptography,3).
+derived(asymmetricCryptography,3).
+derived(indicatorRemovalOnHost,3).
+derived(indicatorRemovalOnHostCmdHistory,3).
+derived(deobfuscatedDecodeFiles,3).
+derived(processDiscovery,2).
+derived(indicatorRemovalOnHostFileDeletion,3).
+derived(systemOwnerUserDiscovery,2).
+derived(systemInformationDiscovery,2).
+derived(systemNetworkConfigurationDiscovery,2).
+derived(systemNetworkInternetConnectionDiscovery,2).
+derived(permissionGroupsDiscovery,2).
+derived(permissionGroupsDiscoveryLocalGroups,2).
+derived(isMaliciousFile,2).
+derived(localAccess,3).
+derived(ownerAccessible,3).
+derived(groupAccessible,3).
+derived(worldAccessible,3).
+derived(localFileProtection,4).
+derived(canAccessFile,4).
+derived(accessFile,4).
+derived(execCode,3).
+derived(scriptNetAccess,6).
+derived(canScriptAccessHost,6).
+derived(dataFlow,4).
+derived(flowBind,3).
+derived(useStandardPort,2).
+derived(dataFlowReverseShell,1).
+derived(accessDataFlow,3).
+derived(canRunInstalledSoftware,4).
+derived(newDataBind,3).
+derived(dataFlowOnStandardPort,4).
+meta(attackGoal,1).
+meta(advances,2).
+
+attack(canDiscoverLocalGroupsPermissions(attacker,victimHost)).
+
+possible_duplicate_trace_step(because(85,rule_desc('BB - Direct script network access - Existing Script',0.29999999999999999),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[isNetScript(victimHost,pupyC2Server,reversePupy,http,1234,pupyPayload),dataBind(victimHost,'/home/victimAccount/3aka3.doc',pupyPayload),aclNW(victimHost,pupyC2Server,http,1234)])).
+
+possible_duplicate_trace_step(because(92,rule_desc('BB - A User can execute code using his account on a specific host',1),execCode(victimUser,victimHost,victimAccount),[hasAccount(victimUser,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc'),[fileAttr(victimHost,'/home/victimAccount/3aka3.doc',-,r,w,x,-,-,-,-,-,-)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc'),fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc'),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),execCode(victimUser,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(84,rule_desc('BB - Script access an exposed service',1.0),canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[networkServiceInfo(pupyC2Server,root,pupyd,http,1234),accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc'),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(83,rule_desc('BB - Data flow initiated by script',0.29999999999999999),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995),[canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(85,rule_desc('BB - Direct script network access - Existing Script',0.29999999999999999),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[isNetScript(victimHost,pupyC2Server,reversePupy,http,1234,pupyPayload),dataBind(victimHost,'/home/victimAccount/3aka3.doc',pupyPayload),aclNW(victimHost,pupyC2Server,http,1234)])).
+
+possible_duplicate_trace_step(because(84,rule_desc('BB - Script access an exposed service',1.0),canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[networkServiceInfo(pupyC2Server,root,pupyd,http,1234),accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc'),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(83,rule_desc('BB - Data flow initiated by script',0.29999999999999999),dataFlow(victimHost,pupyC2Server,reversePupy,_h4414),[canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(82,rule_desc('BB - Flow associated port and protocol',0.59999999999999998),flowBind(reversePupy,http,1234),[canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(79,rule_desc('BB - Reverse shell data flow',0.5),dataFlowReverseShell(reversePupy),[isReverseShell(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc'),flowBind(reversePupy,http,1234),dataFlow(victimHost,pupyC2Server,reversePupy,_h4414)])).
+
+possible_duplicate_trace_step(because(111,rule_desc('BB - An user who is located in a host has root access to that host',0.20000000000000001),localAccess(attacker,pupyC2Server,root),[located(attacker,pupyC2Server)])).
+
+possible_duplicate_trace_step(because(85,rule_desc('BB - Direct script network access - Existing Script',0.29999999999999999),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[isNetScript(victimHost,pupyC2Server,reversePupy,http,1234,pupyPayload),dataBind(victimHost,'/home/victimAccount/3aka3.doc',pupyPayload),aclNW(victimHost,pupyC2Server,http,1234)])).
+
+possible_duplicate_trace_step(because(84,rule_desc('BB - Script access an exposed service',1.0),canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[networkServiceInfo(pupyC2Server,root,pupyd,http,1234),accessFile(victimUser,victimHost,exec,'/home/victimAccount/3aka3.doc'),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(83,rule_desc('BB - Data flow initiated by script',0.29999999999999999),dataFlow(victimHost,pupyC2Server,reversePupy,_h4735),[canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(78,rule_desc('BB - The remote root user has write access to the dataFlow',0.5),accessDataFlow(attacker,write,reversePupy),[dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4735),localAccess(attacker,pupyC2Server,root)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc'),fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/powershell'),[fileAttr(victimHost,'/bin/powershell',-,r,w,x,-,-,-,-,-,-)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/powershell'),[ownerAccessible(victimHost,exec,'/bin/powershell'),fileOwner(victimHost,victimAccount,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/private'),[fileAttr(victimHost,'/private',d,r,w,x,r,-,x,r,-,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/private'),[ownerAccessible(victimHost,exec,'/private'),fileOwner(victimHost,victimAccount,'/private')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/ls'),[fileAttr(victimHost,'/bin/ls',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ls'),[ownerAccessible(victimHost,exec,'/bin/ls'),fileOwner(victimHost,root,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/find'),[fileAttr(victimHost,'/bin/find',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/find'),[ownerAccessible(victimHost,exec,'/bin/find'),fileOwner(victimHost,root,'/bin/find')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/cat'),[fileAttr(victimHost,'/bin/cat',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/cat'),[ownerAccessible(victimHost,exec,'/bin/cat'),fileOwner(victimHost,root,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/zip'),[fileAttr(victimHost,'/bin/zip',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/zip'),[ownerAccessible(victimHost,exec,'/bin/zip'),fileOwner(victimHost,root,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/tcpdump'),[fileAttr(victimHost,'/bin/tcpdump',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tcpdump'),[ownerAccessible(victimHost,exec,'/bin/tcpdump'),fileOwner(victimHost,root,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/home/victimAccount/.bash_login'),[fileAttr(victimHost,'/home/victimAccount/.bash_login',-,r,w,x,r,w,x,-,-,-)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login'),[ownerAccessible(victimHost,exec,'/home/victimAccount/.bash_login'),fileOwner(victimHost,victimAccount,'/home/victimAccount/.bash_login')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/home/victimAccount/.bash_history'),[fileAttr(victimHost,'/home/victimAccount/.bash_history',-,r,w,x,r,w,x,-,-,-)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history'),[ownerAccessible(victimHost,exec,'/home/victimAccount/.bash_history'),fileOwner(victimHost,victimAccount,'/home/victimAccount/.bash_history')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/certutil'),[fileAttr(victimHost,'/bin/certutil',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/certutil'),[ownerAccessible(victimHost,exec,'/bin/certutil'),fileOwner(victimHost,root,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/ps'),[fileAttr(victimHost,'/bin/ps',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ps'),[ownerAccessible(victimHost,exec,'/bin/ps'),fileOwner(victimHost,root,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin'),[fileAttr(victimHost,'/bin',d,r,w,x,r,-,x,r,-,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin'),[ownerAccessible(victimHost,exec,'/bin'),fileOwner(victimHost,root,'/bin')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/rm'),[fileAttr(victimHost,'/bin/rm',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/rm'),[ownerAccessible(victimHost,exec,'/bin/rm'),fileOwner(victimHost,root,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/who'),[fileAttr(victimHost,'/bin/who',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/who'),[ownerAccessible(victimHost,exec,'/bin/who'),fileOwner(victimHost,root,'/bin/who')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/df'),[fileAttr(victimHost,'/bin/df',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/df'),[ownerAccessible(victimHost,exec,'/bin/df'),fileOwner(victimHost,root,'/bin/df')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/tracert'),[fileAttr(victimHost,'/bin/tracert',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tracert'),[ownerAccessible(victimHost,exec,'/bin/tracert'),fileOwner(victimHost,root,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(103,rule_desc('BB - owner file access',0.10000000000000001),ownerAccessible(victimHost,exec,'/bin/groups'),[fileAttr(victimHost,'/bin/groups',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/groups'),[ownerAccessible(victimHost,exec,'/bin/groups'),fileOwner(victimHost,root,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(104,rule_desc('BB - group file access',0.10000000000000001),groupAccessible(victimHost,exec,'/bin/bash'),[fileAttr(victimHost,'/bin/bash',-,-,-,-,r,w,x,-,-,-)])).
+
+possible_duplicate_trace_step(because(95,rule_desc('BB - group file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/bash'),[groupAccessible(victimHost,exec,'/bin/bash'),fileGroupOwner(victimHost,'/bin/bash',victimGroup),inGroup(victimAccount,victimGroup)])).
+
+possible_duplicate_trace_step(because(104,rule_desc('BB - group file access',0.10000000000000001),groupAccessible(victimHost,exec,'/private'),[fileAttr(victimHost,'/private',d,r,w,x,r,-,x,r,-,x)])).
+
+possible_duplicate_trace_step(because(95,rule_desc('BB - group file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/private'),[groupAccessible(victimHost,exec,'/private'),fileGroupOwner(victimHost,'/private',victimGroup),inGroup(victimAccount,victimGroup)])).
+
+possible_duplicate_trace_step(because(104,rule_desc('BB - group file access',0.10000000000000001),groupAccessible(victimHost,exec,'/home/victimAccount/.bash_login'),[fileAttr(victimHost,'/home/victimAccount/.bash_login',-,r,w,x,r,w,x,-,-,-)])).
+
+possible_duplicate_trace_step(because(95,rule_desc('BB - group file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login'),[groupAccessible(victimHost,exec,'/home/victimAccount/.bash_login'),fileGroupOwner(victimHost,'/home/victimAccount/.bash_login',victimGroup),inGroup(victimAccount,victimGroup)])).
+
+possible_duplicate_trace_step(because(104,rule_desc('BB - group file access',0.10000000000000001),groupAccessible(victimHost,exec,'/home/victimAccount/.bash_history'),[fileAttr(victimHost,'/home/victimAccount/.bash_history',-,r,w,x,r,w,x,-,-,-)])).
+
+possible_duplicate_trace_step(because(95,rule_desc('BB - group file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history'),[groupAccessible(victimHost,exec,'/home/victimAccount/.bash_history'),fileGroupOwner(victimHost,'/home/victimAccount/.bash_history',victimGroup),inGroup(victimAccount,victimGroup)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/private'),[fileAttr(victimHost,'/private',d,r,w,x,r,-,x,r,-,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/private/secret1.doc'),[fileAttr(victimHost,'/private/secret1.doc',-,-,-,-,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/private/secret2.doc'),[fileAttr(victimHost,'/private/secret2.doc',-,-,-,-,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/ls'),[fileAttr(victimHost,'/bin/ls',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/find'),[fileAttr(victimHost,'/bin/find',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/cat'),[fileAttr(victimHost,'/bin/cat',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/zip'),[fileAttr(victimHost,'/bin/zip',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/tcpdump'),[fileAttr(victimHost,'/bin/tcpdump',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/usr/bin/sudo'),[fileAttr(victimHost,'/usr/bin/sudo',-,r,w,s,r,-,-,r,-,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/certutil'),[fileAttr(victimHost,'/bin/certutil',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/ps'),[fileAttr(victimHost,'/bin/ps',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin'),[fileAttr(victimHost,'/bin',d,r,w,x,r,-,x,r,-,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/rm'),[fileAttr(victimHost,'/bin/rm',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/who'),[fileAttr(victimHost,'/bin/who',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/df'),[fileAttr(victimHost,'/bin/df',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/tracert'),[fileAttr(victimHost,'/bin/tracert',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/groups'),[fileAttr(victimHost,'/bin/groups',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/private/secret2.doc'),[worldAccessible(victimHost,exec,'/private/secret2.doc')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/find'),[worldAccessible(victimHost,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/usr/bin/sudo'),[worldAccessible(victimHost,exec,'/usr/bin/sudo')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/cat'),[worldAccessible(victimHost,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin'),[worldAccessible(victimHost,exec,'/bin')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/zip'),[worldAccessible(victimHost,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/certutil'),[worldAccessible(victimHost,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/tcpdump'),[worldAccessible(victimHost,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/tracert'),[worldAccessible(victimHost,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/private'),[worldAccessible(victimHost,exec,'/private')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/ls'),[worldAccessible(victimHost,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/ps'),[worldAccessible(victimHost,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/groups'),[worldAccessible(victimHost,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/private/secret1.doc'),[worldAccessible(victimHost,exec,'/private/secret1.doc')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/who'),[worldAccessible(victimHost,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/rm'),[worldAccessible(victimHost,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h4273,exec,'/bin/df'),[worldAccessible(victimHost,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/private/secret2.doc'),[localFileProtection(victimHost,_h4273,exec,'/private/secret2.doc')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/find'),[localFileProtection(victimHost,_h4273,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/usr/bin/sudo'),[localFileProtection(victimHost,_h4273,exec,'/usr/bin/sudo')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/cat'),[localFileProtection(victimHost,_h4273,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin'),[localFileProtection(victimHost,_h4273,exec,'/bin')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/zip'),[localFileProtection(victimHost,_h4273,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/certutil'),[localFileProtection(victimHost,_h4273,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/tcpdump'),[localFileProtection(victimHost,_h4273,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/tracert'),[localFileProtection(victimHost,_h4273,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/ls'),[localFileProtection(victimHost,_h4273,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/private'),[localFileProtection(victimHost,_h4273,exec,'/private')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/ps'),[localFileProtection(victimHost,_h4273,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/groups'),[localFileProtection(victimHost,_h4273,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/private/secret1.doc'),[localFileProtection(victimHost,_h4273,exec,'/private/secret1.doc')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/who'),[localFileProtection(victimHost,_h4273,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/rm'),[localFileProtection(victimHost,_h4273,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h4273,exec,'/bin/df'),[localFileProtection(victimHost,_h4273,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/find'),[localFileProtection(victimHost,root,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/cat'),[localFileProtection(victimHost,root,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/zip'),[localFileProtection(victimHost,root,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin'),[localFileProtection(victimHost,root,exec,'/bin')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tcpdump'),[localFileProtection(victimHost,root,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/certutil'),[localFileProtection(victimHost,root,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tracert'),[localFileProtection(victimHost,root,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ls'),[localFileProtection(victimHost,root,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ps'),[localFileProtection(victimHost,root,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/groups'),[localFileProtection(victimHost,root,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/who'),[localFileProtection(victimHost,root,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/rm'),[localFileProtection(victimHost,root,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/df'),[localFileProtection(victimHost,root,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/bash'),[localFileProtection(victimHost,victimAccount,exec,'/bin/bash')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/private'),[localFileProtection(victimHost,victimAccount,exec,'/private')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/private'),[localFileProtection(victimHost,victimAccount,exec,'/private')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/powershell'),[localFileProtection(victimHost,victimAccount,exec,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/bin/powershell'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/private'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/bin/bash'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/find'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/cat'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/zip'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/tcpdump'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/certutil'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/tracert'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/ls'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/ps'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/groups'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/who'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/rm'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/df'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/private/secret2.doc'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/find'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/usr/bin/sudo'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/cat'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/zip'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/certutil'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/tcpdump'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/tracert'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/private'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/ls'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/ps'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/groups'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/private/secret1.doc'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/who'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/rm'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h4273),[canAccessFile(victimHost,_h4273,exec,'/bin/df'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h4328)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/home/victimAccount/3aka3.doc'),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[ownerAccessible(victimHost,exec,'/home/victimAccount/3aka3.doc'),fileOwner(victimHost,victimAccount,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),[localFileProtection(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/home/victimAccount/3aka3.doc'),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(84,rule_desc('BB - Script access an exposed service',1.0),canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[networkServiceInfo(pupyC2Server,root,pupyd,http,1234),accessFile(attacker,victimHost,exec,'/home/victimAccount/3aka3.doc'),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(84,rule_desc('BB - Script access an exposed service',1.0),canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[networkServiceInfo(pupyC2Server,root,pupyd,http,1234),accessFile(attacker,victimHost,exec,'/home/victimAccount/3aka3.doc'),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(84,rule_desc('BB - Script access an exposed service',1.0),canScriptAccessHost(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234),[networkServiceInfo(pupyC2Server,root,pupyd,http,1234),accessFile(attacker,victimHost,exec,'/home/victimAccount/3aka3.doc'),scriptNetAccess(victimHost,pupyC2Server,'/home/victimAccount/3aka3.doc',reversePupy,http,1234)])).
+
+possible_duplicate_trace_step(because(111,rule_desc('BB - An user who is located in a host has root access to that host',0.20000000000000001),localAccess(attacker,pupyC2Server,root),[located(attacker,pupyC2Server)])).
+
+possible_duplicate_trace_step(because(78,rule_desc('BB - The remote root user has write access to the dataFlow',0.5),accessDataFlow(attacker,write,reversePupy),[dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h5034),localAccess(attacker,pupyC2Server,root)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/3aka3.doc'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/bin/powershell'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/private'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_login'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/home/victimAccount/.bash_history'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,victimAccount),[canAccessFile(victimHost,victimAccount,exec,'/bin/bash'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/find'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/cat'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/zip'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/tcpdump'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/certutil'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/tracert'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/ls'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/ps'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/groups'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/who'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/rm'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,root),[canAccessFile(victimHost,root,exec,'/bin/df'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/private/secret2.doc'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/find'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/usr/bin/sudo'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/cat'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/zip'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/certutil'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/tcpdump'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/tracert'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/private'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/ls'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/ps'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/groups'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/private/secret1.doc'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/who'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/rm'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(77,rule_desc('BB - User is able to use a reverse shell',0.5),execCode(attacker,victimHost,_h3941),[canAccessFile(victimHost,_h3941,exec,'/bin/df'),accessDataFlow(attacker,write,reversePupy),dataFlowReverseShell(reversePupy),dataFlow(victimHost,pupyC2Server,reversePupy,_h3995)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/powershell'),[ownerAccessible(victimHost,exec,'/bin/powershell'),fileOwner(victimHost,victimAccount,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/powershell'),[localFileProtection(victimHost,victimAccount,exec,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/powershell'),[canAccessFile(victimHost,victimAccount,exec,'/bin/powershell'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/powershell'),[ownerAccessible(victimHost,exec,'/bin/powershell'),fileOwner(victimHost,victimAccount,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/powershell'),[localFileProtection(victimHost,victimAccount,exec,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/powershell'),[canAccessFile(victimHost,victimAccount,exec,'/bin/powershell'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/powershell',powerShell),[accessFile(attacker,victimHost,exec,'/bin/powershell'),installed(victimHost,'/bin/powershell',powerShell)])).
+
+possible_duplicate_trace_step(because(95,rule_desc('BB - group file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/bash'),[groupAccessible(victimHost,exec,'/bin/bash'),fileGroupOwner(victimHost,'/bin/bash',victimGroup),inGroup(victimAccount,victimGroup)])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/bash'),[localFileProtection(victimHost,victimAccount,exec,'/bin/bash')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/bash'),[canAccessFile(victimHost,victimAccount,exec,'/bin/bash'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(95,rule_desc('BB - group file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/bash'),[groupAccessible(victimHost,exec,'/bin/bash'),fileGroupOwner(victimHost,'/bin/bash',victimGroup),inGroup(victimAccount,victimGroup)])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/bash'),[localFileProtection(victimHost,victimAccount,exec,'/bin/bash')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/bash'),[canAccessFile(victimHost,victimAccount,exec,'/bin/bash'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/bash',bash),[accessFile(attacker,victimHost,exec,'/bin/bash'),installed(victimHost,'/bin/bash',bash)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ls'),[ownerAccessible(victimHost,exec,'/bin/ls'),fileOwner(victimHost,root,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/ls'),[fileAttr(victimHost,'/bin/ls',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/ls'),[worldAccessible(victimHost,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/ls'),[localFileProtection(victimHost,_h3941,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ls'),[localFileProtection(victimHost,root,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ls'),[canAccessFile(victimHost,root,exec,'/bin/ls'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ls'),[canAccessFile(victimHost,_h3941,exec,'/bin/ls'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ls'),[ownerAccessible(victimHost,exec,'/bin/ls'),fileOwner(victimHost,root,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ls'),[worldAccessible(victimHost,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ls'),[localFileProtection(victimHost,root,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ls'),[localFileProtection(victimHost,root,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ls'),[canAccessFile(victimHost,root,exec,'/bin/ls'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/ls'),[worldAccessible(victimHost,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/ls'),[localFileProtection(victimHost,victimAccount,exec,'/bin/ls')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ls'),[canAccessFile(victimHost,victimAccount,exec,'/bin/ls'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/ls',ls),[accessFile(attacker,victimHost,exec,'/bin/ls'),installed(victimHost,'/bin/ls',ls)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/find'),[ownerAccessible(victimHost,exec,'/bin/find'),fileOwner(victimHost,root,'/bin/find')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/find'),[fileAttr(victimHost,'/bin/find',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/find'),[worldAccessible(victimHost,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/find'),[localFileProtection(victimHost,_h3941,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/find'),[localFileProtection(victimHost,root,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/find'),[canAccessFile(victimHost,root,exec,'/bin/find'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/find'),[canAccessFile(victimHost,_h3941,exec,'/bin/find'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/find'),[ownerAccessible(victimHost,exec,'/bin/find'),fileOwner(victimHost,root,'/bin/find')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/find'),[worldAccessible(victimHost,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/find'),[localFileProtection(victimHost,root,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/find'),[localFileProtection(victimHost,root,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/find'),[canAccessFile(victimHost,root,exec,'/bin/find'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/find'),[worldAccessible(victimHost,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/find'),[localFileProtection(victimHost,victimAccount,exec,'/bin/find')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/find'),[canAccessFile(victimHost,victimAccount,exec,'/bin/find'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/find',find),[accessFile(attacker,victimHost,exec,'/bin/find'),installed(victimHost,'/bin/find',find)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/cat'),[ownerAccessible(victimHost,exec,'/bin/cat'),fileOwner(victimHost,root,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/cat'),[fileAttr(victimHost,'/bin/cat',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/cat'),[worldAccessible(victimHost,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/cat'),[localFileProtection(victimHost,_h3941,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/cat'),[localFileProtection(victimHost,root,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/cat'),[canAccessFile(victimHost,root,exec,'/bin/cat'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/cat'),[canAccessFile(victimHost,_h3941,exec,'/bin/cat'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/cat'),[ownerAccessible(victimHost,exec,'/bin/cat'),fileOwner(victimHost,root,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/cat'),[worldAccessible(victimHost,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/cat'),[localFileProtection(victimHost,root,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/cat'),[localFileProtection(victimHost,root,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/cat'),[canAccessFile(victimHost,root,exec,'/bin/cat'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/cat'),[worldAccessible(victimHost,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/cat'),[localFileProtection(victimHost,victimAccount,exec,'/bin/cat')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/cat'),[canAccessFile(victimHost,victimAccount,exec,'/bin/cat'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/cat',cat),[accessFile(attacker,victimHost,exec,'/bin/cat'),installed(victimHost,'/bin/cat',cat)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/zip'),[ownerAccessible(victimHost,exec,'/bin/zip'),fileOwner(victimHost,root,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/zip'),[fileAttr(victimHost,'/bin/zip',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/zip'),[worldAccessible(victimHost,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/zip'),[localFileProtection(victimHost,_h3941,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/zip'),[localFileProtection(victimHost,root,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/zip'),[canAccessFile(victimHost,root,exec,'/bin/zip'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/zip'),[canAccessFile(victimHost,_h3941,exec,'/bin/zip'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/zip'),[ownerAccessible(victimHost,exec,'/bin/zip'),fileOwner(victimHost,root,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/zip'),[worldAccessible(victimHost,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/zip'),[localFileProtection(victimHost,root,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/zip'),[localFileProtection(victimHost,root,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/zip'),[canAccessFile(victimHost,root,exec,'/bin/zip'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/zip'),[worldAccessible(victimHost,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/zip'),[localFileProtection(victimHost,victimAccount,exec,'/bin/zip')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/zip'),[canAccessFile(victimHost,victimAccount,exec,'/bin/zip'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/zip',zip),[accessFile(attacker,victimHost,exec,'/bin/zip'),installed(victimHost,'/bin/zip',zip)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tcpdump'),[ownerAccessible(victimHost,exec,'/bin/tcpdump'),fileOwner(victimHost,root,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/tcpdump'),[fileAttr(victimHost,'/bin/tcpdump',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/tcpdump'),[worldAccessible(victimHost,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/tcpdump'),[localFileProtection(victimHost,_h3941,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tcpdump'),[localFileProtection(victimHost,root,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tcpdump'),[canAccessFile(victimHost,root,exec,'/bin/tcpdump'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tcpdump'),[canAccessFile(victimHost,_h3941,exec,'/bin/tcpdump'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tcpdump'),[ownerAccessible(victimHost,exec,'/bin/tcpdump'),fileOwner(victimHost,root,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tcpdump'),[worldAccessible(victimHost,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tcpdump'),[localFileProtection(victimHost,root,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tcpdump'),[localFileProtection(victimHost,root,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tcpdump'),[canAccessFile(victimHost,root,exec,'/bin/tcpdump'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/tcpdump'),[worldAccessible(victimHost,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/tcpdump'),[localFileProtection(victimHost,victimAccount,exec,'/bin/tcpdump')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tcpdump'),[canAccessFile(victimHost,victimAccount,exec,'/bin/tcpdump'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/tcpdump',tcpdump),[accessFile(attacker,victimHost,exec,'/bin/tcpdump'),installed(victimHost,'/bin/tcpdump',tcpdump)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/certutil'),[ownerAccessible(victimHost,exec,'/bin/certutil'),fileOwner(victimHost,root,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/certutil'),[fileAttr(victimHost,'/bin/certutil',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/certutil'),[worldAccessible(victimHost,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/certutil'),[localFileProtection(victimHost,_h3941,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/certutil'),[localFileProtection(victimHost,root,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/certutil'),[canAccessFile(victimHost,root,exec,'/bin/certutil'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/certutil'),[canAccessFile(victimHost,_h3941,exec,'/bin/certutil'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/certutil'),[ownerAccessible(victimHost,exec,'/bin/certutil'),fileOwner(victimHost,root,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/certutil'),[worldAccessible(victimHost,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/certutil'),[localFileProtection(victimHost,root,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/certutil'),[localFileProtection(victimHost,root,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/certutil'),[canAccessFile(victimHost,root,exec,'/bin/certutil'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/certutil'),[worldAccessible(victimHost,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/certutil'),[localFileProtection(victimHost,victimAccount,exec,'/bin/certutil')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/certutil'),[canAccessFile(victimHost,victimAccount,exec,'/bin/certutil'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/certutil',certutil),[accessFile(attacker,victimHost,exec,'/bin/certutil'),installed(victimHost,'/bin/certutil',certutil)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ps'),[ownerAccessible(victimHost,exec,'/bin/ps'),fileOwner(victimHost,root,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/ps'),[fileAttr(victimHost,'/bin/ps',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/ps'),[worldAccessible(victimHost,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/ps'),[localFileProtection(victimHost,_h3941,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ps'),[localFileProtection(victimHost,root,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ps'),[canAccessFile(victimHost,root,exec,'/bin/ps'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ps'),[canAccessFile(victimHost,_h3941,exec,'/bin/ps'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ps'),[ownerAccessible(victimHost,exec,'/bin/ps'),fileOwner(victimHost,root,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/ps'),[worldAccessible(victimHost,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ps'),[localFileProtection(victimHost,root,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/ps'),[localFileProtection(victimHost,root,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ps'),[canAccessFile(victimHost,root,exec,'/bin/ps'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/ps'),[worldAccessible(victimHost,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/ps'),[localFileProtection(victimHost,victimAccount,exec,'/bin/ps')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/ps'),[canAccessFile(victimHost,victimAccount,exec,'/bin/ps'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/ps',ps),[accessFile(attacker,victimHost,exec,'/bin/ps'),installed(victimHost,'/bin/ps',ps)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/rm'),[ownerAccessible(victimHost,exec,'/bin/rm'),fileOwner(victimHost,root,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/rm'),[fileAttr(victimHost,'/bin/rm',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/rm'),[worldAccessible(victimHost,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/rm'),[localFileProtection(victimHost,_h3941,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/rm'),[localFileProtection(victimHost,root,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/rm'),[canAccessFile(victimHost,root,exec,'/bin/rm'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/rm'),[canAccessFile(victimHost,_h3941,exec,'/bin/rm'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/rm'),[ownerAccessible(victimHost,exec,'/bin/rm'),fileOwner(victimHost,root,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/rm'),[worldAccessible(victimHost,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/rm'),[localFileProtection(victimHost,root,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/rm'),[localFileProtection(victimHost,root,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/rm'),[canAccessFile(victimHost,root,exec,'/bin/rm'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/rm'),[worldAccessible(victimHost,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/rm'),[localFileProtection(victimHost,victimAccount,exec,'/bin/rm')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/rm'),[canAccessFile(victimHost,victimAccount,exec,'/bin/rm'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/rm',rm),[accessFile(attacker,victimHost,exec,'/bin/rm'),installed(victimHost,'/bin/rm',rm)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/who'),[ownerAccessible(victimHost,exec,'/bin/who'),fileOwner(victimHost,root,'/bin/who')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/who'),[fileAttr(victimHost,'/bin/who',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/who'),[worldAccessible(victimHost,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/who'),[localFileProtection(victimHost,_h3941,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/who'),[localFileProtection(victimHost,root,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/who'),[canAccessFile(victimHost,root,exec,'/bin/who'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/who'),[canAccessFile(victimHost,_h3941,exec,'/bin/who'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/who'),[ownerAccessible(victimHost,exec,'/bin/who'),fileOwner(victimHost,root,'/bin/who')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/who'),[worldAccessible(victimHost,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/who'),[localFileProtection(victimHost,root,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/who'),[localFileProtection(victimHost,root,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/who'),[canAccessFile(victimHost,root,exec,'/bin/who'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/who'),[worldAccessible(victimHost,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/who'),[localFileProtection(victimHost,victimAccount,exec,'/bin/who')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/who'),[canAccessFile(victimHost,victimAccount,exec,'/bin/who'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/who',who),[accessFile(attacker,victimHost,exec,'/bin/who'),installed(victimHost,'/bin/who',who)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/df'),[ownerAccessible(victimHost,exec,'/bin/df'),fileOwner(victimHost,root,'/bin/df')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/df'),[fileAttr(victimHost,'/bin/df',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/df'),[worldAccessible(victimHost,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/df'),[localFileProtection(victimHost,_h3941,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/df'),[localFileProtection(victimHost,root,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/df'),[canAccessFile(victimHost,root,exec,'/bin/df'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/df'),[canAccessFile(victimHost,_h3941,exec,'/bin/df'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/df'),[ownerAccessible(victimHost,exec,'/bin/df'),fileOwner(victimHost,root,'/bin/df')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/df'),[worldAccessible(victimHost,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/df'),[localFileProtection(victimHost,root,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/df'),[localFileProtection(victimHost,root,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/df'),[canAccessFile(victimHost,root,exec,'/bin/df'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/df'),[worldAccessible(victimHost,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/df'),[localFileProtection(victimHost,victimAccount,exec,'/bin/df')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/df'),[canAccessFile(victimHost,victimAccount,exec,'/bin/df'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/df',df),[accessFile(attacker,victimHost,exec,'/bin/df'),installed(victimHost,'/bin/df',df)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tracert'),[ownerAccessible(victimHost,exec,'/bin/tracert'),fileOwner(victimHost,root,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/tracert'),[fileAttr(victimHost,'/bin/tracert',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/tracert'),[worldAccessible(victimHost,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/tracert'),[localFileProtection(victimHost,_h3941,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tracert'),[localFileProtection(victimHost,root,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tracert'),[canAccessFile(victimHost,root,exec,'/bin/tracert'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tracert'),[canAccessFile(victimHost,_h3941,exec,'/bin/tracert'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tracert'),[ownerAccessible(victimHost,exec,'/bin/tracert'),fileOwner(victimHost,root,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/tracert'),[worldAccessible(victimHost,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tracert'),[localFileProtection(victimHost,root,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/tracert'),[localFileProtection(victimHost,root,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tracert'),[canAccessFile(victimHost,root,exec,'/bin/tracert'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/tracert'),[worldAccessible(victimHost,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/tracert'),[localFileProtection(victimHost,victimAccount,exec,'/bin/tracert')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/tracert'),[canAccessFile(victimHost,victimAccount,exec,'/bin/tracert'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/tracert',tracert),[accessFile(attacker,victimHost,exec,'/bin/tracert'),installed(victimHost,'/bin/tracert',tracert)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/groups'),[ownerAccessible(victimHost,exec,'/bin/groups'),fileOwner(victimHost,root,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(105,rule_desc('BB - world file access',0.10000000000000001),worldAccessible(victimHost,exec,'/bin/groups'),[fileAttr(victimHost,'/bin/groups',-,r,w,x,-,-,-,r,w,x)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,_h3941,exec,'/bin/groups'),[worldAccessible(victimHost,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,_h3941,exec,'/bin/groups'),[localFileProtection(victimHost,_h3941,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/groups'),[localFileProtection(victimHost,root,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/groups'),[canAccessFile(victimHost,root,exec,'/bin/groups'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/groups'),[canAccessFile(victimHost,_h3941,exec,'/bin/groups'),execCode(attacker,victimHost,_h3941)])).
+
+possible_duplicate_trace_step(because(94,rule_desc('BB - owner file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/groups'),[ownerAccessible(victimHost,exec,'/bin/groups'),fileOwner(victimHost,root,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,root,exec,'/bin/groups'),[worldAccessible(victimHost,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/groups'),[localFileProtection(victimHost,root,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,root,exec,'/bin/groups'),[localFileProtection(victimHost,root,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/groups'),[canAccessFile(victimHost,root,exec,'/bin/groups'),execCode(attacker,victimHost,root)])).
+
+possible_duplicate_trace_step(because(96,rule_desc('BB - world file access',0.10000000000000001),localFileProtection(victimHost,victimAccount,exec,'/bin/groups'),[worldAccessible(victimHost,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(93,rule_desc('BB - A legitimate account can access file',0.10000000000000001),canAccessFile(victimHost,victimAccount,exec,'/bin/groups'),[localFileProtection(victimHost,victimAccount,exec,'/bin/groups')])).
+
+possible_duplicate_trace_step(because(91,rule_desc('BB - execCode implies file access',1.0),accessFile(attacker,victimHost,exec,'/bin/groups'),[canAccessFile(victimHost,victimAccount,exec,'/bin/groups'),execCode(attacker,victimHost,victimAccount)])).
+
+possible_duplicate_trace_step(because(76,rule_desc('BB - User is able to run installed software',0.5),canRunInstalledSoftware(attacker,victimHost,'/bin/groups',groups),[accessFile(attacker,victimHost,exec,'/bin/groups'),installed(victimHost,'/bin/groups',groups)])).
+
+possible_duplicate_trace_step(because(74,rule_desc('T1059.001 - Command and Scripting Interpreter - PowerShell',0.5),cmdScriptingInterpreterPowerShell(attacker,victimHost,'/bin/powershell'),[isPowerShell(powerShell),canRunInstalledSoftware(attacker,victimHost,'/bin/powershell',powerShell),malicious(attacker)])).
+
+possible_duplicate_trace_step(because(72,rule_desc('T1059 - Command and Scripting Interpreter',0.5),cmdScriptingInterpreter(attacker,victimHost,'/bin/powershell'),[cmdScriptingInterpreterPowerShell(attacker,victimHost,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(75,rule_desc('T1059.004 - Command and Scripting Interpreter - PowerShell',0.5),cmdScriptingInterpreterUnixShell(attacker,victimHost,'/bin/bash'),[isUnixShell(bash),canRunInstalledSoftware(attacker,victimHost,'/bin/bash',bash),malicious(attacker)])).
+
+possible_duplicate_trace_step(because(73,rule_desc('T1059 - Command and Scripting Interpreter',0.5),cmdScriptingInterpreter(attacker,victimHost,'/bin/bash'),[cmdScriptingInterpreterUnixShell(attacker,victimHost,'/bin/bash')])).
+
+possible_duplicate_trace_step(because(69,rule_desc('Asset - Able to abuse command and scripting interpreters',0.40000000000000002),canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/bash'),[cmdScriptingInterpreter(attacker,victimHost,'/bin/bash')])).
+
+possible_duplicate_trace_step(because(69,rule_desc('Asset - Able to abuse command and scripting interpreters',0.40000000000000002),canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/powershell'),[cmdScriptingInterpreter(attacker,victimHost,'/bin/powershell')])).
+
+possible_duplicate_trace_step(because(3,rule_desc('T1069.001 - Permission Groups Discovery - Local Groups',0.5),permissionGroupsDiscoveryLocalGroups(attacker,victimHost),[isGroupDiscoverUtil(groups),canRunInstalledSoftware(attacker,victimHost,'/bin/groups',groups),canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/powershell'),malicious(attacker)])).
+
+possible_duplicate_trace_step(because(3,rule_desc('T1069.001 - Permission Groups Discovery - Local Groups',0.5),permissionGroupsDiscoveryLocalGroups(attacker,victimHost),[isGroupDiscoverUtil(groups),canRunInstalledSoftware(attacker,victimHost,'/bin/groups',groups),canAbuseCmdScriptingInterpreter(attacker,victimHost,'/bin/bash'),malicious(attacker)])).
+
+possible_duplicate_trace_step(because(1,rule_desc('Asset - Able to discover local groups permissions',0.5),canDiscoverLocalGroupsPermissions(attacker,victimHost),[permissionGroupsDiscoveryLocalGroups(attacker,victimHost)])).
+
