@@ -58,5 +58,7 @@
 
 :-(dynamic(isObfuscatedFiles(_h3150,_h3151))).
 
+:-(dynamic(isUnixLoginScript(_h3150,_h3151))).
+
 :-(dynamic(trace_step(_h3085,_h3086))).
 

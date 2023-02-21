@@ -33,6 +33,8 @@ primitive(isIngressTool(_software)).
 primitive(steganography(_host, _path)).
 primitive(binaryPadding(_host, _path)).
 primitive(isObfuscatedFiles(_host, _path)).
+primitive(isUnixLoginScript(_host, _path)).
+
 
 
 /****       Technique Assets        *****/
@@ -52,6 +54,9 @@ derived(canDataStage(_user, _host, _data)).
 derived(canExfiltrateData(_user, _srcHost, _destHost, _flowName, _data)).
 derived(canIngressTransfer(_user, _srcHost, _data)).
 derived(seemsObfuscated(_host, _path)).
+derived(abuseEventTriggeredExec(_user, _host)).
+derived(abuseEventTriggeredExecUnixShell(_user, _host)).
+
 
 
 /****   Technique Implementation    *****/
@@ -71,7 +76,8 @@ derived(dataStaged(_user, _host, _data)).
 derived(exfiltrationOverC2Channel(_user, _srcHost, _destHost, _flowName, _data)).
 derived(ingressToolTransfer(_user, _srcHost, _data)).
 derived(obfuscatedFilesOrInformation(_host, _path)).
-
+derived(eventTriggeredExecution(_user, _host)).
+derived(eventTriggeredExecutionUnixShell(_user, _host)).
 
 /****       Building Blocks         *****/
 
@@ -118,6 +124,8 @@ meta(advances(_, _)).
 :- table canExfiltrateData/5.
 :- table canIngressTransfer/3.
 :- table seemsObfuscated/2.
+:- table abuseEventTriggeredExec/2.
+:- table abuseEventTriggeredExecUnixShell/2.
 :- table masquerading/2.
 :- table userExecutionMaliciousFile/3.
 :- table userExecution/3.
@@ -133,6 +141,8 @@ meta(advances(_, _)).
 :- table exfiltrationOverC2Channel/5.
 :- table ingressToolTransfer/3.
 :- table obfuscatedFilesOrInformation/2.
+:- table eventTriggeredExecution/2.
+:- table eventTriggeredExecutionUnixShell/2.
 :- table isMaliciousFile/2.
 :- table localAccess/3.
 :- table ownerAccessible/3.
@@ -154,6 +164,32 @@ meta(advances(_, _)).
 /******************************************************/
 /****         Step 3 - Interaction Rules          *****/
 /******************************************************/
+
+interaction_rule(
+  (abuseEventTriggeredExec(User, Host) :-
+    eventTriggeredExecution(User, Host)),
+  rule_desc('Asset - Able to abuse OS event triggered execution',
+  0.5)).
+
+interaction_rule(
+  (abuseEventTriggeredExecUnixShell(User, Host) :-
+    eventTriggeredExecutionUnixShell(User, Host)),
+  rule_desc('Asset - Able to abuse OS event triggered execution - Unix Shell',
+  0.5)).
+
+interaction_rule(
+  (eventTriggeredExecution(User, Host) :-
+		eventTriggeredExecutionUnixShell(User, Host)),
+  rule_desc('T1546 - Event Triggered Execution',
+  0.5)).
+
+interaction_rule(
+  (eventTriggeredExecutionUnixShell(User, Host) :-
+		malicious(User),
+    accessFile(User, Host, write, Path),
+    isUnixLoginScript(Host, Path)),
+  rule_desc('T1546.004 - Event Triggered Execution - Unix Shell Configuration Modification',
+  0.5)).
 
 interaction_rule(
   (seemsObfuscated(Host, Path) :-
